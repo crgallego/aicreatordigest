@@ -105,6 +105,16 @@
   to = "/web/how-we-synthesize.html"
   status = 200
 
+[[redirects]]
+  from = "/how-this-works"
+  to = "/web/how-this-works.html"
+  status = 200
+
+[[redirects]]
+  from = "/chris-gallego"
+  to = "/web/chris-gallego.html"
+  status = 200
+
 # Keep the function source out of the served site.
 [[redirects]]
   from = "/netlify/*"

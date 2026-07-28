@@ -799,6 +799,8 @@ function buildSitemap(index) {
     { loc: `${base}/creators`, priority: "0.8" },
     { loc: `${base}/about`, priority: "0.5" },
     { loc: `${base}/how-we-synthesize`, priority: "0.5" },
+    { loc: `${base}/how-this-works`, priority: "0.5" },
+    { loc: `${base}/chris-gallego`, priority: "0.6" },
   ];
 
   Object.values(index.playlists).forEach((p) => {

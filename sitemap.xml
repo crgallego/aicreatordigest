@@ -24,4 +24,12 @@
     <loc>https://aicreatordigest.com/how-we-synthesize</loc>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://aicreatordigest.com/how-this-works</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://aicreatordigest.com/chris-gallego</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>

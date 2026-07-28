@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How I Synthesize · AI Creator Digest</title>
-<meta name="description" content="How a YouTube video actually becomes a digest here — transcript to AI analysis to a credited, linked page.">
+<title>How This Works · AI Creator Digest</title>
+<meta name="description" content="The real build story of AI Creator Digest — the redesign nobody planned for, the free method that failed live, and the pivot that changed the whole architecture.">
 <meta property="og:site_name" content="AI Creator Digest">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
@@ -39,9 +39,9 @@
 
   <main id="main">
     <div class="page-head">
-      <div class="eyebrow">Methodology</div>
-      <h1>How I synthesize</h1>
-      <p class="dek">Transcript in, AI analysis, a credited page out. Here's exactly how, and what I refuse to do.</p>
+      <div class="eyebrow">Build Log</div>
+      <h1>How this works</h1>
+      <p class="dek">The pipeline, the redesign nobody planned for, and the pivot that changed the whole architecture — written the way it actually happened.</p>
     </div>
 
     <article class="prose" id="body"><p class="loading">Loading…</p></article>
@@ -63,16 +63,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const md = await A.fetchMarkdown("/pages/how-we-synthesize.md");
+  const md = await A.fetchMarkdown("/pages/how-this-works.md");
   document.getElementById("body").innerHTML = md
     ? A.renderMarkdown(md)
     : A.emptyState("Couldn't load this page", "Try refreshing, or head back to the homepage.");
 
   A.setMeta({
-    title: "How I Synthesize",
-    description: "How a YouTube video actually becomes a digest here — transcript to AI analysis to a credited, linked page.",
-    path: "/how-we-synthesize",
+    title: "How This Works",
+    description: "The real build story of AI Creator Digest — the redesign nobody planned for, the free method that failed live, and the pivot that changed the whole architecture.",
+    path: "/how-this-works",
     type: "article",
+  });
+
+  A.injectJsonLd({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "How This Works",
+    description: "The real build story of AI Creator Digest, written the way it actually happened.",
+    url: `${A.SITE_URL}/how-this-works`,
+    author: { "@type": "Person", name: "Chris Gallego", url: `${A.SITE_URL}/chris-gallego` },
+    publisher: { "@type": "Person", name: "Chris Gallego", url: `${A.SITE_URL}/chris-gallego` },
   });
 });
 </script>
