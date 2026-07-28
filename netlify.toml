@@ -22,6 +22,12 @@
 [functions."process-video-background"]
   timeout = 180
 
+[functions."fetch-transcript"]
+  # Fast in practice (well under a second per call), but the internal retry
+  # against YouTube's bot check can add a couple of seconds — give it the
+  # full synchronous ceiling for headroom.
+  timeout = 26
+
 # ----------------------------------------------------------------------
 # Clean URLs
 # ----------------------------------------------------------------------
@@ -29,6 +35,12 @@
 [[redirects]]
   from = "/api/process-video"
   to = "/.netlify/functions/process-video"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/fetch-transcript"
+  to = "/.netlify/functions/fetch-transcript"
   status = 200
   force = true
 

@@ -16,7 +16,10 @@
   "scripts": {
     "dev": "netlify dev",
     "serve": "npx --yes serve@14 -l 8888 .",
-    "check": "node --check netlify/functions/process-video.js"
+    "check": "node --check netlify/functions/process-video.js && node --check netlify/functions/fetch-transcript.js"
+  },
+  "dependencies": {
+    "youtube-caption-extractor": "^1.10.2"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"
