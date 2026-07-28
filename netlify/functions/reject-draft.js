@@ -10,7 +10,7 @@
  */
 
 import { getStore } from "@netlify/blobs";
-import { header, json, respond } from "./lib/pipeline.js";
+import { header, parseRequestBody, json, respond } from "./lib/pipeline.js";
 import { editMessageText } from "./lib/telegram.js";
 
 const DRAFTS_STORE = "aicd-drafts";
@@ -31,7 +31,7 @@ export const handler = async (event) => {
 
   let payload;
   try {
-    payload = JSON.parse(event.body || "{}");
+    payload = parseRequestBody(event);
   } catch {
     return json(400, { error: "Body is not valid JSON" });
   }

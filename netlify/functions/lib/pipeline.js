@@ -1147,6 +1147,22 @@ export function header(event, name) {
   return headers[name] || headers[name.toLowerCase()] || "";
 }
 
+/**
+ * Make's HTTP module sends raw JSON bodies unescaped, which breaks the
+ * moment a mapped value (a transcript, an edited doc's text) contains a
+ * quote or newline. Its form-urlencoded body type handles arbitrary text
+ * safely with no manual escaping, so that's what the scenarios send —
+ * this parses either that or plain JSON, keyed off Content-Type.
+ */
+export function parseRequestBody(event) {
+  const contentType = header(event, "content-type").toLowerCase();
+  const raw = event.body || "";
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    return Object.fromEntries(new URLSearchParams(raw));
+  }
+  return JSON.parse(raw || "{}");
+}
+
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }

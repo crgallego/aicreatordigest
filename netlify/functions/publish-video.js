@@ -24,6 +24,7 @@ import {
   publishVideo,
   estimateReadMinutes,
   header,
+  parseRequestBody,
   json,
   respond,
 } from "./lib/pipeline.js";
@@ -47,7 +48,7 @@ export const handler = async (event) => {
 
   let payload;
   try {
-    payload = JSON.parse(event.body || "{}");
+    payload = parseRequestBody(event);
   } catch {
     return json(400, { error: "Body is not valid JSON" });
   }
