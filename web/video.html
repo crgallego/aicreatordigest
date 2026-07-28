@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digest · AI Creator Digest</title>
+<meta name="description" content="My digest of a YouTube video from one of the best creators in AI, tech, SaaS and web design — with full credit and a link to the original.">
+<meta property="og:site_name" content="AI Creator Digest">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Creator Digest" href="/feed.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23B5602B'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' fill='white' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/style.css">
+<script defer src="/web/assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <header class="site-header">
+    <a href="/" class="wordmark" style="text-decoration:none">
+      <span class="title">AI Creator Digest</span>
+      <span class="tag">aicreatordigest.com — youtube, read instead of watched</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/">home</a>
+      <a href="/playlists">playlists</a>
+      <a href="/digests">digests</a>
+      <a href="/creators">creators</a>
+      <a href="/about">about</a>
+      <span class="spacer"></span>
+      <span class="issue" id="issue-marker"></span>
+    </nav>
+    <hr class="divider">
+  </header>
+
+  <main id="main">
+    <div class="page-head">
+      <a class="crumb" id="crumb" href="/playlists">← playlist</a>
+      <h1 id="title">Loading…</h1>
+      <p class="dek" id="dek"></p>
+
+      <div class="credit" id="credit" hidden>
+        <div class="who">
+          <span class="name" id="creator-name"></span>
+          <span class="sub" id="credit-sub"></span>
+        </div>
+        <a class="watch" id="watch" href="#" target="_blank" rel="noopener">watch original ↗</a>
+      </div>
+    </div>
+
+    <div class="callout" id="callout" hidden>
+      <div class="label">Key takeaway</div>
+      <p id="takeaway"></p>
+    </div>
+
+    <section class="article-section" id="keypoints-section" hidden>
+      <h2 class="section-label">Key points</h2>
+      <div class="key-points" id="keypoints"></div>
+    </section>
+
+    <section class="article-section" id="tactics-section" hidden>
+      <h2 class="section-label">Tactics to steal</h2>
+      <div class="tactics" id="tactics"></div>
+    </section>
+
+    <section class="article-section" id="quotes-section" hidden>
+      <h2 class="section-label">Quotes</h2>
+      <div class="quotes" id="quotes"></div>
+    </section>
+
+    <section class="article-footer" id="article-footer"></section>
+
+    <div id="not-found"></div>
+  </main>
+
+  <footer class="site-footer">
+    <span>AI Creator Digest © 2026</span>
+    <span class="spacer"></span>
+    <a href="/how-we-synthesize">how i synthesize</a>
+    <a href="https://github.com/crgallego/aicreatordigest/issues/new?title=Channel%20suggestion" target="_blank" rel="noopener">submit a channel</a>
+    <a href="/feed.xml">rss</a>
+  </footer>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const A = window.ACD;
+
+  const { playlist: playlistSlug, video: videoSlug } = A.routeParams("video", ["playlist", "video"]);
+
+  if (!playlistSlug || !videoSlug) {
+    document.getElementById("title").textContent = "Digest not found";
+    document.getElementById("not-found").innerHTML = A.emptyState("No video specified", "Head back to the homepage to browse everything I've published.");
+    return;
+  }
+
+  const index = await A.loadIndex();
+  A.renderIssueMarker(index);
+
+  const entry = index.videos.find((v) => v.playlistSlug === playlistSlug && v.slug === videoSlug);
+
+  const raw = await A.fetchMarkdown(
+    `/playlists/${encodeURIComponent(playlistSlug)}/videos/${encodeURIComponent(videoSlug)}.md`
+  );
+
+  if (!raw) {
+    document.getElementById("title").textContent = "Digest not found";
+    document.getElementById("not-found").innerHTML = A.emptyState("I couldn't find that digest", "It may have been renamed. Browse the collection to find it.");
+    return;
+  }
+
+  const { data } = A.parseFrontmatter(raw);
+  const meta = { ...(entry || {}), ...data };
+
+  const title = meta.title || videoSlug;
+  const creatorName = meta.creatorName || meta.channelName || "This creator";
+  const topic = A.primaryTopic(meta);
+
+  document.getElementById("title").textContent = title;
+  document.getElementById("dek").textContent = meta.description || meta.keyTakeaway || "";
+
+  const crumb = document.getElementById("crumb");
+  crumb.textContent = `← playlist: ${meta.playlistName || playlistSlug}`;
+  crumb.href = `/playlist/${encodeURIComponent(playlistSlug)}`;
+
+  // Credit block
+  document.getElementById("credit").hidden = false;
+  document.getElementById("creator-name").textContent = `${creatorName}${meta.channelName && meta.channelName !== creatorName ? ` — ${meta.channelName}` : ""}`;
+  document.getElementById("credit-sub").textContent = A.joinMeta([
+    topic,
+    meta.addedAt ? `published ${A.formatDateLong(meta.addedAt)}` : "",
+    meta.videoDuration || "",
+  ]);
+  const watch = document.getElementById("watch");
+  if (meta.videoUrl) {
+    watch.href = meta.videoUrl;
+  } else {
+    watch.remove();
+  }
+
+  // Key takeaway
+  if (meta.keyTakeaway) {
+    document.getElementById("callout").hidden = false;
+    document.getElementById("takeaway").textContent = meta.keyTakeaway;
+  }
+
+  // Key points
+  const keyPoints = Array.isArray(meta.keyPoints) ? meta.keyPoints : [];
+  if (keyPoints.length) {
+    document.getElementById("keypoints-section").hidden = false;
+    document.getElementById("keypoints").innerHTML = keyPoints
+      .map(
+        (p, i) => `
+        <div class="key-point">
+          <span class="n">${String(i + 1).padStart(2, "0")}</span>
+          <div>
+            <h3>${A.escapeHtml(p.title || "")}</h3>
+            <p>${A.escapeHtml(p.body || "")}</p>
+          </div>
+        </div>`
+      )
+      .join("");
+  }
+
+  // Tactics
+  const tactics = Array.isArray(meta.tactics) ? meta.tactics : [];
+  if (tactics.length) {
+    document.getElementById("tactics-section").hidden = false;
+    document.getElementById("tactics").innerHTML = tactics
+      .map(
+        (t) => `
+        <div class="tactic">
+          <span class="kind">${A.escapeHtml(t.kind || "")}</span>
+          <div>
+            <div class="title">${A.escapeHtml(t.title || "")}</div>
+            <p>${A.escapeHtml(t.body || "")}</p>
+          </div>
+        </div>`
+      )
+      .join("");
+  }
+
+  // Quotes
+  const quotes = Array.isArray(meta.quotes) ? meta.quotes : [];
+  if (quotes.length) {
+    document.getElementById("quotes-section").hidden = false;
+    document.getElementById("quotes").innerHTML = quotes
+      .map(
+        (q) => `
+        <div class="quote">
+          <p>"${A.escapeHtml(String(q.text || "").replace(/^["“]|["”]$/g, ""))}"</p>
+          ${q.at ? `<span class="at">— ${A.escapeHtml(q.at)}</span>` : ""}
+        </div>`
+      )
+      .join("");
+  }
+
+  // Footer meta row
+  document.getElementById("article-footer").innerHTML = [
+    ["source", A.joinMeta(["youtube", meta.channelName])],
+    meta.videoDuration ? ["runtime", meta.videoDuration] : null,
+    ["digest", `${A.readTimeLabel(meta)} read`],
+    meta.categories && meta.categories.length ? ["topics", meta.categories.join(", ")] : null,
+    meta.updatedAt ? ["synthesized", A.formatDateLong(meta.updatedAt)] : null,
+  ]
+    .filter(Boolean)
+    .map(([k, v]) => `<span>${A.escapeHtml(k)}: <span class="v">${A.escapeHtml(v)}</span></span>`)
+    .join("");
+
+  A.setMeta({
+    title: `${title} — ${creatorName}`,
+    description: meta.description || meta.keyTakeaway || "",
+    path: `/video/${playlistSlug}/${videoSlug}`,
+    type: "article",
+  });
+
+  A.injectJsonLd({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: meta.description || meta.keyTakeaway || "",
+    url: `${A.SITE_URL}/video/${playlistSlug}/${videoSlug}`,
+    datePublished: meta.addedAt || undefined,
+    dateModified: meta.updatedAt || meta.addedAt || undefined,
+    author: {
+      "@type": "Person",
+      name: creatorName,
+      url: meta.channelUrl || undefined,
+    },
+    publisher: { "@type": "Person", name: "Chris Gallego", url: A.SITE_URL },
+    isBasedOn: meta.videoUrl || undefined,
+    keywords: (meta.categories || []).join(", "),
+  });
+});
+</script>
+</body>
+</html>

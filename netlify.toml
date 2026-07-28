@@ -1,0 +1,135 @@
+# AI Creator Digest — https://aicreatordigest.com
+
+[build]
+  # The whole repo is published so the markdown files under /playlists and
+  # /creators are fetchable by the front end. No build step — it's vanilla
+  # HTML/CSS/JS.
+  publish = "."
+  command = "echo 'No build step — publishing static files.'"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[functions."process-video"]
+  # Honoured on plans that allow extended synchronous function timeouts.
+  # Netlify's default is 10s and the ceiling for synchronous functions is 26s,
+  # so if a long transcript times out here, point Make at
+  # /.netlify/functions/process-video-background instead — background functions
+  # get 15 minutes.
+  timeout = 180
+
+[functions."process-video-background"]
+  timeout = 180
+
+# ----------------------------------------------------------------------
+# Clean URLs
+# ----------------------------------------------------------------------
+
+[[redirects]]
+  from = "/api/process-video"
+  to = "/.netlify/functions/process-video"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/"
+  to = "/web/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/playlist/*"
+  to = "/web/playlist.html"
+  status = 200
+
+[[redirects]]
+  from = "/video/*"
+  to = "/web/video.html"
+  status = 200
+
+[[redirects]]
+  from = "/creator/*"
+  to = "/web/creator.html"
+  status = 200
+
+[[redirects]]
+  from = "/playlists"
+  to = "/web/playlists.html"
+  status = 200
+
+[[redirects]]
+  from = "/digests"
+  to = "/web/digests.html"
+  status = 200
+
+[[redirects]]
+  from = "/creators"
+  to = "/web/creators.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/web/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/how-we-synthesize"
+  to = "/web/how-we-synthesize.html"
+  status = 200
+
+# Keep the function source out of the served site.
+[[redirects]]
+  from = "/netlify/*"
+  to = "/web/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/web/404.html"
+  status = 404
+
+# ----------------------------------------------------------------------
+# Headers
+# ----------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/web/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/web/data/index.json"
+  [headers.values]
+    Cache-Control = "public, max-age=60"
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/playlists/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+  for = "/creators/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+  for = "/pages/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+  for = "/feed.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "application/rss+xml; charset=utf-8"

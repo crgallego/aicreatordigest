@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Playlist · AI Creator Digest</title>
+<meta name="description" content="My consensus guide synthesized across every video in this collection, plus the full video list in reading order.">
+<meta property="og:site_name" content="AI Creator Digest">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Creator Digest" href="/feed.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23B5602B'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' fill='white' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/style.css">
+<script defer src="/web/assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <header class="site-header">
+    <a href="/" class="wordmark" style="text-decoration:none">
+      <span class="title">AI Creator Digest</span>
+      <span class="tag">aicreatordigest.com — youtube, read instead of watched</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/">home</a>
+      <a href="/playlists">playlists</a>
+      <a href="/digests">digests</a>
+      <a href="/creators">creators</a>
+      <a href="/about">about</a>
+      <span class="spacer"></span>
+      <span class="issue" id="issue-marker"></span>
+    </nav>
+    <hr class="divider">
+  </header>
+
+  <main id="main">
+    <div class="page-head">
+      <div class="eyebrow">Playlist</div>
+      <h1 id="title">Loading…</h1>
+      <p class="dek" id="dek"></p>
+      <div class="meta-row pad-bottom" id="meta-row"></div>
+    </div>
+
+    <div class="consensus" id="consensus">
+      <p class="loading">Loading the consensus guide…</p>
+    </div>
+
+    <section class="band">
+      <div class="section-head">
+        <h2 class="section-label">The videos</h2>
+        <span class="spacer"></span>
+        <span class="more">in reading order</span>
+      </div>
+      <div class="rows" id="videos"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>AI Creator Digest © 2026</span>
+    <span class="spacer"></span>
+    <a href="/how-we-synthesize">how i synthesize</a>
+    <a href="https://github.com/crgallego/aicreatordigest/issues/new?title=Channel%20suggestion" target="_blank" rel="noopener">submit a channel</a>
+    <a href="/feed.xml">rss</a>
+  </footer>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const A = window.ACD;
+
+  const { slug } = A.routeParams("playlist", ["slug"]);
+  if (!slug) {
+    document.getElementById("title").textContent = "Playlist not found";
+    document.getElementById("consensus").innerHTML = A.emptyState("No playlist specified", "Head back to the homepage to browse everything I've published.");
+    return;
+  }
+
+  const index = await A.loadIndex();
+  A.renderIssueMarker(index);
+
+  const playlist = index.playlists[slug] || { slug, name: slug };
+  const videos = index.videos
+    .filter((v) => v.playlistSlug === slug)
+    .sort((a, b) => String(a.addedAt || "").localeCompare(String(b.addedAt || "")));
+  const creatorSlugs = [...new Set(videos.map((v) => v.creatorSlug))];
+  const totalReadMinutes = videos.reduce((sum, v) => sum + (v.readTimeMinutes || 1), 0);
+
+  const raw = await A.fetchMarkdown(`/playlists/${encodeURIComponent(slug)}/index.md`);
+  const { data } = raw ? A.parseFrontmatter(raw) : { data: {} };
+
+  const title = data.title || playlist.name;
+  const summary = data.summary || "";
+  const agree = Array.isArray(data.agree) ? data.agree : [];
+  const disagree = Array.isArray(data.disagree) ? data.disagree : [];
+  const updatedAt = data.updatedAt || playlist.consensusUpdatedAt || "";
+
+  document.getElementById("title").textContent = title;
+  document.getElementById("dek").textContent = summary;
+
+  document.getElementById("meta-row").innerHTML = [
+    ["creators", A.plural(creatorSlugs.length, "creator", "creators")],
+    ["reading time", `${totalReadMinutes} min`],
+    updatedAt ? ["updated", A.formatDateLong(updatedAt)] : null,
+  ]
+    .filter(Boolean)
+    .map(([k, v]) => `<span>${A.escapeHtml(k)}: <span class="v">${A.escapeHtml(v)}</span></span>`)
+    .join("");
+
+  const consensusEl = document.getElementById("consensus");
+  if (!raw || (!agree.length && !disagree.length && !summary)) {
+    consensusEl.outerHTML = A.emptyState(
+      "The consensus guide is on its way",
+      "I write it the moment the first video in this collection is processed."
+    );
+  } else {
+    consensusEl.innerHTML = `
+      <div class="consensus-head">
+        <h2>Consensus guide</h2>
+        <span class="spacer"></span>
+        <span class="meta">from ${videos.length} ${videos.length === 1 ? "video" : "videos"}${
+      updatedAt ? ` · updated ${A.escapeHtml(A.formatDateShort(updatedAt))}` : ""
+    }</span>
+      </div>
+      <p>${A.escapeHtml(summary)}</p>
+      <div class="split">
+        <div class="split-col">
+          <div class="split-label">Where they agree</div>
+          <div class="split-list">${
+            agree.length
+              ? agree.map((a) => `<div class="split-item agree"><span class="marker">+</span><span>${A.escapeHtml(a)}</span></div>`).join("")
+              : `<div class="split-item agree" style="color:var(--faint)"><span></span><span>None yet</span></div>`
+          }</div>
+        </div>
+        <div class="split-col">
+          <div class="split-label">Open disagreements</div>
+          <div class="split-list">${
+            disagree.length
+              ? disagree.map((d) => `<div class="split-item disagree"><span class="marker">?</span><span>${A.escapeHtml(d)}</span></div>`).join("")
+              : `<div class="split-item disagree" style="color:var(--faint)"><span></span><span>None yet</span></div>`
+          }</div>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById("videos").innerHTML = videos.length
+    ? videos.map((v, i) => A.plVideoRow(v, i)).join("")
+    : A.emptyState("No videos yet", "They'll appear here as soon as I process them.");
+
+  A.setMeta({
+    title,
+    description: summary || `My consensus guide, synthesized from ${videos.length} videos by ${creatorSlugs.length} creators.`,
+    path: `/playlist/${slug}`,
+    type: "article",
+  });
+
+  A.injectJsonLd({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    url: `${A.SITE_URL}/playlist/${slug}`,
+    hasPart: videos.map((v) => ({
+      "@type": "Article",
+      headline: v.title,
+      url: `${A.SITE_URL}/video/${v.playlistSlug}/${v.slug}`,
+      author: { "@type": "Person", name: v.creatorName },
+    })),
+  });
+});
+</script>
+</body>
+</html>

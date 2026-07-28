@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /netlify/
+Disallow: /.netlify/
+
+Sitemap: https://aicreatordigest.com/sitemap.xml

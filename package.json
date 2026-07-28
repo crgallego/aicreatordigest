@@ -1,0 +1,24 @@
+{
+  "name": "aicreatordigest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Creator Digest — strategy guides synthesized from the best YouTube creators in AI, tech, SaaS, and web design.",
+  "homepage": "https://aicreatordigest.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crgallego/aicreatordigest.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "netlify dev",
+    "serve": "npx --yes serve@14 -l 8888 .",
+    "check": "node --check netlify/functions/process-video.js"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}

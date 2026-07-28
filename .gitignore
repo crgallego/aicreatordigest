@@ -1,0 +1,9 @@
+node_modules/
+.netlify/
+.env
+.env.*
+.DS_Store
+npm-debug.log*
+
+# Design handoff reference material — not part of the published site.
+from-claude-design/

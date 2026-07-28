@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digests · AI Creator Digest</title>
+<meta name="description" content="Every video I've turned into a digest — searchable by title, creator, or topic.">
+<meta property="og:site_name" content="AI Creator Digest">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Creator Digest" href="/feed.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23B5602B'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' fill='white' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/style.css">
+<script defer src="/web/assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <header class="site-header">
+    <a href="/" class="wordmark" style="text-decoration:none">
+      <span class="title">AI Creator Digest</span>
+      <span class="tag">aicreatordigest.com — youtube, read instead of watched</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/">home</a>
+      <a href="/playlists">playlists</a>
+      <a href="/digests">digests</a>
+      <a href="/creators">creators</a>
+      <a href="/about">about</a>
+      <span class="spacer"></span>
+      <span class="issue" id="issue-marker"></span>
+    </nav>
+    <hr class="divider">
+  </header>
+
+  <main id="main">
+    <div class="page-head">
+      <div class="eyebrow">Digests</div>
+      <h1>Every digest</h1>
+      <p class="dek">Every video I've read so you don't have to watch it. Newest first.</p>
+    </div>
+
+    <section class="band" style="padding-top:0">
+      <input class="searchbar" id="search" type="search" placeholder="Search by title, creator, or topic…" aria-label="Search digests">
+      <div class="rows" id="videos"><p class="loading">Loading…</p></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>AI Creator Digest © 2026</span>
+    <span class="spacer"></span>
+    <a href="/how-we-synthesize">how i synthesize</a>
+    <a href="https://github.com/crgallego/aicreatordigest/issues/new?title=Channel%20suggestion" target="_blank" rel="noopener">submit a channel</a>
+    <a href="/feed.xml">rss</a>
+  </footer>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const A = window.ACD;
+  const index = await A.loadIndex();
+  A.renderIssueMarker(index);
+
+  const videos = A.newestFirst(index.videos);
+  const videoEl = document.getElementById("videos");
+  const search = document.getElementById("search");
+
+  const draw = (list) => {
+    videoEl.innerHTML = list.length
+      ? list.map(A.videoRow).join("")
+      : A.emptyState("Nothing matched", "Try a different creator, topic, or title.");
+  };
+
+  if (!videos.length) {
+    search.style.display = "none";
+    videoEl.innerHTML = A.emptyState("Nothing published yet", "As soon as I process the first video, its digest lands right here.");
+  } else {
+    draw(videos);
+  }
+
+  search.addEventListener("input", () => {
+    const q = search.value.trim().toLowerCase();
+    if (!q) return draw(videos);
+    draw(
+      videos.filter((v) =>
+        [v.title, v.creatorName, v.channelName, v.playlistName, v.keyTakeaway, v.description]
+          .concat(v.categories || [])
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
+      )
+    );
+  });
+
+  A.setMeta({
+    title: "Digests",
+    description: "Every video I've turned into a digest — searchable by title, creator, or topic.",
+    path: "/digests",
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Creator Digest — Chris Gallego's YouTube notes on AI, tech, SaaS &amp; web design</title>
+<meta name="description" content="I watch 60+ hours of AI, tech, SaaS and web design YouTube a week and turn it into digests you can read instead of watch. Every digest credits the creator and links to the original.">
+<link rel="canonical" href="https://aicreatordigest.com/">
+<meta property="og:site_name" content="AI Creator Digest">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Creator Digest">
+<meta property="og:description" content="Chris Gallego's YouTube notes on AI, tech, SaaS and web design — read instead of watched.">
+<meta property="og:url" content="https://aicreatordigest.com/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="AI Creator Digest" href="/feed.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23B5602B'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-weight='700' font-size='17' fill='white' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/style.css">
+<script defer src="/web/assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="wrap">
+  <header class="site-header">
+    <a href="/" class="wordmark" style="text-decoration:none">
+      <span class="title">AI Creator Digest</span>
+      <span class="tag">aicreatordigest.com — youtube, read instead of watched</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="/">home</a>
+      <a href="/playlists">playlists</a>
+      <a href="/digests">digests</a>
+      <a href="/creators">creators</a>
+      <a href="/about">about</a>
+      <span class="spacer"></span>
+      <span class="issue" id="issue-marker"></span>
+    </nav>
+    <hr class="divider">
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <h1>I watch 60+ hours of AI, tech, SaaS and web design YouTube a week. You read the notes.</h1>
+      <p>Every digest is the same shape: one takeaway, the key points, the tactics worth stealing, the quotes worth keeping. No autoplay, no thumbnails, no 40-minute intros.</p>
+      <div class="hero-links">
+        <a id="link-today" href="/digests">→ read today's digest</a>
+        <a href="/playlists">→ browse the playlists</a>
+      </div>
+      <div class="stat-row" id="hero-stats"></div>
+    </section>
+    <hr class="divider">
+
+    <section class="band" id="playlists-section">
+      <div class="section-head">
+        <h2 class="section-label">Featured playlists</h2>
+        <span class="spacer"></span>
+        <a class="more" href="/playlists" id="playlists-count-link">all playlists</a>
+      </div>
+      <div class="grid-2" id="playlists"><p class="loading">Loading…</p></div>
+    </section>
+
+    <section class="band">
+      <h2 class="section-label">Recently added</h2>
+      <div class="rows" id="videos"><p class="loading">Loading…</p></div>
+    </section>
+
+    <section class="band">
+      <h2 class="section-label">Featured creators</h2>
+      <div class="rows" id="creator-rows"><p class="loading">Loading…</p></div>
+    </section>
+
+    <section class="newsletter">
+      <div class="heading">One digest, every day.</div>
+      <p>A synthesized video and, when a playlist updates, a fresh consensus guide. Plain text. Free.</p>
+      <form id="newsletter-form">
+        <input type="email" required placeholder="you@studio.com" aria-label="Email address">
+        <button type="submit">subscribe</button>
+      </form>
+      <div class="note" id="newsletter-note"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>AI Creator Digest © 2026</span>
+    <span class="spacer"></span>
+    <a href="/how-we-synthesize">how i synthesize</a>
+    <a href="https://github.com/crgallego/aicreatordigest/issues/new?title=Channel%20suggestion" target="_blank" rel="noopener">submit a channel</a>
+    <a href="/feed.xml">rss</a>
+  </footer>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const A = window.ACD;
+  const index = await A.loadIndex();
+  A.renderIssueMarker(index);
+
+  const videos = A.newestFirst(index.videos);
+  const playlists = Object.values(index.playlists);
+  const creators = Object.values(index.creators).sort(
+    (a, b) => (b.videoCount || 0) - (a.videoCount || 0)
+  );
+
+  // Hero
+  if (videos.length) {
+    document.getElementById("link-today").href = `/video/${encodeURIComponent(videos[0].playlistSlug)}/${encodeURIComponent(videos[0].slug)}`;
+  }
+  document.getElementById("hero-stats").innerHTML = [
+    A.plural(videos.length, "digest published", "digests published"),
+    A.plural(creators.length, "creator tracked", "creators tracked"),
+    A.plural(playlists.length, "collection curated", "collections curated"),
+  ]
+    .map((s) => `<span>${A.escapeHtml(s)}</span>`)
+    .join("");
+
+  // Featured playlists — newest-updated first, capped at 6 for the homepage.
+  const sortedPlaylists = [...playlists].sort((a, b) =>
+    String(b.consensusUpdatedAt || b.firstSeenAt || "").localeCompare(
+      String(a.consensusUpdatedAt || a.firstSeenAt || "")
+    )
+  );
+  document.getElementById("playlists-count-link").textContent = `all ${playlists.length}`;
+
+  const playlistEl = document.getElementById("playlists");
+  playlistEl.innerHTML = sortedPlaylists.length
+    ? sortedPlaylists
+        .slice(0, 6)
+        .map((p) => {
+          const pVideos = videos.filter((v) => v.playlistSlug === p.slug);
+          return A.playlistCell(
+            {
+              slug: p.slug,
+              name: p.name,
+              topic: A.groupTopic(pVideos),
+              blurb: p.consensusSummary || "",
+              updatedAt: p.consensusUpdatedAt,
+            },
+            p.videoCount ?? pVideos.length
+          );
+        })
+        .join("")
+    : A.emptyState("No collections yet", "The first playlist will appear here as soon as it's processed.");
+
+  // Recently added
+  const videoEl = document.getElementById("videos");
+  videoEl.innerHTML = videos.length
+    ? videos.slice(0, 8).map(A.videoRow).join("")
+    : A.emptyState("Nothing published yet", "As soon as I process the first video, its digest lands right here.");
+
+  // Featured creators
+  const creatorEl = document.getElementById("creator-rows");
+  creatorEl.innerHTML = creators.length
+    ? creators.slice(0, 8).map(A.creatorRow).join("")
+    : A.emptyState("No creators yet", "Creator profiles build themselves automatically as I process their videos.");
+
+  // Newsletter — static for now, no backend wired up yet.
+  document.getElementById("newsletter-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    document.getElementById("newsletter-note").textContent =
+      "Signups aren't wired up yet — check back soon.";
+  });
+
+  A.injectJsonLd({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: A.SITE_NAME,
+    url: A.SITE_URL + "/",
+    description: "Chris Gallego's YouTube notes on AI, tech, SaaS and web design — read instead of watched.",
+  });
+});
+</script>
+</body>
+</html>
