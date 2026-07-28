@@ -46,10 +46,14 @@ export const handler = async (event) => {
       return json(404, { error: `No stored draft found for ${draftKey}.` });
     }
 
+    const docUrl = draft.docUrl || "";
+    const docIdMatch = docUrl.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);
+
     return json(200, {
       ok: true,
       draftKey,
-      docUrl: draft.docUrl || "",
+      docUrl,
+      docId: docIdMatch ? docIdMatch[1] : "",
       title: draft.meta.videoTitle,
     });
   } catch (err) {
