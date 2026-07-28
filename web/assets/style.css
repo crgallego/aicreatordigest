@@ -510,6 +510,22 @@ section.band {
   text-wrap: pretty;
 }
 
+/* Deliberately NOT accent-colored — this is Chris's own commentary, not
+   AI-generated content, and should read as visually distinct at a glance. */
+.callout.editor-note {
+  border-left-color: var(--mid);
+  background: var(--bg-alt);
+  padding: 16px 20px;
+  margin-top: -6px;
+}
+.callout.editor-note .label {
+  color: var(--mid);
+}
+.callout.editor-note p {
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
 /* --------------------------------------------------------------- Sections */
 
 .article-section {

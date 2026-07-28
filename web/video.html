@@ -72,6 +72,11 @@
       <div class="quotes" id="quotes"></div>
     </section>
 
+    <div class="callout editor-note" id="editor-note-callout" hidden>
+      <div class="label">Chris's take</div>
+      <p id="editor-note-text"></p>
+    </div>
+
     <section class="article-footer" id="article-footer"></section>
 
     <div id="not-found"></div>
@@ -197,6 +202,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>`
       )
       .join("");
+  }
+
+  // Editor's note — Chris's own commentary, kept visually distinct from the
+  // AI-generated sections above.
+  if (meta.editorNote) {
+    document.getElementById("editor-note-callout").hidden = false;
+    document.getElementById("editor-note-text").textContent = meta.editorNote;
   }
 
   // Footer meta row

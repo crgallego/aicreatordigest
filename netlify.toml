@@ -28,6 +28,22 @@
   # full synchronous ceiling for headroom.
   timeout = 26
 
+[functions."analyze-video"]
+  # One xAI call, no GitHub commits — fast, but give it headroom same as
+  # process-video in case a transcript is unusually large.
+  timeout = 180
+
+[functions."publish-video"]
+  # Runs the same commit cascade as process-video (video + creator + consensus
+  # + manifest + sitemap + feed) — several sequential GitHub API round trips.
+  timeout = 180
+
+[functions."notify-draft"]
+  timeout = 26
+
+[functions."reject-draft"]
+  timeout = 26
+
 # ----------------------------------------------------------------------
 # Clean URLs
 # ----------------------------------------------------------------------

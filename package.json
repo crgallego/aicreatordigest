@@ -16,10 +16,11 @@
   "scripts": {
     "dev": "netlify dev",
     "serve": "npx --yes serve@14 -l 8888 .",
-    "check": "node --check netlify/functions/process-video.js && node --check netlify/functions/fetch-transcript.js"
+    "check": "for f in netlify/functions/*.js netlify/functions/lib/*.js; do node --check \"$f\" || exit 1; done"
   },
   "dependencies": {
-    "youtube-caption-extractor": "^1.10.2"
+    "youtube-caption-extractor": "^1.10.2",
+    "@netlify/blobs": "^8.1.0"
   },
   "devDependencies": {
     "netlify-cli": "^17.0.0"
