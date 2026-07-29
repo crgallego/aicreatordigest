@@ -748,7 +748,7 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
       out.push(`${i + 1}. **${p.title}** — ${p.body}`);
       if (clean(p.thought)) {
         out.push("");
-        out.push(`   _Chris: ${clean(p.thought)}_`);
+        out.push(`   _My thought: ${clean(p.thought)}_`);
         out.push("");
       }
     });
@@ -780,7 +780,7 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
   }
 
   if (clean(editorNote)) {
-    out.push("## Editor's Note");
+    out.push("## My Thoughts");
     out.push("");
     out.push("_Chris Gallego's own take — not AI-generated._");
     out.push("");

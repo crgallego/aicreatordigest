@@ -181,7 +181,10 @@ assert.ok(previewMd.includes("Chris rewrote the grounding paragraph"), "the edit
 assert.ok(!previewMd.includes("Ran Segall runs Flux Academy and teaches"), "the original grounding summary must not survive the edit");
 assert.ok(!previewMd.includes("Original AI takeaway."), "preview must not show the replaced AI takeaway");
 assert.ok(previewMd.includes("A point Chris added"), "preview should show the added key point");
-assert.ok(previewMd.includes("_Chris: This is the part I actually disagree with._"), "a point's thought should publish attributed to Chris");
+assert.ok(
+  previewMd.includes("_My thought: This is the part I actually disagree with._"),
+  "a point's thought publishes under My thought, distinguishing it from the AI's body text"
+);
 assert.ok(!previewMd.includes("AI Tactic"), "an emptied section must not appear in the preview");
 assert.ok(previewMd.includes("Studio founder"), "preview should carry the edited role");
 assert.ok(previewMd.includes("Only works if your delivery"), "preview should include the editor's note");

@@ -15,6 +15,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/web/assets/style.css">
 <script defer src="/web/assets/app.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJGKWXP83R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NJGKWXP83R');
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -86,7 +95,7 @@
     </section>
 
     <div class="callout editor-note" id="editor-note-callout" hidden>
-      <div class="label">Chris's take</div>
+      <div class="label">My Thoughts</div>
       <p id="editor-note-text"></p>
     </div>
 
@@ -259,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div>
             <h3>${A.escapeHtml(p.title || "")}${p.atUrl ? ` <a class="at-link" href="${A.escapeHtml(p.atUrl)}" target="_blank" rel="noopener" title="Play the video from here">${A.escapeHtml(p.at)}</a>` : ""}</h3>
             <p>${A.escapeHtml(p.body || "")}</p>
-            ${p.thought ? `<p class="point-thought"><span class="who">Chris</span>${A.escapeHtml(p.thought)}</p>` : ""}
+            ${p.thought ? `<p class="point-thought"><span class="who">My thought</span>${A.escapeHtml(p.thought)}</p>` : ""}
           </div>
         </div>`
       )

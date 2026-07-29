@@ -303,7 +303,7 @@ textarea { min-height: 76px; }
 
   <div class="section">
     <h2>Key points</h2>
-    <p class="help">The numbered spine of the piece. Each point can carry your own thought, published under your name beneath the detail.</p>
+    <p class="help">The numbered spine of the piece. Each point can carry a thought of your own, published under My Thoughts beneath the detail.</p>
     <div id="list-keypoints"></div>
     <button class="btn-add" data-add="keypoints">+ Add key point</button>
   </div>
@@ -337,7 +337,7 @@ textarea { min-height: 76px; }
   </div>
 
   <div class="section">
-    <h2>Your take</h2>
+    <h2>My Thoughts</h2>
     <p class="help">Published as Chris's Take, credited separately from the AI summary. Leave empty to omit.</p>
     <textarea id="f-editornote" rows="4"></textarea>
   </div>
@@ -458,7 +458,7 @@ textarea { min-height: 76px; }
       fields: [
         { name: "title", label: "Title", type: "text" },
         { name: "body", label: "Detail", type: "textarea" },
-        { name: "thought", label: "Your thought (optional, published as yours)", type: "textarea" },
+        { name: "thought", label: "My thought on this point (optional)", type: "textarea" },
       ],
     },
     tactics: {
