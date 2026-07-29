@@ -493,9 +493,111 @@
     return videos.filter((v) => videoMatches(v, state)).sort(videoComparator(state && state.sort));
   }
 
+  /* ------------------------------------------------------------------ *
+   * Noir mode
+   *
+   * A reading mode for the pillar pages only: the about, the build log,
+   * the editorial policy. Same facts, told in a hardboiled register, over
+   * a dark palette.
+   *
+   * It is deliberately not available on digests. A digest is a record of
+   * what a real creator said, and restyling someone else's words for
+   * atmosphere is not a thing this site does. The pages that can carry it
+   * are the ones where the voice is already mine.
+   *
+   * Each mode has its own markdown file, so the noir text is written
+   * rather than generated, and the straight version stays the canonical
+   * one. If a noir file is missing the page falls back to the straight
+   * text rather than showing an error, because the mode is a flourish and
+   * must never be the reason someone cannot read the page.
+   * ------------------------------------------------------------------ */
+
+  const NOIR_KEY = "acd-noir";
+
+  function noirOn() {
+    try {
+      return localStorage.getItem(NOIR_KEY) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function applyNoir(on) {
+    document.documentElement.setAttribute("data-mode", on ? "noir" : "day");
+    try {
+      if (on) localStorage.setItem(NOIR_KEY, "1");
+      else localStorage.removeItem(NOIR_KEY);
+    } catch {
+      /* private browsing; the mode still works for this page view */
+    }
+  }
+
+  /**
+   * Wires the toggle and loads whichever version of the page is current.
+   *
+   * @param {string} base  path without extension, e.g. "/pages/about"
+   * @param {object} head  { eyebrow, title, dek, noirEyebrow, noirTitle, noirDek }
+   * @param {string} target  selector for the article body
+   */
+  async function mountNoir({ base, head = {}, target = "#body" }) {
+    const body = document.querySelector(target);
+    const cache = {};
+
+    async function textFor(noir) {
+      const key = noir ? "noir" : "day";
+      if (cache[key] !== undefined) return cache[key];
+      const path = noir ? `${base}.noir.md` : `${base}.md`;
+      let md = await fetchMarkdown(path);
+      // A missing noir file is not an error the reader should ever meet.
+      if (!md && noir) md = await fetchMarkdown(`${base}.md`);
+      cache[key] = md;
+      return md;
+    }
+
+    async function paint(noir) {
+      applyNoir(noir);
+
+      const el = {
+        eyebrow: document.querySelector(".page-head .eyebrow"),
+        title: document.querySelector(".page-head h1"),
+        dek: document.querySelector(".page-head .dek"),
+      };
+      if (el.eyebrow) el.eyebrow.textContent = noir ? head.noirEyebrow || head.eyebrow : head.eyebrow;
+      if (el.title) el.title.textContent = noir ? head.noirTitle || head.title : head.title;
+      if (el.dek) el.dek.textContent = noir ? head.noirDek || head.dek : head.dek;
+
+      const md = await textFor(noir);
+      if (body) {
+        body.innerHTML = md
+          ? renderMarkdown(md)
+          : emptyState("Couldn't load this page", "Try refreshing, or head back to the homepage.");
+      }
+      if (btn) {
+        btn.textContent = noir ? "lights on" : "noir mode";
+        btn.setAttribute("aria-pressed", String(noir));
+        btn.title = noir ? "Back to the plain version" : "Same facts, told the other way";
+      }
+    }
+
+    const nav = document.querySelector(".site-nav");
+    let btn = null;
+    if (nav) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "noir-toggle";
+      const marker = nav.querySelector("#issue-marker");
+      nav.insertBefore(btn, marker || null);
+      btn.addEventListener("click", () => paint(!noirOn()));
+    }
+
+    await paint(noirOn());
+  }
+
   window.ACD = {
     SITE_NAME,
     SITE_URL,
+    mountNoir,
+    noirOn,
     loadIndex,
     newestFirst,
     fetchMarkdown,

@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/web/assets/style.css">
+<script>try{if(localStorage.getItem("acd-noir")==="1")document.documentElement.setAttribute("data-mode","noir")}catch(e){}</script>
 <script defer src="/web/assets/app.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJGKWXP83R"></script>
@@ -81,10 +82,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const md = await A.fetchMarkdown("/pages/about.md");
-  document.getElementById("body").innerHTML = md
-    ? A.renderMarkdown(md)
-    : A.emptyState("Couldn't load this page", "Try refreshing, or head back to the homepage.");
+  await A.mountNoir({
+    base: "/pages/about",
+    head: {
+      eyebrow: "About",
+      title: "Chris Gallego",
+      dek: "Solo founder, film producer, agency builder — and the person reading all this YouTube so you don't have to.",
+      noirEyebrow: "Who's Asking",
+      noirTitle: "Chris Gallego",
+      noirDek: "Ran agencies, made films, started companies. Now I run a shop that reads so you don't have to watch.",
+    },
+  });
 
   A.setMeta({
     title: "About",

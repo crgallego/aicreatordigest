@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/web/assets/style.css">
+<script>try{if(localStorage.getItem("acd-noir")==="1")document.documentElement.setAttribute("data-mode","noir")}catch(e){}</script>
 <script defer src="/web/assets/app.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJGKWXP83R"></script>
@@ -81,10 +82,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const md = await A.fetchMarkdown("/pages/how-this-works.md");
-  document.getElementById("body").innerHTML = md
-    ? A.renderMarkdown(md)
-    : A.emptyState("Couldn't load this page", "Try refreshing, or head back to the homepage.");
+  await A.mountNoir({
+    base: "/pages/how-this-works",
+    head: {
+      eyebrow: "Build Log",
+      title: "How this works",
+      dek: "The pipeline, the redesign nobody planned for, and the two pivots that changed the whole architecture — written the way it actually happened.",
+      noirEyebrow: "Case File",
+      noirTitle: "How this works",
+      noirDek: "Twenty-two playlists, one partner who does the legwork, and three things that said they worked and didn't.",
+    },
+  });
 
   A.setMeta({
     title: "How This Works",

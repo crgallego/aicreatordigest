@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/web/assets/style.css">
+<script>try{if(localStorage.getItem("acd-noir")==="1")document.documentElement.setAttribute("data-mode","noir")}catch(e){}</script>
 <script defer src="/web/assets/app.js"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NJGKWXP83R"></script>
@@ -81,10 +82,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const md = await A.fetchMarkdown("/pages/how-we-synthesize.md");
-  document.getElementById("body").innerHTML = md
-    ? A.renderMarkdown(md)
-    : A.emptyState("Couldn't load this page", "Try refreshing, or head back to the homepage.");
+  await A.mountNoir({
+    base: "/pages/how-we-synthesize",
+    head: {
+      eyebrow: "Methodology",
+      title: "How I synthesize",
+      dek: "Transcript in, AI analysis, my edit, a credited page out. Here's exactly how, and what I refuse to do.",
+      noirEyebrow: "House Rules",
+      noirTitle: "How I synthesize",
+      noirDek: "Transcript in, my edit, a credited page out. And the things I won't do, whoever asks.",
+    },
+  });
 
   A.setMeta({
     title: "How I Synthesize",
