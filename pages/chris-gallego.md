@@ -8,8 +8,6 @@ I'm also a co-founder of Firewise Fences, which builds non-combustible steel fen
 
 In May 2026 I was the guest on *That's Right with Chris Voss*, working with an Emmy Award-winning production team, filmed in Beverly Hills and carried on ABC, CBS, NBC and Fox affiliates. We talked about tactical empathy in business, and about building fire-resistant infrastructure in the places the wildfires went through.
 
-To be exact about it, since precision is more or less the point of this site: the Emmys belong to the team that makes the show. I'm the guy they pointed the cameras at. Sitting in that chair, with those people running the room, is still one of the better days I've had.
-
 I was also named Best Documentary Producer in Los Angeles for 2025.
 
 Born and raised in Hawai'i. Film and media production degree from Arizona State.
