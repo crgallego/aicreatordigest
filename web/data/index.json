@@ -1,7 +1,104 @@
 {
   "site": "AI Creator Digest",
-  "updatedAt": "",
-  "playlists": {},
-  "creators": {},
-  "videos": []
+  "updatedAt": "2026-07-29T14:56:22.798Z",
+  "playlists": {
+    "codex-strategies": {
+      "slug": "codex-strategies",
+      "name": "Codex Strategies",
+      "playlistId": "",
+      "firstSeenAt": "2026-07-29T14:56:22.782Z",
+      "consensusUpdatedAt": "2026-07-29T14:56:22.782Z",
+      "consensusSummary": "One creator contributes to this Codex Strategies consensus so far: Silicon Valley Girl. Her framing is that agents crossed into normal-person usability when the model took over multi-step planning, so",
+      "videoCount": 1,
+      "creatorCount": 1
+    }
+  },
+  "creators": {
+    "silicon-valley-girl": {
+      "slug": "silicon-valley-girl",
+      "creatorName": "Silicon Valley Girl",
+      "channelName": "Silicon Valley Girl",
+      "channelUrl": "https://www.youtube.com/channel/UCNjPtOCvMrKY5eLwr_-7eUg",
+      "bio": "Silicon Valley Girl comments on AI and tech shifts for a general audience. She focuses on what actually changed in how people can use new tools. Her notes stay short and outcome-oriented.",
+      "image": "",
+      "firstSeenAt": "2026-07-29T14:56:22.782Z",
+      "videoCount": 1,
+      "topics": [
+        {
+          "label": "AI Agents",
+          "count": 1
+        },
+        {
+          "label": "AI Tooling",
+          "count": 1
+        },
+        {
+          "label": "Codex Strategies",
+          "count": 1
+        },
+        {
+          "label": "Workflow",
+          "count": 1
+        }
+      ],
+      "playlists": [
+        {
+          "playlistSlug": "codex-strategies",
+          "playlistName": "Codex Strategies"
+        }
+      ],
+      "lastPublishedAt": "2026-07-29T14:56:16.474Z"
+    }
+  },
+  "videos": [
+    {
+      "slug": "credential-check",
+      "path": "playlists/codex-strategies/videos/credential-check.md",
+      "videoId": "ZZYTKEY",
+      "title": "Credential check",
+      "videoUrl": "https://www.youtube.com/watch?v=DPe_srf0GlI",
+      "videoDuration": "",
+      "playlistSlug": "codex-strategies",
+      "playlistName": "Codex Strategies",
+      "creatorSlug": "silicon-valley-girl",
+      "creatorName": "Silicon Valley Girl",
+      "creatorImage": "",
+      "embeddable": false,
+      "channelName": "Silicon Valley Girl",
+      "channelUrl": "https://www.youtube.com/channel/UCNjPtOCvMrKY5eLwr_-7eUg",
+      "keyTakeaway": "Agents are finally usable by normal people because the model plans multi-step work itself, so you describe the outcome rather than the steps.",
+      "executiveSummary": "Silicon Valley Girl makes a tight claim about why AI agents crossed into everyday use. The video is a brief credential-style note, not a long teardown or live build. She locates the shift in the model’s ability to plan multi-step work on its own. That change lets someone state the outcome instead of spelling out each step. The point is aimed at normal people, not only power users already writing elaborate prompts.",
+      "summary": "Silicon Valley Girl argues agents became usable for normal people once the model started planning multi-step work itself. Users describe the outcome instead of the steps. The note is a short framing of that shift.",
+      "description": "Silicon Valley Girl on why agents are finally usable by normal people: the model plans multi-step work itself.",
+      "categories": [
+        "AI Agents",
+        "AI Tooling",
+        "Workflow",
+        "Codex Strategies"
+      ],
+      "keyPointTitles": [
+        "Agents usable by normal people",
+        "Model plans multi-step work",
+        "Describe the outcome instead",
+        "Steps no longer user-owned",
+        "Outcome over procedure",
+        "Planning is the unlock"
+      ],
+      "readTimeMinutes": 2,
+      "hasEditorNote": false,
+      "featuredPeople": [],
+      "creatorLinks": [],
+      "run": {
+        "model": "grok-4.5",
+        "seconds": 27.3,
+        "promptTokens": 1442,
+        "completionTokens": 889,
+        "totalTokens": 3118,
+        "costUsd": null,
+        "ranAt": "2026-07-29T14:55:18.240Z"
+      },
+      "addedAt": "2026-07-29T14:56:16.474Z",
+      "updatedAt": "2026-07-29T14:56:16.474Z"
+    }
+  ]
 }
