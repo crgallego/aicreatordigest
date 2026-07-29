@@ -72,7 +72,7 @@ web/
   assets/app.js             frontmatter parser, row renderers, router, SEO — no build step
   data/index.json           the site manifest, rewritten by the pipeline on every publish
 netlify/functions/
-  fetch-transcript.js       transcript for one video, no key required
+  fetch-transcript.js       transcript for one video: vendor first, free library as fallback
   analyze-video.js          analyze → store a draft in Netlify Blobs (publishes nothing)
   notify-draft.js           send the Telegram draft card
   review-api.js             the Mini App's backend: load, save, publish, reject
@@ -202,6 +202,7 @@ hand-rolling JSON escaping for transcripts.
 | `GITHUB_REPO` | yes | `crgallego/aicreatordigest` |
 | `TELEGRAM_BOT_TOKEN` | yes | the draft cards, and the signing key for Mini App auth and preview tokens |
 | `TELEGRAM_CHAT_ID` | yes | where cards go, and the only account allowed to use the review editor |
+| `SUPADATA_API_KEY` | yes in production | the transcript vendor. Without it only the free source is tried, and YouTube bot-gates cloud IPs, so transcripts will fail |
 | `GITHUB_BRANCH` | no | defaults to `main` |
 | `MAKE_WEBHOOK_SECRET` | no, but set it | when present, requests must send a matching `x-webhook-secret` header |
 | `SITE_URL` | no | defaults to `https://aicreatordigest.com`; also builds the Mini App's `/review` link, so it must point at the host actually serving the site |
@@ -216,7 +217,7 @@ against it, and preview tokens are signed with it. There's no separate secret to
 
 | Route | Auth | What it does |
 | --- | --- | --- |
-| `/api/fetch-transcript` | webhook secret | transcript for one `videoId` |
+| `/api/fetch-transcript` | webhook secret | transcript for one `videoId`, from the vendor or the free fallback |
 | `/.netlify/functions/analyze-video` | webhook secret | analyze and store a draft; publishes nothing |
 | `/.netlify/functions/notify-draft` | webhook secret | send the Telegram draft card |
 | `/.netlify/functions/publish-video` | webhook secret | publish a stored draft as-is |
@@ -275,6 +276,7 @@ GITHUB_BRANCH=main
 MAKE_WEBHOOK_SECRET=...
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_CHAT_ID=...
+SUPADATA_API_KEY=...        # optional locally; the free source usually works from a home connection
 SITE_URL=http://localhost:8888
 ```
 

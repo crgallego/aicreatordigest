@@ -23,9 +23,9 @@
   timeout = 180
 
 [functions."fetch-transcript"]
-  # Fast in practice (well under a second per call), but the internal retry
-  # against YouTube's bot check can add a couple of seconds — give it the
-  # full synchronous ceiling for headroom.
+  # Normally well under a second via the vendor. The free fallback retries
+  # against YouTube's bot check, and a vendor transcription job can poll for
+  # a few seconds, so give it the full synchronous ceiling for headroom.
   timeout = 26
 
 [functions."analyze-video"]

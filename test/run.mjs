@@ -24,6 +24,7 @@ const SUITES = [
   ["approval-flow", "analyze, notify, publish as-is, reject"],
   ["review-app", "the Mini App: load, edit, preview, publish — and preview/publish byte identity"],
   ["webapp-auth", "Telegram initData verification and preview tokens"],
+  ["transcript-sources", "vendor-first transcript chain, with the free library as fallback"],
 ];
 
 function runSuite(name) {
