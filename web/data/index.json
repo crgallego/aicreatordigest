@@ -1,6 +1,6 @@
 {
   "site": "AI Creator Digest",
-  "updatedAt": "2026-07-29T15:54:16.770Z",
+  "updatedAt": "2026-07-29T20:12:23.596Z",
   "playlists": {
     "codex-strategies": {
       "slug": "codex-strategies",
@@ -9,6 +9,16 @@
       "firstSeenAt": "2026-07-29T15:54:16.747Z",
       "consensusUpdatedAt": "2026-07-29T15:54:16.747Z",
       "consensusSummary": "One creator anchors this collection so far: Silicon Valley Girl’s interview with OpenAI’s Tibo (ChatGPT, Codex, APIs). The through-line is narrow and concrete—agents are crossing from early-adopter le",
+      "videoCount": 1,
+      "creatorCount": 1
+    },
+    "ai-company-os": {
+      "slug": "ai-company-os",
+      "name": "AI Company OS",
+      "playlistId": "PLD3vLjumT3Eo",
+      "firstSeenAt": "2026-07-29T20:12:23.596Z",
+      "consensusUpdatedAt": "2026-07-29T20:12:23.596Z",
+      "consensusSummary": "One creator, Dan Eisler (IndyDevDan), defines the early shape of this collection: stop treating “loop engineering” as the insight and instead design AI developer workflows that combine engineers, agen",
       "videoCount": 1,
       "creatorCount": 1
     }
@@ -52,6 +62,45 @@
         }
       ],
       "lastPublishedAt": "2026-07-29T15:54:04.635Z"
+    },
+    "indydevdan": {
+      "slug": "indydevdan",
+      "creatorName": "Dan Eisler",
+      "channelName": "IndyDevDan",
+      "channelUrl": "https://www.youtube.com/channel/UC_x36zCEGilGpB1m-V4gmjg",
+      "bio": "Dan Eisler, known as Indie Dev Dan, is a software engineer with over 15 years of experience spanning Flash games, Blizzard, finance systems, and early AI coding with tools like Aider. He teaches agentic engineering through his YouTube channel and agenticengineer.com, with a focus on building AI developer workflows and the systems that build systems. He publishes weekly build-and-think content rather than news farming, aimed at engineers who want practical advantage in the age of agents.",
+      "image": "https://yt3.ggpht.com/BMf5YUX1T-_JNAeS6bDrxU1Dw1DGDI9AEUSE2IMb0v5hUD2I0k0wEedFw2hJeLsyPq2v75Q0TQ=s800-c-k-c0x00ffffff-no-rj",
+      "firstSeenAt": "2026-07-29T20:12:23.596Z",
+      "videoCount": 1,
+      "topics": [
+        {
+          "label": "Agentic Engineering",
+          "count": 1
+        },
+        {
+          "label": "AI Developer Workflows",
+          "count": 1
+        },
+        {
+          "label": "AI Tooling",
+          "count": 1
+        },
+        {
+          "label": "Multi-Agent Systems",
+          "count": 1
+        },
+        {
+          "label": "Software Factory",
+          "count": 1
+        }
+      ],
+      "playlists": [
+        {
+          "playlistSlug": "ai-company-os",
+          "playlistName": "AI Company OS"
+        }
+      ],
+      "lastPublishedAt": "2026-07-29T20:12:14.992Z"
     }
   },
   "videos": [
@@ -130,6 +179,60 @@
       },
       "addedAt": "2026-07-29T15:54:04.635Z",
       "updatedAt": "2026-07-29T15:54:04.635Z"
+    },
+    {
+      "slug": "forget-loop-engineering-agentic-engineering-is-about-this",
+      "path": "playlists/ai-company-os/videos/forget-loop-engineering-agentic-engineering-is-about-this.md",
+      "videoId": "VQy50fuxI34",
+      "title": "FORGET Loop Engineering. Agentic Engineering is about THIS",
+      "videoUrl": "https://www.youtube.com/watch?v=VQy50fuxI34",
+      "videoDuration": "",
+      "playlistSlug": "ai-company-os",
+      "playlistName": "AI Company OS",
+      "creatorSlug": "indydevdan",
+      "creatorName": "Dan Eisler",
+      "creatorImage": "https://yt3.ggpht.com/BMf5YUX1T-_JNAeS6bDrxU1Dw1DGDI9AEUSE2IMb0v5hUD2I0k0wEedFw2hJeLsyPq2v75Q0TQ=s800-c-k-c0x00ffffff-no-rj",
+      "embeddable": true,
+      "channelName": "IndyDevDan",
+      "channelUrl": "https://www.youtube.com/channel/UC_x36zCEGilGpB1m-V4gmjg",
+      "keyTakeaway": "Stop calling it loop engineering — the real leverage is designing AI developer workflows that combine engineers, agents, and code into software factories.",
+      "executiveSummary": "Dan Eisler (Indie Dev Dan) pushes back on the rising phrase “loop engineering,” which he treats as a hype-filled rebrand of the software development life cycle pushed in circles around figures like Boris Cherny and Peter Steinberger. Drawing on 15+ years as an engineer and years of weekly agentic-engineering content, he reframes the problem as building AI developer workflows inside a software factory: props in, a workflow of code plus agents runs, results out. The video walks from a simple engineer–LLM–review loop up through linters, tests, work trees, sandboxes, kanban intake, specialized hotfix pipelines, and full multi-workflow software factories. His core claim is that value comes from placing three actors — engineers, agents, and code — in the right spots, with engineers mostly at planning and review while the agentic layer compounds the rest.",
+      "summary": "Indie Dev Dan argues loop engineering is a shallow rebrand of the SDLC and reframes the real work as AI developer workflows that combine engineers, agents, and code. He scales from simple lint loops to sandboxed software factories and specialized paths like production hotfixes, with practical rules: keep it simple, separate code from skills, and design workflows by running them yourself first.",
+      "description": "Dan Eisler on why loop engineering misses the point—and how AI developer workflows and software factories actually scale agents.",
+      "categories": [
+        "Agentic Engineering",
+        "AI Developer Workflows",
+        "Software Factory",
+        "Multi-Agent Systems",
+        "AI Tooling"
+      ],
+      "keyPointTitles": [
+        "Loop engineering is a bad rebrand",
+        "Three actors of value creation",
+        "Code is the unsung hero",
+        "Think software factory workflows",
+        "Engineers at start and end",
+        "Scale compute, not engineer effort",
+        "Work trees then full sandboxes",
+        "Agentic layer over app layer",
+        "Specialized factory workflows",
+        "Not vibe coding — meta-engineering"
+      ],
+      "readTimeMinutes": 6,
+      "hasEditorNote": true,
+      "featuredPeople": [],
+      "creatorLinks": [],
+      "run": {
+        "model": "grok-4.5",
+        "seconds": 41.5,
+        "promptTokens": 8978,
+        "completionTokens": 2121,
+        "totalTokens": 11585,
+        "costUsd": null,
+        "ranAt": "2026-07-29T19:46:59.963Z"
+      },
+      "addedAt": "2026-07-29T20:12:14.992Z",
+      "updatedAt": "2026-07-29T20:12:14.992Z"
     }
   ]
 }
