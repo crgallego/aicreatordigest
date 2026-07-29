@@ -438,6 +438,7 @@ export function applyDraftEdits(draft, edits) {
     }));
 
   const shaped = {
+    // Spread first so creatorImage, creatorLinks and the rest survive an edit.
     ...draft.shaped,
     keyTakeaway: clean(edits.keyTakeaway) || draft.shaped.keyTakeaway,
     // Unlike keyTakeaway, an emptied summary is taken at face value: it is
@@ -534,6 +535,7 @@ export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt, 
     playlistName: meta.playlistName,
     creatorSlug: slugify(meta.channelName),
     creatorName: shaped.creatorName || meta.channelName,
+    creatorImage: shaped.creatorImage || "",
     channelName: meta.channelName,
     channelUrl: meta.channelUrl,
     keyTakeaway: shaped.keyTakeaway,
@@ -612,6 +614,7 @@ export async function publishVideo({ meta, shaped, editorNote, run }) {
     channelName: meta.channelName,
     channelUrl: meta.channelUrl,
     bio: shaped.creatorBio,
+    image: shaped.creatorImage || "",
   });
 
   const creator = index.creators[creatorSlug];
@@ -649,6 +652,7 @@ export async function publishVideo({ meta, shaped, editorNote, run }) {
       channelName: meta.channelName,
       channelUrl: meta.channelUrl,
       bio: creator.bio,
+      image: shaped.creatorImage || creator.image || "",
     });
     if (consensus) {
       merged.playlists[meta.playlistSlug].consensusUpdatedAt = nowIso();
@@ -686,6 +690,7 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
     videoDuration: entry.videoDuration,
     creatorName: entry.creatorName,
     creatorSlug: entry.creatorSlug,
+    creatorImage: entry.creatorImage,
     channelName: entry.channelName,
     channelUrl: entry.channelUrl,
     playlistName: entry.playlistName,
@@ -1099,6 +1104,9 @@ function upsertCreator(index, creator) {
       channelName: creator.channelName || existing.channelName,
       channelUrl: creator.channelUrl || existing.channelUrl || "",
       bio: existing.bio || creator.bio || "",
+      // Re-resolved on every publish so a creator who changes their picture is
+      // not stuck with an old one, but never blanked by a failed lookup.
+      image: creator.image || existing.image || "",
       firstSeenAt: existing.firstSeenAt || nowIso(),
     },
   };

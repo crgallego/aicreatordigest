@@ -44,6 +44,7 @@
       <p class="dek" id="bio"></p>
 
       <div class="credit" id="credit" hidden>
+        <img class="avatar avatar--lg" id="creator-avatar" alt="" hidden>
         <div class="who">
           <span class="name" id="channel-name"></span>
           <span class="sub" id="credit-sub"></span>
@@ -107,6 +108,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("credit").hidden = false;
   document.getElementById("channel-name").textContent = creator.channelName || name;
   document.getElementById("credit-sub").textContent = A.plural(videos.length, "digest", "digests");
+
+  if (creator.image) {
+    const avatar = document.getElementById("creator-avatar");
+    avatar.src = creator.image;
+    avatar.alt = name;
+    // A channel picture can be replaced or removed by its owner at any time.
+    // A dead URL should read as "no picture", never as a broken-image icon.
+    avatar.onerror = () => { avatar.hidden = true; };
+    avatar.hidden = false;
+  }
 
   const channelLink = document.getElementById("channel-link");
   if (creator.channelUrl) {

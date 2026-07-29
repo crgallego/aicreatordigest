@@ -419,6 +419,38 @@ section.band {
   margin-bottom: 16px;
 }
 
+/* ------------------------------------------------------------------ Avatars */
+/* A creator's own channel picture. Present only when we actually resolved one,
+   so the absence of an image is a real absence rather than a placeholder
+   standing in for a person. Circular is the one rounded shape on the site,
+   because a square portrait next to a name reads as a product photo. */
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+}
+.avatar--lg {
+  width: 52px;
+  height: 52px;
+}
+
+/* The directory card becomes a two-column grid only when there is a picture,
+   so cards without one keep their full text width instead of an empty inset. */
+.creator-card.has-avatar {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.creator-card.has-avatar .avatar {
+  margin-top: 2px;
+}
+
 /* ------------------------------------------------------- Directory filters */
 /* Shown only once there are enough creators to browse rather than simply
    read, so the controls never outweigh what they control. */
@@ -696,13 +728,16 @@ a.topic-tag:hover {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 16px 0;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 20px;
+  /* Flex rather than a fixed 2-column grid: the creator avatar is optional,
+     so this block has to sit correctly with two children or three. */
+  display: flex;
   align-items: center;
+  gap: 16px;
   margin-bottom: 34px;
 }
 .credit .who {
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -716,6 +751,7 @@ a.topic-tag:hover {
   color: var(--tertiary);
 }
 .credit .watch {
+  flex: none;
   font-size: 12.5px;
   white-space: nowrap;
 }

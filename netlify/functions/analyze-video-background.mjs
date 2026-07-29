@@ -36,6 +36,7 @@ import {
   clean,
 } from "./lib/pipeline.js";
 import { sendCard, sendMessage, escapeTelegramHtml } from "./lib/telegram.js";
+import { fetchChannelAvatar } from "./lib/youtube.js";
 import { siteUrl } from "./lib/pipeline.js";
 
 const DRAFTS_STORE = "aicd-drafts";
@@ -94,6 +95,11 @@ export default async (req) => {
 
     const { analysis, run } = await analyzeTranscript(meta, { model });
     const shaped = shapeAnalysis(analysis, meta);
+
+    // The creator's own channel avatar, or nothing. Resolved after the model
+    // call so a lookup failure cannot waste an analysis.
+    const avatar = await fetchChannelAvatar(meta.channelUrl);
+    if (avatar) shaped.creatorImage = avatar.imageUrl;
 
     const draftKey = meta.videoId;
     const store = getStore(DRAFTS_STORE);

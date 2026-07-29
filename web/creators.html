@@ -171,7 +171,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .join("");
 
     return `
-      <a class="creator-card" href="/creator/${encodeURIComponent(c.slug)}">
+      <a class="creator-card${c.image ? " has-avatar" : ""}" href="/creator/${encodeURIComponent(c.slug)}">
+        ${c.image ? `<img class="avatar" src="${A.escapeHtml(c.image)}" alt="${A.escapeHtml(name)}" loading="lazy" onerror="this.remove()">` : ""}
         <div class="stack">
           <span class="name">${A.escapeHtml(name)}</span>
           <span class="subline">${A.escapeHtml(sub)}</span>

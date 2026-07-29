@@ -44,6 +44,7 @@
       <p class="dek" id="dek"></p>
 
       <div class="credit" id="credit" hidden>
+        <img class="avatar" id="creator-avatar" alt="" hidden>
         <div class="who">
           <span class="name" id="creator-name"></span>
           <span class="sub" id="credit-sub"></span>
@@ -167,6 +168,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Credit block
   document.getElementById("credit").hidden = false;
+  // The creator's own channel avatar, when we have one. Alt text names them
+  // rather than describing the image, since that is what it identifies.
+  if (meta.creatorImage) {
+    const avatar = document.getElementById("creator-avatar");
+    avatar.src = meta.creatorImage;
+    avatar.alt = creatorName;
+    // A channel picture can be replaced or removed by its owner at any time.
+    // A dead URL should read as "no picture", never as a broken-image icon.
+    avatar.onerror = () => { avatar.hidden = true; };
+    avatar.hidden = false;
+  }
   document.getElementById("creator-name").textContent = `${creatorName}${meta.channelName && meta.channelName !== creatorName ? ` — ${meta.channelName}` : ""}`;
   document.getElementById("credit-sub").textContent = A.joinMeta([
     topic,
