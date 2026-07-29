@@ -52,6 +52,25 @@ export async function sendPhoto(chatId, photoUrl, caption, { buttons } = {}) {
   return result.message_id;
 }
 
+/**
+ * Sends a card as a photo, falling back to a text message if Telegram will not
+ * take the image.
+ *
+ * Telegram fetches the photo URL itself and rejects the entire request if it
+ * dislikes what comes back ("wrong type of the web page content", "failed to
+ * get HTTP URL content"), which costs the whole card — buttons included — over
+ * nothing but a thumbnail. Observed 2026-07-29. The card is the point; the
+ * picture is decoration.
+ */
+export async function sendCard(chatId, photoUrl, caption, { buttons } = {}) {
+  try {
+    return await sendPhoto(chatId, photoUrl, caption, { buttons });
+  } catch (err) {
+    console.warn(`sendPhoto failed (${err.message}); falling back to a text card`);
+    return sendMessage(chatId, caption, { buttons });
+  }
+}
+
 /** Removes a message outright — used once a decision (published, rejected,
  * discarded) is final, so the card is gone rather than sitting there edited. */
 export async function deleteMessage(chatId, messageId) {

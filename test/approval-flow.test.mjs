@@ -77,6 +77,12 @@ globalThis.fetch = async (url, opts = {}) => {
     const method = u.split("/").pop();
     const body = JSON.parse(opts.body);
     telegramCalls.push({ method, body });
+    if (method === "sendPhoto" && globalThis.__failSendPhoto) {
+      return {
+        ok: true,
+        json: async () => ({ ok: false, description: "Bad Request: failed to get HTTP URL content" }),
+      };
+    }
     if (method === "sendMessage" || method === "sendPhoto") {
       return { ok: true, json: async () => ({ ok: true, result: { message_id: 555 } }) };
     }
@@ -165,6 +171,32 @@ assert.ok(keyboard[0][0].web_app.url.startsWith("https://"), "Telegram only acce
 assert.equal(keyboard[1][0].callback_data, "approve:abc123");
 assert.equal(keyboard[1][1].callback_data, "reject:abc123");
 console.log("notify-draft: OK — card carries the Mini App button plus publish/reject shortcuts");
+
+/* ============ the card survives a thumbnail Telegram won't accept ============ */
+
+// Telegram fetches the photo URL itself and rejects the whole request if it
+// dislikes the response, which would otherwise cost the entire card including
+// its buttons. Observed in production 2026-07-29.
+res = await analyzeVideo.run(req({ body: { ...payload, videoId: "thumb404" } }));
+assert.equal(res.statusCode, 200);
+
+const beforeFallback = telegramCalls.length;
+globalThis.__failSendPhoto = true;
+res = await notifyDraft.run(req({ body: { draftKey: "thumb404" } }));
+globalThis.__failSendPhoto = false;
+
+assert.equal(res.statusCode, 200, "a rejected thumbnail must not fail the notification: " + res.body);
+
+const attempted = telegramCalls.slice(beforeFallback);
+assert.ok(attempted.some((c) => c.method === "sendPhoto"), "should have tried the photo first");
+
+const fallback = attempted.find((c) => c.method === "sendMessage");
+assert.ok(fallback, "should have fallen back to a text card");
+assert.ok(fallback.body.text.includes("How Some Web Designers"), "fallback keeps the caption");
+const fbKeyboard = fallback.body.reply_markup.inline_keyboard;
+assert.ok(fbKeyboard[0][0].web_app, "fallback keeps the Mini App button");
+assert.equal(fbKeyboard[1][0].callback_data, "approve:thumb404", "fallback keeps the action buttons");
+console.log("notify-draft: OK — a thumbnail Telegram refuses falls back to a text card with buttons intact");
 
 /* ===================== publish-video ("Publish as-is") ===================== */
 

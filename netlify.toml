@@ -17,12 +17,9 @@
   external_node_modules = ["@netlify/blobs"]
 
 [functions."process-video"]
-  # Honoured on plans that allow extended synchronous function timeouts.
-  # Netlify's default is 10s and the ceiling for synchronous functions is 26s,
-  # so if a long transcript times out here, point Make at
-  # /.netlify/functions/process-video-background instead — background functions
-  # get 15 minutes.
-  timeout = 180
+  # Synchronous, so this value is capped by the plan (30s observed) regardless
+  # of what is written here. Long transcripts belong in a background function.
+  timeout = 26
 
 [functions."process-video-background"]
   timeout = 180
@@ -34,9 +31,18 @@
   timeout = 26
 
 [functions."analyze-video"]
-  # One xAI call, no GitHub commits — fast, but give it headroom same as
-  # process-video in case a transcript is unusually large.
-  timeout = 180
+  # Kept for tests and short transcripts. NOTE: this plan caps synchronous
+  # functions at 30s and silently ignores a higher value here. A 6,500 token
+  # transcript was killed at exactly 30000ms on 2026-07-29, which is why
+  # production analysis runs in analyze-video-background instead.
+  timeout = 26
+
+[functions."analyze-video-background"]
+  # Background functions get 15 minutes, so the model is never the constraint.
+  timeout = 900
+
+[functions."compare-models-background"]
+  timeout = 900
 
 [functions."publish-video"]
   # Runs the same commit cascade as process-video (video + creator + consensus

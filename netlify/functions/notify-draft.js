@@ -18,7 +18,7 @@
  */
 
 import { getStore } from "@netlify/blobs";
-import { sendPhoto, escapeTelegramHtml } from "./lib/telegram.js";
+import { sendCard, escapeTelegramHtml } from "./lib/telegram.js";
 import { header, parseRequestBody, json, respond, siteUrl } from "./lib/pipeline.js";
 import { toV2 } from "./lib/http-compat.js";
 
@@ -95,7 +95,7 @@ export const run = async (event) => {
     ];
 
     const thumbnailUrl = `https://i.ytimg.com/vi/${draft.meta.videoId}/hqdefault.jpg`;
-    const messageId = await sendPhoto(process.env.TELEGRAM_CHAT_ID, thumbnailUrl, caption, { buttons });
+    const messageId = await sendCard(process.env.TELEGRAM_CHAT_ID, thumbnailUrl, caption, { buttons });
 
     // Recorded so whichever surface resolves this draft — the Mini App or a
     // card button — can clear the card and leave the history line behind.

@@ -17,6 +17,11 @@ const XAI_URL = "https://api.x.ai/v1/chat/completions";
 // rejecting it with "Model not found". The dotted id is what /v1/models
 // actually lists. Overridable so the next rename needs no code change.
 const XAI_MODEL = process.env.XAI_MODEL || "grok-4.5";
+
+/** The model used when a caller does not name one. */
+export function defaultModel() {
+  return XAI_MODEL;
+}
 const GITHUB_API = "https://api.github.com";
 
 const MAX_TRANSCRIPT_CHARS = 120000; // ~30k tokens; longer transcripts are trimmed
@@ -135,7 +140,9 @@ export function resolveVideoSlug(index, meta) {
  * xAI Grok 4.5
  * ------------------------------------------------------------------ */
 
-async function callXai(userPrompt, { label }) {
+async function callXai(userPrompt, { label, model }) {
+  const chosen = model || XAI_MODEL;
+  const startedAt = Date.now();
   const request = (jsonMode) =>
     fetch(XAI_URL, {
       method: "POST",
@@ -144,7 +151,7 @@ async function callXai(userPrompt, { label }) {
         Authorization: `Bearer ${process.env.XAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: XAI_MODEL,
+        model: chosen,
         temperature: 0.4,
         ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
         messages: [
@@ -164,13 +171,13 @@ async function callXai(userPrompt, { label }) {
       console.warn(`xAI rejected response_format on the ${label} call; retrying without it`);
       res = await request(false);
     } else {
-      throw httpError(502, `xAI ${label} call failed (400): ${body.slice(0, 500)}`);
+      throw httpError(502, `xAI ${label} call failed on ${chosen} (400): ${body.slice(0, 500)}`);
     }
   }
 
   if (!res.ok) {
     const body = await res.text();
-    throw httpError(502, `xAI ${label} call failed (${res.status}): ${body.slice(0, 500)}`);
+    throw httpError(502, `xAI ${label} call failed on ${chosen} (${res.status}): ${body.slice(0, 500)}`);
   }
 
   const data = await res.json();
@@ -183,10 +190,11 @@ async function callXai(userPrompt, { label }) {
   if (!parsed) {
     throw httpError(502, `xAI ${label} call returned unparseable JSON: ${content.slice(0, 400)}`);
   }
+  console.log(`xAI ${label} via ${chosen} took ${Date.now() - startedAt}ms`);
   return parsed;
 }
 
-export async function analyzeTranscript(meta) {
+export async function analyzeTranscript(meta, { model } = {}) {
   const prompt = `Here is the full transcript of a YouTube video we're featuring on AI Creator Digest.
 
 VIDEO TITLE: ${meta.videoTitle}
@@ -231,14 +239,14 @@ Return ONLY this JSON object:
 
 Produce 6-10 keyPoints, 2-5 tactics, 2-5 quotes. featuredPeople should be empty unless someone other than the channel's own creator is genuinely a focus of the video (an interview, a panel, a profile) — do not list every name that gets mentioned once. Never include a social media handle or profile URL for anyone; only their name and role. Return valid JSON only. No markdown fences, no commentary.`;
 
-  const analysis = await callXai(prompt, { label: "analysis" });
+  const analysis = await callXai(prompt, { label: "analysis", model });
   if (!analysis.keyTakeaway && !asArray(analysis.keyPoints).length) {
     throw httpError(502, "xAI analysis was missing required fields");
   }
   return analysis;
 }
 
-export async function synthesizeConsensus(meta, videos) {
+export async function synthesizeConsensus(meta, videos, { model } = {}) {
   const digest = videos
     .slice(-MAX_VIDEOS_IN_CONSENSUS)
     .map((v) => ({
@@ -280,7 +288,7 @@ Return ONLY this JSON object:
 
 Return valid JSON only. No markdown fences, no commentary.`;
 
-  const consensus = await callXai(prompt, { label: "consensus" });
+  const consensus = await callXai(prompt, { label: "consensus", model });
   if (!asArray(consensus.agree).length) {
     throw httpError(502, "xAI consensus returned no agreement points");
   }
