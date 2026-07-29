@@ -2,8 +2,16 @@
 <rss version="2.0">
 <channel>
   <title>AI Creator Digest</title>
-  <link>https://aicreatordigest.com/</link>
+  <link>https://remarkable-figolla-6d707e.netlify.app/</link>
   <description>Chris Gallego's YouTube notes on AI, tech, SaaS and web design — read instead of watched.</description>
   <language>en-us</language>
+  <item>
+    <title>Credential check</title>
+    <link>https://remarkable-figolla-6d707e.netlify.app/video/codex-strategies/credential-check</link>
+    <guid isPermaLink="true">https://remarkable-figolla-6d707e.netlify.app/video/codex-strategies/credential-check</guid>
+    <pubDate>Wed, 29 Jul 2026 14:56:16 GMT</pubDate>
+    <description>Silicon Valley Girl on why agents are finally usable by normal people: the model plans multi-step work itself.</description>
+    <author>Silicon Valley Girl</author>
+  </item>
 </channel>
 </rss>
