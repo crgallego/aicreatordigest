@@ -44,9 +44,6 @@
 [functions."reject-draft"]
   timeout = 26
 
-[functions."get-draft"]
-  timeout = 26
-
 [functions."review-api"]
   # Publishing runs the same multi-commit cascade as publish-video.
   timeout = 180

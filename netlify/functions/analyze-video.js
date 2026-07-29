@@ -3,15 +3,13 @@
  * https://aicreatordigest.com
  *
  * Phase 1 of the approval-gated pipeline. Runs the same xAI analysis as
- * process-video.js, but does NOT touch GitHub. Instead it stores the draft
- * in Netlify Blobs and returns it as JSON so Make can:
- *   1. Create a Google Doc from `docHtml` for you to review/edit
- *   2. Share that Doc with you as Editor
- *   3. POST {draftKey, docUrl, ...} to notify-draft, which sends the
- *      Telegram approval card
+ * process-video.js, but does NOT touch GitHub. It stores the draft in Netlify
+ * Blobs and returns a summary, which Make passes to notify-draft to send the
+ * Telegram card.
  *
- * Nothing is published until you tap Approve in Telegram — see
- * publish-video.js for what happens then.
+ * Review and editing happen in the Mini App (web/review.html), which reads
+ * the stored draft through review-api.js. Nothing is published until you
+ * approve — see publish-video.js and review-api.js for what happens then.
  *
  * Environment variables: same as process-video.js, minus the GitHub ones
  * (XAI_API_KEY and MAKE_WEBHOOK_SECRET only — this function never commits).
@@ -22,8 +20,6 @@ import {
   normalizePayload,
   analyzeTranscript,
   shapeAnalysis,
-  renderDraftText,
-  textToSimpleHtml,
   header,
   parseRequestBody,
   json,
@@ -70,8 +66,6 @@ export const handler = async (event) => {
 
     const analysis = await analyzeTranscript(meta);
     const shaped = shapeAnalysis(analysis, meta);
-    const docText = renderDraftText(meta, shaped);
-    const docHtml = textToSimpleHtml(docText);
 
     const draftKey = meta.videoId;
     const store = getStore(DRAFTS_STORE);
@@ -80,8 +74,6 @@ export const handler = async (event) => {
     return json(200, {
       ok: true,
       draftKey,
-      docText,
-      docHtml,
       title: meta.videoTitle,
       creatorName: shaped.creatorName || meta.channelName,
       channelName: meta.channelName,

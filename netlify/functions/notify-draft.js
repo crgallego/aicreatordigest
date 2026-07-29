@@ -8,8 +8,8 @@
  * publishing as-is or rejecting outright.
  *
  * Records the chat/message ids onto the stored draft so whichever surface
- * resolves it later can clear the card. docUrl is optional and only set when
- * the legacy Google Doc round trip is still in play.
+ * resolves it later — the Mini App editor or a card button — can clear the
+ * card and leave a history line in its place.
  *
  * Environment variables:
  *   TELEGRAM_BOT_TOKEN   from @BotFather                       (required)
@@ -45,7 +45,6 @@ export const handler = async (event) => {
   }
 
   const draftKey = String(payload.draftKey || "").trim();
-  const docUrl = String(payload.docUrl || "").trim(); // optional legacy Google Doc round trip
   if (!draftKey) {
     return json(400, { error: "Missing required field: draftKey" });
   }
@@ -62,8 +61,6 @@ export const handler = async (event) => {
     if (!draft) {
       return json(404, { error: `No stored draft found for ${draftKey}. It may have already been published or rejected.` });
     }
-
-    if (docUrl) draft.docUrl = docUrl;
 
     const title = escapeTelegramHtml(payload.title || draft.meta.videoTitle);
     const creatorName = escapeTelegramHtml(payload.creatorName || draft.shaped.creatorName || draft.meta.channelName);

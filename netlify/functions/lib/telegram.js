@@ -52,29 +52,6 @@ export async function sendPhoto(chatId, photoUrl, caption, { buttons } = {}) {
   return result.message_id;
 }
 
-/** Edits an existing message's text, typically to reflect a decision
- * (published / rejected) and to remove its buttons. */
-export async function editMessageText(chatId, messageId, text, { buttons } = {}) {
-  return call("editMessageText", {
-    chat_id: chatId,
-    message_id: messageId,
-    text,
-    parse_mode: "HTML",
-    ...(buttons ? { reply_markup: { inline_keyboard: buttons } } : { reply_markup: { inline_keyboard: [] } }),
-  });
-}
-
-/** Must be called after every callback_query, even just to acknowledge it —
- * otherwise Telegram leaves the button showing a loading spinner. Make's own
- * scenarios answer the callback directly (so the toast fires instantly,
- * before any slow work), so this stays here for direct/local use only. */
-export async function answerCallbackQuery(callbackQueryId, text) {
-  return call("answerCallbackQuery", {
-    callback_query_id: callbackQueryId,
-    ...(text ? { text, show_alert: false } : {}),
-  });
-}
-
 /** Removes a message outright — used once a decision (published, rejected,
  * discarded) is final, so the card is gone rather than sitting there edited. */
 export async function deleteMessage(chatId, messageId) {
