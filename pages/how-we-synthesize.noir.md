@@ -1,3 +1,7 @@
+## Why there's a system at all
+
+I don't have time to watch all of it. I still wanted what's inside. Everything under here is the method that came out of that, and the part that matters is the part where nothing gets past me.
+
 ## The short version
 
 Transcript goes to a model. Model comes back with the shape of it: the takeaway, the points, the tactics, the lines worth keeping. Then I go through the whole thing myself and look at the finished page before anything moves.

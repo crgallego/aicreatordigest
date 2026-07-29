@@ -1,10 +1,10 @@
 ## Why this place exists
 
-Name's Chris Gallego. Day job is fractional Chief AI Officer at a construction company, which means somebody pays me to figure out which of this AI business is real before it gets anywhere near a crew, a schedule, or a bid.
+Name's Chris Gallego, and I don't have time to watch all of it.
 
-That's the whole reason for this place. The people who actually know are out there talking about it, forty minutes at a time, buried in a feed that forgets them by morning. I was already watching. I was already taking notes.
+That's the motive. The people who actually know this stuff are out there talking about it, forty minutes at a stretch, more of them every week than anybody can sit through, and it's gone from the feed by morning. I still wanted what was inside. This is what I came up with.
 
-I got tired of watching. So I opened a shop that reads instead.
+Day job is fractional Chief AI Officer at a construction company, so which parts of this are real isn't a hobby question for me. Somebody pays me to get it right before it goes anywhere near a crew, a schedule, or a bid. That's why I was watching, and that's why I couldn't keep up.
 
 Couple of other rackets shaped how I read it. I produced a documentary. I co-founded a company that makes steel fence. Both taught the same lesson this place runs on: somebody hands you a field you've never worked, you have to be good at it by Tuesday, and the gap between advice that works and advice that sounds good gets expensive fast.
 

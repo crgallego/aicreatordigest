@@ -1,3 +1,13 @@
+## Why I opened the shop
+
+I don't have time to watch all of it.
+
+That's the motive. No better one underneath it, and I'd rather put it flat on the table than dress it into something with a mission statement. There's real material in those videos. Forty minutes a piece, more of them landing every week than any man can sit through, and I still wanted what was inside.
+
+So this is what I came up with. Something that reads them for me and hands back the part worth keeping, with my name still on every one that goes out.
+
+Everything past this point is how it got built, fires included.
+
 ## The arrangement
 
 My name's on the door. The partner does the legwork.

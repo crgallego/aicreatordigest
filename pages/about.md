@@ -1,10 +1,10 @@
 ## Why this exists
 
-I'm Chris Gallego. My job is fractional Chief AI Officer at Coker Construction, which in practice means I'm the person who has to decide which of this AI stuff is actually worth putting in front of a business that builds things in the physical world.
+I'm Chris Gallego, and I don't have time to watch all of this.
 
-That is the whole reason this site exists. The good advice on that question is real, and it's scattered across a hundred YouTube channels, buried in 40-minute videos, and gone the second the algorithm moves on. I was already watching it. I was already taking notes.
+That's the honest reason this site exists. There's a lot of genuinely useful material on YouTube, it arrives faster than anyone can keep up with, and getting to the six minutes that matter means sitting through forty. I still wanted to learn from it. This is what I came up with.
 
-I got tired of watching. So I had a pipeline built instead.
+My day job is fractional Chief AI Officer at Coker Construction, so the question of which parts of this are real and which are noise isn't academic for me. It's what I'm paid to get right for a business that builds things in the physical world. That's the reason I was watching in the first place, and the reason I couldn't keep up.
 
 I've done a couple of other things that shape how I read this stuff: I produced a feature documentary, and I co-founded a company that builds steel fencing. Both taught me the same lesson this site runs on. You get handed a field you don't know yet and you have to get good at it fast, and the difference between advice that works and advice that sounds good is expensive.
 

@@ -6,6 +6,10 @@ Before that, and still: I produced the feature documentary **VINNIE PLAYS VEGAS*
 
 I'm also a co-founder of Firewise Fences, which builds non-combustible steel fencing. My cousin and I started it together.
 
+In May 2026 I appeared on *That's Right with Chris Voss*, filmed in Beverly Hills and carried on ABC, CBS, NBC and Fox affiliates. We talked about tactical empathy in business and about fire-resistant building in the places the wildfires went through. That one mattered to me more than it probably reads on a page like this.
+
+I was also named Best Documentary Producer in Los Angeles for 2025.
+
 Born and raised in Hawai'i. Film and media production degree from Arizona State.
 
 I have never run an agency. An earlier version of this page said I had, along with a few other things nobody ever told it. That copy was written to fill a bio-shaped hole and it stayed up longer than it should have.

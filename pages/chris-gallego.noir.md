@@ -6,6 +6,10 @@ Before that, and still: I produced a feature documentary called **VINNIE PLAYS V
 
 I also co-founded an outfit that builds non-combustible steel fence. My cousin and I started it. Nobody sees that one coming and I've stopped explaining it.
 
+May of 2026 I sat down on *That's Right with Chris Voss*, shot in Beverly Hills, went out on ABC, CBS, NBC and Fox affiliates. Tactical empathy in business, and building fences that don't burn in the places that already did. That one meant more to me than it looks like in print.
+
+Picked up Best Documentary Producer in Los Angeles for 2025 while I was at it.
+
 Hawai'i first. Film and media production out of Arizona State after that.
 
 I have never run an agency. An earlier version of this page said I had, along with a few other things nobody ever told it. That copy got written to fill a hole and it sat there longer than it should have.

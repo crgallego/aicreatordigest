@@ -1,3 +1,7 @@
+## Why there's a system at all
+
+I don't have time to watch all of this, and I still wanted to learn from it. Everything below is the method I came up with, and the part of it I care most about is that nothing here skips me.
+
 ## The short version
 
 A video's transcript goes to an AI model, which pulls out the structure: takeaway, key points, tactics, quotes. Then I edit that draft myself and look at the finished page before anything publishes. Nothing goes live that I haven't personally approved. When a collection has enough videos in it, I write a consensus guide showing where those creators agree and where they don't. That's the whole system.
