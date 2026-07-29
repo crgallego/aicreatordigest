@@ -77,6 +77,11 @@
       <p id="editor-note-text"></p>
     </div>
 
+    <section class="article-section" id="connect-section" hidden>
+      <h2 class="section-label">Connect</h2>
+      <div class="connect" id="connect"></div>
+    </section>
+
     <section class="article-footer" id="article-footer"></section>
 
     <div id="not-found"></div>
@@ -210,6 +215,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (meta.editorNote) {
     document.getElementById("editor-note-callout").hidden = false;
     document.getElementById("editor-note-text").textContent = meta.editorNote;
+  }
+
+  // Connect — creator's own social links plus anyone prominently featured,
+  // both pulled only from the video's own description text.
+  const creatorLinks = Array.isArray(meta.creatorLinks) ? meta.creatorLinks : [];
+  const featuredPeople = Array.isArray(meta.featuredPeople) ? meta.featuredPeople : [];
+  if (creatorLinks.length || featuredPeople.length) {
+    document.getElementById("connect-section").hidden = false;
+    const linkRow = (links) =>
+      links
+        .map((l) => `<a href="${A.escapeHtml(l.url)}" target="_blank" rel="noopener">${A.escapeHtml(l.platform)}</a>`)
+        .join(" · ");
+    document.getElementById("connect").innerHTML = [
+      creatorLinks.length
+        ? `<div class="connect-row"><span class="who">${A.escapeHtml(creatorName)}</span><span class="links">${linkRow(creatorLinks)}</span></div>`
+        : "",
+      ...featuredPeople.map((p) => {
+        const role = p.role ? ` <span class="role">(${A.escapeHtml(p.role)})</span>` : "";
+        const links = Array.isArray(p.links) && p.links.length ? `<span class="links">${linkRow(p.links)}</span>` : "";
+        return `<div class="connect-row"><span class="who">${A.escapeHtml(p.name)}${role}</span>${links}</div>`;
+      }),
+    ].join("");
   }
 
   // Footer meta row

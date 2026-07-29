@@ -624,6 +624,35 @@ section.band {
   color: var(--faint);
 }
 
+.connect {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.connect-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  font-size: 13.5px;
+}
+.connect-row .who {
+  color: var(--ink);
+  font-weight: 500;
+}
+.connect-row .role {
+  color: var(--faint);
+  font-weight: 400;
+  font-size: 12.5px;
+}
+.connect-row .links {
+  color: var(--tertiary);
+  font-size: 12.5px;
+}
+.connect-row .links a {
+  color: var(--accent);
+}
+
 .article-footer {
   border-top: 1px solid var(--line);
   padding-top: 18px;
