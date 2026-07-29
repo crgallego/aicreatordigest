@@ -29,6 +29,7 @@ globalThis.fetch = async (url, opts = {}) => {
           creatorName: "Ran Segall",
           creatorBio: "Runs Flux Academy.",
           keyTakeaway: "Original AI takeaway.",
+          executiveSummary: "Ran Segall runs Flux Academy and teaches web designers to price on value. This lesson responds to designers stuck quoting hourly.",
           keyPoints: [{ title: "AI point", body: "AI body." }],
           tactics: [{ kind: "pricing", title: "AI Tactic", body: "AI tactic body." }],
           quotes: [{ text: "AI quote.", at: "" }],
@@ -127,6 +128,7 @@ assert.equal(res.statusCode, 200, "review-api GET: " + res.body);
 const loaded = JSON.parse(res.body);
 assert.equal(loaded.video.title, "Designing For Retainers");
 assert.equal(loaded.edits.keyTakeaway, "Original AI takeaway.");
+assert.ok(loaded.edits.executiveSummary.includes("Flux Academy"), "the grounding summary should be editable");
 assert.ok(loaded.previewToken, "a preview token should come back with the draft");
 assert.ok(
   loaded.derivedLinks.creatorLinks.some((l) => l.platform === "Instagram"),
@@ -143,13 +145,14 @@ console.log("review-api: OK — draft loads with derived links split between cre
 const edits = {
   keyTakeaway: "Retainers beat project work once you can predict the workload.",
   keyPoints: [
-    { title: "Predictability first", body: "Chris rewrote this one entirely." },
+    { title: "Predictability first", body: "Chris rewrote this one entirely.", thought: "This is the part I actually disagree with." },
     { title: "A point Chris added", body: "With his own body copy." },
   ],
   tactics: [],                                  // emptied on purpose — should drop from the page
   quotes: [{ text: "You are selling certainty.", at: "12:04" }],
   categories: ["Pricing", "Retainers"],
   featuredPeople: [{ name: "Dana Guest", role: "Studio founder" }],
+  executiveSummary: "Chris rewrote the grounding paragraph himself, setting up who this is for.",
   editorNote: "Only works if your delivery is already boringly consistent.",
 };
 
@@ -169,8 +172,12 @@ assert.equal(res.statusCode, 200, "preview-markdown: " + res.body);
 const previewMd = res.body;
 
 assert.ok(previewMd.includes("Retainers beat project work"), "preview should show the edited takeaway");
+assert.ok(previewMd.includes("## In Context"), "preview should carry the grounding section");
+assert.ok(previewMd.includes("Chris rewrote the grounding paragraph"), "the edited grounding summary should win");
+assert.ok(!previewMd.includes("Ran Segall runs Flux Academy and teaches"), "the original grounding summary must not survive the edit");
 assert.ok(!previewMd.includes("Original AI takeaway."), "preview must not show the replaced AI takeaway");
 assert.ok(previewMd.includes("A point Chris added"), "preview should show the added key point");
+assert.ok(previewMd.includes("_Chris: This is the part I actually disagree with._"), "a point's thought should publish attributed to Chris");
 assert.ok(!previewMd.includes("AI Tactic"), "an emptied section must not appear in the preview");
 assert.ok(previewMd.includes("Studio founder"), "preview should carry the edited role");
 assert.ok(previewMd.includes("Only works if your delivery"), "preview should include the editor's note");

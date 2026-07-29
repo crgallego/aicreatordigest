@@ -419,6 +419,40 @@ section.band {
   margin-bottom: 16px;
 }
 
+/* Chris's own response to a key point. Deliberately distinct from the body
+   copy above it: this is the one place inside an AI-drafted section where the
+   words are his, and a reader should never have to wonder which is which. */
+.point-thought {
+  margin: 10px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--mid);
+  text-wrap: pretty;
+}
+.point-thought .who {
+  display: inline-block;
+  margin-right: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* The grounding paragraph under the key takeaway. Slightly larger and looser
+   than body copy so it reads as an introduction rather than as the first
+   section of the article. */
+.exec-summary {
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--mid);
+  margin: 0;
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
 .crumb {
   font-size: 12.5px;
   margin-bottom: 22px;

@@ -50,6 +50,7 @@ function toEditable(draftKey, draft) {
     },
     edits: {
       keyTakeaway: shaped.keyTakeaway || "",
+      executiveSummary: shaped.executiveSummary || "",
       keyPoints: shaped.keyPoints || [],
       tactics: shaped.tactics || [],
       quotes: shaped.quotes || [],

@@ -246,3 +246,17 @@ fs.writeFileSync(
   new URL("./helpers/fixtures.json", import.meta.url),
   JSON.stringify(Object.fromEntries(repoFiles), null, 2)
 );
+
+/* ============ a point's thought is never model-written ============ */
+{
+  // Even if the model volunteers a thought, it must not reach the page: the
+  // published line is attributed to Chris without qualification, so it has to
+  // be typed by him.
+  const { shapeAnalysis } = await import("../netlify/functions/lib/pipeline.js");
+  const shaped = shapeAnalysis({
+    keyTakeaway: "t",
+    keyPoints: [{ title: "A point", body: "Its detail.", thought: "Model tried to speak for Chris." }],
+  }, {});
+  assert.equal(shaped.keyPoints[0].thought, "", "a model-supplied thought must be discarded");
+  console.log("shapeAnalysis: OK — a model cannot write in Chris's voice");
+}

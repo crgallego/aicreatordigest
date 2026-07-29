@@ -81,6 +81,7 @@ export const run = async (event) => {
       playlistName: meta.playlistName,
       playlistSlug: meta.playlistSlug,
       keyTakeaway: shaped.keyTakeaway,
+      executiveSummary: shaped.executiveSummary,
       categories: shaped.categories,
       readTimeMinutes: shaped.readTimeMinutes,
     });

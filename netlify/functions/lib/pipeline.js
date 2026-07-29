@@ -216,6 +216,7 @@ Return ONLY this JSON object:
   "creatorName": "The individual person presenting, by name, if they identify themselves in the transcript. If no personal name is discoverable, use the channel name exactly: ${JSON.stringify(meta.channelName)}.",
   "creatorBio": "2-3 sentences introducing this creator for their profile page — who they are, what they teach, why they're worth following. Present tense, direct, not gushing.",
   "keyTakeaway": "ONE sentence capturing the single most useful thing this video gives the reader.",
+  "executiveSummary": "3-5 sentences of flowing prose that ground a reader who knows nothing about this video before they reach the points below. Cover who the creator is and what standing they have on this subject, what the video actually sets out to do, the setting or occasion where it matters (an interview, a teardown, a lesson, a conference talk, a live build), what problem or moment it is responding to, and how they go about it. Write it as a paragraph, never as a list or as labelled who/what/why fields. Do not restate the key takeaway. Use only what is in the transcript — if the setting or the creator's background genuinely is not discoverable, write around it rather than guessing.",
   "keyPoints": [
     { "title": "A short phrase naming the point (4-8 words)", "body": "1-3 sentences developing it in the creator's own framing, with their real numbers and examples kept intact." }
   ],
@@ -305,9 +306,12 @@ Return valid JSON only. No markdown fences, no commentary.`;
  * (from meta) is the only source ever used for social links — never the
  * model's own guess. */
 export function shapeAnalysis(analysis, meta = {}) {
+  // `thought` is Chris's own response to a point and is never model-written.
+  // It is created empty here and only ever filled by hand in the editor, which
+  // is what lets the published page attribute it to him without qualification.
   const keyPoints = asArray(analysis.keyPoints)
     .filter((p) => p && (p.title || p.body))
-    .map((p) => ({ title: clean(p.title), body: clean(p.body) }));
+    .map((p) => ({ title: clean(p.title), body: clean(p.body), thought: "" }));
   const tactics = asArray(analysis.tactics)
     .filter((t) => t && (t.title || t.body))
     .map((t) => ({ kind: clean(t.kind), title: clean(t.title), body: clean(t.body) }));
@@ -330,7 +334,8 @@ export function shapeAnalysis(analysis, meta = {}) {
 
   const readTimeMinutes = estimateReadMinutes([
     analysis.keyTakeaway,
-    ...keyPoints.map((p) => `${p.title} ${p.body}`),
+    analysis.executiveSummary,
+    ...keyPoints.map((p) => `${p.title} ${p.body} ${p.thought || ""}`),
     ...tactics.map((t) => `${t.title} ${t.body}`),
     ...quotes.map((q) => q.text),
   ]);
@@ -339,6 +344,7 @@ export function shapeAnalysis(analysis, meta = {}) {
     creatorName: clean(analysis.creatorName),
     creatorBio: clean(analysis.creatorBio),
     keyTakeaway: clean(analysis.keyTakeaway),
+    executiveSummary: clean(analysis.executiveSummary),
     summary: clean(analysis.summary),
     seoDescription: clean(analysis.seoDescription),
     keyPoints,
@@ -381,7 +387,12 @@ export function applyDraftEdits(draft, edits) {
   const shaped = {
     ...draft.shaped,
     keyTakeaway: clean(edits.keyTakeaway) || draft.shaped.keyTakeaway,
-    keyPoints: asArray(edits.keyPoints).filter((p) => clean(p.title) || clean(p.body)),
+    // Unlike keyTakeaway, an emptied summary is taken at face value: it is
+    // context, and some digests do not need it.
+    executiveSummary: clean(edits.executiveSummary),
+    keyPoints: asArray(edits.keyPoints)
+      .filter((p) => clean(p.title) || clean(p.body))
+      .map((p) => ({ title: clean(p.title), body: clean(p.body), thought: clean(p.thought) })),
     tactics: asArray(edits.tactics).filter((t) => clean(t.title) || clean(t.body)),
     quotes: asArray(edits.quotes).filter((q) => clean(q.text)),
     categories: asArray(edits.categories).map(clean).filter(Boolean).slice(0, 8).length
@@ -393,7 +404,8 @@ export function applyDraftEdits(draft, edits) {
 
   shaped.readTimeMinutes = estimateReadMinutes([
     shaped.keyTakeaway,
-    ...shaped.keyPoints.map((p) => `${p.title} ${p.body}`),
+    shaped.executiveSummary,
+    ...shaped.keyPoints.map((p) => `${p.title} ${p.body} ${p.thought || ""}`),
     ...shaped.tactics.map((t) => `${t.title} ${t.body}`),
     ...shaped.quotes.map((q) => q.text),
   ]);
@@ -425,6 +437,7 @@ export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt }
     channelName: meta.channelName,
     channelUrl: meta.channelUrl,
     keyTakeaway: shaped.keyTakeaway,
+    executiveSummary: shaped.executiveSummary,
     summary: shaped.summary,
     description: shaped.seoDescription || shaped.summary,
     categories: shaped.categories,
@@ -575,6 +588,7 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
     playlistName: entry.playlistName,
     playlistSlug: entry.playlistSlug,
     keyTakeaway: entry.keyTakeaway,
+    executiveSummary: entry.executiveSummary,
     description: entry.description,
     categories: entry.categories,
     keyPoints,
@@ -609,11 +623,23 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
     out.push("");
   }
 
+  if (entry.executiveSummary) {
+    out.push("## In Context");
+    out.push("");
+    out.push(entry.executiveSummary);
+    out.push("");
+  }
+
   if (keyPoints.length) {
     out.push("## Key Points");
     out.push("");
     keyPoints.forEach((p, i) => {
       out.push(`${i + 1}. **${p.title}** — ${p.body}`);
+      if (clean(p.thought)) {
+        out.push("");
+        out.push(`   _Chris: ${clean(p.thought)}_`);
+        out.push("");
+      }
     });
     out.push("");
   }

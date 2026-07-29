@@ -57,6 +57,11 @@
       <p id="takeaway"></p>
     </div>
 
+    <section class="article-section" id="context-section" hidden>
+      <h2 class="section-label">In context</h2>
+      <p class="exec-summary" id="exec-summary"></p>
+    </section>
+
     <section class="article-section" id="keypoints-section" hidden>
       <h2 class="section-label">Key points</h2>
       <div class="key-points" id="keypoints"></div>
@@ -181,6 +186,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("takeaway").textContent = meta.keyTakeaway;
   }
 
+  // In context — the grounding paragraph, between the one-line takeaway and
+  // the structured points.
+  if (meta.executiveSummary) {
+    document.getElementById("context-section").hidden = false;
+    document.getElementById("exec-summary").textContent = meta.executiveSummary;
+  }
+
   // Key points
   const keyPoints = Array.isArray(meta.keyPoints) ? meta.keyPoints : [];
   if (keyPoints.length) {
@@ -193,6 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div>
             <h3>${A.escapeHtml(p.title || "")}</h3>
             <p>${A.escapeHtml(p.body || "")}</p>
+            ${p.thought ? `<p class="point-thought"><span class="who">Chris</span>${A.escapeHtml(p.thought)}</p>` : ""}
           </div>
         </div>`
       )
