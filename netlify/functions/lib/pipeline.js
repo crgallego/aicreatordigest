@@ -56,6 +56,7 @@ export function normalizePayload(p) {
     videoTitle,
     videoUrl: clean(p.videoUrl) || `https://www.youtube.com/watch?v=${videoId}`,
     videoDuration: clean(p.videoDuration), // optional, e.g. "34:12" — omitted entirely if not supplied
+    videoDescription: clean(p.videoDescription), // optional — source of truth for social links, never AI-guessed
     channelName,
     channelUrl: clean(p.channelUrl),
     playlistId: clean(p.playlistId),
@@ -64,6 +65,52 @@ export function normalizePayload(p) {
     transcript,
     transcriptTruncated: truncated,
   };
+}
+
+/* ------------------------------------------------------------------ *
+ * Social links — extracted only from text the creator actually wrote
+ * (the video description), never guessed from a model's own knowledge.
+ * A name mentioned on the same line as a link is treated as that link's
+ * owner; everything else defaults to the creator's own links.
+ * ------------------------------------------------------------------ */
+
+const SOCIAL_PATTERNS = [
+  { platform: "X", re: /https?:\/\/(?:www\.)?(?:twitter\.com|x\.com)\/([A-Za-z0-9_]{1,15})(?:[/?#]\S*)?/i },
+  { platform: "Instagram", re: /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9_.]{1,30})(?:[/?#]\S*)?/i },
+  { platform: "LinkedIn", re: /https?:\/\/(?:www\.)?linkedin\.com\/(?:in|company)\/([A-Za-z0-9-]{1,100})(?:[/?#]\S*)?/i },
+  { platform: "TikTok", re: /https?:\/\/(?:www\.)?tiktok\.com\/@([A-Za-z0-9_.]{1,30})(?:[/?#]\S*)?/i },
+];
+
+/** Returns { creatorLinks: [{platform,url,handle}], personLinks: {name: [...]} }. */
+export function extractSocialLinks(description, featuredNames = []) {
+  const lines = String(description || "").split(/\r?\n/);
+  const creatorLinks = [];
+  const personLinks = {};
+
+  for (const line of lines) {
+    for (const { platform, re } of SOCIAL_PATTERNS) {
+      const m = line.match(re);
+      if (!m) continue;
+      const link = { platform, url: m[0], handle: m[1] };
+      const owner = featuredNames.find(
+        (name) => name && line.toLowerCase().includes(name.toLowerCase())
+      );
+      if (owner) {
+        (personLinks[owner] ||= []).push(link);
+      } else {
+        creatorLinks.push(link);
+      }
+    }
+  }
+
+  const seenPlatforms = new Set();
+  const dedupedCreatorLinks = creatorLinks.filter((l) => {
+    if (seenPlatforms.has(l.platform)) return false;
+    seenPlatforms.add(l.platform);
+    return true;
+  });
+
+  return { creatorLinks: dedupedCreatorLinks, personLinks };
 }
 
 export function resolveVideoSlug(index, meta) {
@@ -171,10 +218,13 @@ Return ONLY this JSON object:
   ],
   "categories": ["2-5 short topic tags in Title Case, e.g. Pricing, Positioning, AI Tooling, Client Acquisition"],
   "summary": "2-3 sentences summarizing the video for listing pages and the playlist consensus guide.",
-  "seoDescription": "A single meta-description sentence under 155 characters. Include the creator's name."
+  "seoDescription": "A single meta-description sentence under 155 characters. Include the creator's name.",
+  "featuredPeople": [
+    { "name": "Full name of someone prominently featured or interviewed in this video — a guest, co-host, or named subject, NOT the channel owner and NOT someone only mentioned in passing.", "role": "A short label, e.g. guest, interviewee, co-host, subject" }
+  ]
 }
 
-Produce 6-10 keyPoints, 2-5 tactics, 2-5 quotes. Return valid JSON only. No markdown fences, no commentary.`;
+Produce 6-10 keyPoints, 2-5 tactics, 2-5 quotes. featuredPeople should be empty unless someone other than the channel's own creator is genuinely a focus of the video (an interview, a panel, a profile) — do not list every name that gets mentioned once. Never include a social media handle or profile URL for anyone; only their name and role. Return valid JSON only. No markdown fences, no commentary.`;
 
   const analysis = await callXai(prompt, { label: "analysis" });
   if (!analysis.keyTakeaway && !asArray(analysis.keyPoints).length) {
@@ -238,8 +288,10 @@ Return valid JSON only. No markdown fences, no commentary.`;
  * ------------------------------------------------------------------ */
 
 /** Cleans + shapes raw xAI (or doc-parsed) fields into the structured content
- * every markdown builder and the draft-text template expect. */
-export function shapeAnalysis(analysis) {
+ * every markdown builder and the draft-text template expect. `videoDescription`
+ * (from meta) is the only source ever used for social links — never the
+ * model's own guess. */
+export function shapeAnalysis(analysis, meta = {}) {
   const keyPoints = asArray(analysis.keyPoints)
     .filter((p) => p && (p.title || p.body))
     .map((p) => ({ title: clean(p.title), body: clean(p.body) }));
@@ -250,6 +302,18 @@ export function shapeAnalysis(analysis) {
     .filter((q) => q && q.text)
     .map((q) => ({ text: clean(q.text), at: clean(q.at) }));
   const categories = asArray(analysis.categories).map(clean).filter(Boolean).slice(0, 8);
+  const featuredNames = asArray(analysis.featuredPeople)
+    .filter((p) => p && p.name)
+    .map((p) => clean(p.name))
+    .slice(0, 6);
+
+  const { creatorLinks, personLinks } = extractSocialLinks(meta.videoDescription, featuredNames);
+
+  const featuredPeople = asArray(analysis.featuredPeople)
+    .filter((p) => p && p.name)
+    .map((p) => ({ name: clean(p.name), role: clean(p.role) }))
+    .slice(0, 6)
+    .map((p) => ({ ...p, links: personLinks[p.name] || [] }));
 
   const readTimeMinutes = estimateReadMinutes([
     analysis.keyTakeaway,
@@ -268,6 +332,8 @@ export function shapeAnalysis(analysis) {
     tactics,
     quotes,
     categories,
+    featuredPeople,
+    creatorLinks,
     readTimeMinutes,
   };
 }
@@ -276,7 +342,15 @@ export function shapeAnalysis(analysis) {
  * Draft text — the Google Doc template, and parsing it back
  * ------------------------------------------------------------------ */
 
-const SECTION_MARKERS = ["KEY TAKEAWAY", "KEY POINTS", "TACTICS", "QUOTES", "CATEGORIES", "EDITOR'S NOTE"];
+const SECTION_MARKERS = [
+  "KEY TAKEAWAY",
+  "KEY POINTS",
+  "TACTICS",
+  "QUOTES",
+  "CATEGORIES",
+  "FEATURED PEOPLE",
+  "EDITOR'S NOTE",
+];
 
 /**
  * Renders a shaped analysis into the plain-text template used for the
@@ -312,6 +386,10 @@ export function renderDraftText(meta, shaped) {
 
   lines.push("CATEGORIES");
   lines.push(shaped.categories.join(", "));
+  lines.push("");
+
+  lines.push("FEATURED PEOPLE (optional — guests or subjects, not the channel owner, one per line as Name :: Role)");
+  (shaped.featuredPeople || []).forEach((p) => lines.push(`${p.name} :: ${p.role}`));
   lines.push("");
 
   lines.push("EDITOR'S NOTE (optional — your own take, credited separately from the AI summary above)");
@@ -390,9 +468,16 @@ export function parseDraftText(text) {
     .filter(Boolean)
     .slice(0, 8);
 
+  const featuredPeople = (sections["FEATURED PEOPLE"] || [])
+    .map((line) => {
+      const [name, ...rest] = line.split("::");
+      return { name: clean(name), role: clean(rest.join("::")) };
+    })
+    .filter((p) => p.name);
+
   const editorNote = clean((sections["EDITOR'S NOTE"] || []).join("\n"));
 
-  return { keyTakeaway, keyPoints, tactics, quotes, categories, editorNote };
+  return { keyTakeaway, keyPoints, tactics, quotes, categories, featuredPeople, editorNote };
 }
 
 /* ------------------------------------------------------------------ *
@@ -442,6 +527,8 @@ export async function publishVideo({ meta, shaped, editorNote }) {
     keyPointTitles: shaped.keyPoints.map((p) => p.title).filter(Boolean),
     readTimeMinutes: shaped.readTimeMinutes,
     hasEditorNote: Boolean(editorNote),
+    featuredPeople: shaped.featuredPeople || [],
+    creatorLinks: shaped.creatorLinks || [],
     addedAt,
     updatedAt: nowIso(),
   };
@@ -547,6 +634,8 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
     tactics,
     quotes,
     editorNote: clean(editorNote),
+    featuredPeople: entry.featuredPeople,
+    creatorLinks: entry.creatorLinks,
     readTimeMinutes: entry.readTimeMinutes,
     addedAt: entry.addedAt,
     updatedAt: entry.updatedAt,
@@ -613,6 +702,24 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
     out.push("");
     out.push(clean(editorNote));
     out.push("");
+  }
+
+  const creatorLinks = asArray(entry.creatorLinks);
+  const featuredPeople = asArray(entry.featuredPeople);
+  if (creatorLinks.length || featuredPeople.length) {
+    out.push("## Connect");
+    out.push("");
+    if (creatorLinks.length) {
+      out.push(`**${entry.creatorName}:** ` + creatorLinks.map((l) => `[${l.platform}](${l.url})`).join(" · "));
+      out.push("");
+    }
+    featuredPeople.forEach((p) => {
+      const role = p.role ? ` (${p.role})` : "";
+      const links = asArray(p.links);
+      const linkStr = links.length ? " — " + links.map((l) => `[${l.platform}](${l.url})`).join(" · ") : "";
+      out.push(`- **${p.name}**${role}${linkStr}`);
+    });
+    if (featuredPeople.length) out.push("");
   }
 
   out.push("---");

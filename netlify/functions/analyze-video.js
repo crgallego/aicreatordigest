@@ -69,7 +69,7 @@ export const handler = async (event) => {
     console.log(`Analyzing "${meta.videoTitle}" by ${meta.channelName}`);
 
     const analysis = await analyzeTranscript(meta);
-    const shaped = shapeAnalysis(analysis);
+    const shaped = shapeAnalysis(analysis, meta);
     const docText = renderDraftText(meta, shaped);
     const docHtml = textToSimpleHtml(docText);
 

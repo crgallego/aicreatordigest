@@ -23,6 +23,7 @@ import {
   parseDraftText,
   publishVideo,
   estimateReadMinutes,
+  extractSocialLinks,
   header,
   parseRequestBody,
   json,
@@ -76,6 +77,18 @@ export const handler = async (event) => {
 
     const parsed = parseDraftText(docText);
 
+    // Links are never hand-typed in the doc — they're re-derived from the
+    // video's own description every time, so an edited name still gets its
+    // real link (or none) rather than carrying over stale ones.
+    const { creatorLinks, personLinks } = extractSocialLinks(
+      draft.meta.videoDescription,
+      parsed.featuredPeople.map((p) => p.name)
+    );
+    const featuredPeople = parsed.featuredPeople.map((p) => ({
+      ...p,
+      links: personLinks[p.name] || [],
+    }));
+
     // keyTakeaway is required for the page to make sense — treat an emptied
     // one as an accidental deletion, not an intentional edit. Every other
     // section is trusted at face value: empty means "drop it."
@@ -86,6 +99,8 @@ export const handler = async (event) => {
       tactics: parsed.tactics,
       quotes: parsed.quotes,
       categories: parsed.categories.length ? parsed.categories : draft.shaped.categories,
+      featuredPeople,
+      creatorLinks,
     };
     finalShaped.readTimeMinutes = estimateReadMinutes([
       finalShaped.keyTakeaway,
