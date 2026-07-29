@@ -146,9 +146,14 @@
   to = "/web/chris-gallego.html"
   status = 200
 
-# Keep the function source out of the served site.
+# Keep the function and test sources out of the served site.
 [[redirects]]
   from = "/netlify/*"
+  to = "/web/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/test/*"
   to = "/web/404.html"
   status = 404
 

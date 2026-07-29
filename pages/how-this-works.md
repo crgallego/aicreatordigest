@@ -82,9 +82,7 @@ A small app that opens inside Telegram. Tap Review on a card and it slides up ov
 
 The preview is the part I'd defend hardest. It isn't a mockup of my page, and it isn't a preview renderer someone wrote to look like my page. It is my page — the same template, the same stylesheet, the same rendering code that serves every published digest — pointed at the unpublished draft instead of a committed file. The only things that change are where the data comes from and a flag telling search engines to stay away.
 
-That distinction is the whole point. A preview built from separate code drifts. Not loudly, either: it keeps looking right while quietly disagreeing with production, which is worse than not having one. So the check is mechanical rather than a promise: publish a draft, render the preview, compare the two, and fail if they aren't byte-for-byte identical. Not "close." Identical.
-
-Caveat I'd rather state than let you find: that check currently runs from my working environment, not from this repo. Committing it is the next thing on the list, because a guard that only exists on my machine protects exactly one person, and the whole reason it exists is so that a future change to the publisher can't quietly turn the preview into a lie.
+That distinction is the whole point. A preview built from separate code drifts. Not loudly, either: it keeps looking right while quietly disagreeing with production, which is worse than not having one. So the check is mechanical rather than a promise: `npm test` publishes a draft, renders the preview, and fails if the two aren't byte-for-byte identical. Not "close." Identical. It's in the repo, it runs in CI-shaped form, and I broke it on purpose once to confirm it actually goes red — a guard nobody has watched fail is just a comment.
 
 Publish from inside the app and the card in Telegram deletes itself, leaving a one-line record behind. The queue stays a queue; decided things become history.
 

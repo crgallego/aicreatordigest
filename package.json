@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "AI Creator Digest — strategy guides synthesized from the best YouTube creators in AI, tech, SaaS, and web design.",
+  "description": "AI Creator Digest \u2014 strategy guides synthesized from the best YouTube creators in AI, tech, SaaS, and web design.",
   "homepage": "https://aicreatordigest.com",
   "repository": {
     "type": "git",
@@ -16,7 +16,9 @@
   "scripts": {
     "dev": "netlify dev",
     "serve": "npx --yes serve@14 -l 8888 .",
-    "check": "for f in netlify/functions/*.js netlify/functions/lib/*.js; do node --check \"$f\" || exit 1; done"
+    "check": "for f in netlify/functions/*.js netlify/functions/lib/*.js; do node --check \"$f\" || exit 1; done",
+    "test": "node test/run.mjs",
+    "test:live": "node --import ./test/helpers/register.mjs test/live-transcript.test.mjs"
   },
   "dependencies": {
     "youtube-caption-extractor": "^1.10.2",
