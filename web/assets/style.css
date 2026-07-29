@@ -561,11 +561,21 @@ section.band {
 /* Named topic-tag rather than tag: .wordmark .tag is the site tagline, and a
    bare .tag rule put a border box around the masthead. */
 .topic-tag {
+  display: inline-block;
   font-size: 11.5px;
   letter-spacing: 0.04em;
   color: var(--tertiary);
   border: 1px solid var(--line);
   padding: 3px 8px;
+  text-decoration: none;
+}
+a.topic-tag:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.topic-tag .n {
+  color: var(--faint);
+  margin-left: 3px;
 }
 
 @media (max-width: 560px) {

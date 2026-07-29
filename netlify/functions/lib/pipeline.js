@@ -1272,6 +1272,11 @@ function frontmatter(fields) {
     if (Array.isArray(value)) {
       if (!value.length) continue;
       lines.push(`${key}: ${JSON.stringify(value)}`);
+    } else if (typeof value === "object") {
+      // Plain objects (the run metadata) must be serialised as JSON like
+      // arrays are. Falling through to String(value) wrote "[object Object]".
+      if (!Object.keys(value).length) continue;
+      lines.push(`${key}: ${JSON.stringify(value)}`);
     } else if (typeof value === "number" || typeof value === "boolean") {
       lines.push(`${key}: ${value}`);
     } else {

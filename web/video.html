@@ -281,7 +281,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     ["source", A.joinMeta(["youtube", meta.channelName])],
     meta.videoDuration ? ["runtime", meta.videoDuration] : null,
     ["digest", `${A.readTimeLabel(meta)} read`],
-    meta.categories && meta.categories.length ? ["topics", meta.categories.join(", ")] : null,
+    meta.categories && meta.categories.length
+      ? [
+          "topics",
+          meta.categories
+            .map((c) => `<a href="/digests?topic=${encodeURIComponent(c)}">${A.escapeHtml(c)}</a>`)
+            .join(", "),
+          true, // already escaped, contains markup
+        ]
+      : null,
     meta.updatedAt ? ["synthesized", A.formatDateLong(meta.updatedAt)] : null,
     meta.run && meta.run.model ? ["model", meta.run.model] : null,
     meta.run && meta.run.seconds ? ["analysis time", `${meta.run.seconds}s`] : null,
@@ -289,7 +297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     meta.run && meta.run.costUsd ? ["cost", `$${meta.run.costUsd.toFixed(4)}`] : null,
   ]
     .filter(Boolean)
-    .map(([k, v]) => `<span>${A.escapeHtml(k)}: <span class="v">${A.escapeHtml(v)}</span></span>`)
+    .map(([k, v, isHtml]) => `<span>${A.escapeHtml(k)}: <span class="v">${isHtml ? v : A.escapeHtml(v)}</span></span>`)
     .join("");
 
   // A draft has no canonical URL yet, and must never be indexed — so the

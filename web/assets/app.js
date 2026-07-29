@@ -451,6 +451,48 @@
     return creators.filter((c) => creatorMatches(c, state)).sort(creatorComparator(state && state.sort));
   }
 
+
+  /* --------------------------------------------------- Digest browsing */
+
+  /** Topics across a set of videos, ranked by how many digests carry each. */
+  function topicsAcrossVideos(videos) {
+    const tally = new Map();
+    for (const v of videos) {
+      for (const c of v.categories || []) tally.set(c, (tally.get(c) || 0) + 1);
+    }
+    return [...tally.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([label, count]) => ({ label, count }));
+  }
+
+  function videoMatches(v, { q = "", topic = "" } = {}) {
+    if (topic && !(v.categories || []).includes(topic)) return false;
+    if (!q) return true;
+    return [v.title, v.creatorName, v.channelName, v.playlistName, v.keyTakeaway, v.description]
+      .concat(v.categories || [])
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .includes(String(q).toLowerCase());
+  }
+
+  /** Newest first by default; ties fall back to title so order never jitters. */
+  function videoComparator(sort) {
+    const byTitle = (a, b) => (a.title || "").localeCompare(b.title || "");
+    if (sort === "oldest") {
+      return (a, b) => String(a.addedAt || "").localeCompare(String(b.addedAt || "")) || byTitle(a, b);
+    }
+    if (sort === "shortest") {
+      return (a, b) => (a.readTimeMinutes || 0) - (b.readTimeMinutes || 0) || byTitle(a, b);
+    }
+    if (sort === "title") return byTitle;
+    return (a, b) => String(b.addedAt || "").localeCompare(String(a.addedAt || "")) || byTitle(a, b);
+  }
+
+  function browseVideos(videos, state) {
+    return videos.filter((v) => videoMatches(v, state)).sort(videoComparator(state && state.sort));
+  }
+
   window.ACD = {
     SITE_NAME,
     SITE_URL,
@@ -481,6 +523,10 @@
     creatorMatches,
     creatorComparator,
     browseCreators,
+    topicsAcrossVideos,
+    videoMatches,
+    videoComparator,
+    browseVideos,
     plVideoRow,
     emptyState,
   };

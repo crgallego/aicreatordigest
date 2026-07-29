@@ -43,6 +43,7 @@
       <h1 id="title">Loading…</h1>
       <p class="dek" id="dek"></p>
       <div class="meta-row pad-bottom" id="meta-row"></div>
+      <div class="topic-tags" id="playlist-topics"></div>
     </div>
 
     <div class="consensus" id="consensus">
@@ -109,6 +110,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   ]
     .filter(Boolean)
     .map(([k, v]) => `<span>${A.escapeHtml(k)}: <span class="v">${A.escapeHtml(v)}</span></span>`)
+    .join("");
+
+  // Topics covered across this collection, each linking into the digest index
+  // filtered on it.
+  document.getElementById("playlist-topics").innerHTML = A.topicsAcrossVideos(videos)
+    .slice(0, 8)
+    .map(
+      (t) =>
+        `<a class="topic-tag" href="/digests?topic=${encodeURIComponent(t.label)}">${A.escapeHtml(t.label)} <span class="n">${t.count}</span></a>`
+    )
     .join("");
 
   const consensusEl = document.getElementById("consensus");

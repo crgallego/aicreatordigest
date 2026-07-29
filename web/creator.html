@@ -52,11 +52,20 @@
       </div>
 
       <div class="meta-row" id="collections-line"></div>
+      <div class="topic-tags" id="creator-topics"></div>
     </div>
 
     <section class="band">
       <h2 class="section-label">Digests</h2>
       <div class="rows" id="videos"></div>
+    </section>
+
+    <section class="band" id="related-section" hidden>
+      <div class="band-head">
+        <h2 class="section-label">Others working the same ground</h2>
+        <a class="more" href="/creators">all creators</a>
+      </div>
+      <div class="rows" id="related-creators"></div>
     </section>
   </main>
 
@@ -119,6 +128,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("videos").innerHTML = videos.length
     ? videos.map(A.videoRow).join("")
     : A.emptyState("No digests yet", "They'll appear here as soon as I process one of their videos.");
+
+  // What this creator actually covers, each linked into the directory filtered
+  // on that topic, so a reader who likes a subject can follow it outward.
+  const topics = creator.topics || [];
+  document.getElementById("creator-topics").innerHTML = topics
+    .map(
+      (t) =>
+        `<a class="topic-tag" href="/creators?topic=${encodeURIComponent(t.label)}">${A.escapeHtml(t.label)}</a>`
+    )
+    .join("");
+
+  // Other creators sharing at least one topic, ranked by overlap. This is the
+  // "if this person resonates, here is who else" path.
+  const mine = new Set(topics.map((t) => t.label));
+  const related = Object.values(index.creators)
+    .filter((c) => c.slug !== slug)
+    .map((c) => ({ creator: c, shared: (c.topics || []).map((t) => t.label).filter((l) => mine.has(l)) }))
+    .filter((r) => r.shared.length)
+    .sort(
+      (a, b) =>
+        b.shared.length - a.shared.length ||
+        (a.creator.creatorName || "").localeCompare(b.creator.creatorName || "")
+    )
+    .slice(0, 5);
+
+  if (related.length) {
+    document.getElementById("related-section").hidden = false;
+    document.getElementById("related-creators").innerHTML = related
+      .map(
+        ({ creator: c, shared }) => `
+        <a class="creator-card" href="/creator/${encodeURIComponent(c.slug)}">
+          <div class="stack">
+            <span class="name">${A.escapeHtml(c.creatorName || c.channelName || c.slug)}</span>
+            <span class="subline">${A.escapeHtml(
+              A.joinMeta([A.plural(c.videoCount || 0, "digest", "digests"), `also on ${shared.join(", ")}`])
+            )}</span>
+          </div>
+        </a>`
+      )
+      .join("");
+  }
 
   A.setMeta({
     title: name,

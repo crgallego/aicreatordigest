@@ -44,6 +44,21 @@
       <p class="dek">Each one opens with a consensus guide I synthesize across every video inside it.</p>
     </div>
 
+    <section class="filters" id="filters" hidden>
+      <div class="filter-row">
+        <input type="search" id="q" class="filter-search" placeholder="Search collections…" autocomplete="off" aria-label="Search collections">
+        <label class="filter-sort">
+          <span>Sort</span>
+          <select id="sort" aria-label="Sort collections">
+            <option value="name">A–Z</option>
+            <option value="digests">Most digests</option>
+            <option value="creators">Most creators</option>
+          </select>
+        </label>
+      </div>
+      <p class="filter-count" id="filter-count" aria-live="polite"></p>
+    </section>
+
     <section class="band" style="padding-top:0">
       <div class="grid-2" id="playlists"><p class="loading">Loading…</p></div>
     </section>
@@ -65,32 +80,80 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const videos = index.videos;
-  const playlists = Object.values(index.playlists).sort((a, b) => a.name.localeCompare(b.name));
-
-  document.getElementById("playlists").innerHTML = playlists.length
-    ? playlists
-        .map((p) => {
-          const pVideos = videos.filter((v) => v.playlistSlug === p.slug);
-          return A.playlistCell(
-            {
-              slug: p.slug,
-              name: p.name,
-              topic: A.groupTopic(pVideos),
-              blurb: p.consensusSummary || "",
-              updatedAt: p.consensusUpdatedAt,
-            },
-            p.videoCount ?? pVideos.length
-          );
-        })
-        .join("")
-    : A.emptyState("No collections yet", "The first playlist will appear here as soon as it's processed.");
+  const all = Object.values(index.playlists);
+  const gridEl = document.getElementById("playlists");
+  const countEl = document.getElementById("filter-count");
 
   A.setMeta({
     title: "Playlists",
-    description: "Every collection I've curated, each one a consensus guide synthesized across every video inside it.",
+    description: "Every collection on AI Creator Digest, each opening with a consensus guide synthesized across its videos.",
     path: "/playlists",
   });
+
+  if (!all.length) {
+    gridEl.innerHTML = A.emptyState(
+      "No collections yet",
+      "Collections appear here as soon as the first digest in one is published."
+    );
+    return;
+  }
+
+  const showFilters = all.length >= 5;
+  document.getElementById("filters").hidden = !showFilters;
+  const state = { q: "", sort: "name" };
+
+  if (showFilters) {
+    document.getElementById("q").addEventListener("input", (e) => {
+      state.q = e.target.value.trim().toLowerCase();
+      draw();
+    });
+    document.getElementById("sort").addEventListener("change", (e) => {
+      state.sort = e.target.value;
+      draw();
+    });
+  }
+
+  draw();
+
+  function draw() {
+    const matched = all
+      .filter((p) => {
+        if (!state.q) return true;
+        return [p.name, p.consensusSummary]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(state.q);
+      })
+      .sort((a, b) => {
+        const byName = () => (a.name || "").localeCompare(b.name || "");
+        if (state.sort === "digests") return (b.videoCount || 0) - (a.videoCount || 0) || byName();
+        if (state.sort === "creators") return (b.creatorCount || 0) - (a.creatorCount || 0) || byName();
+        return byName();
+      });
+
+    gridEl.innerHTML = matched.length
+      ? matched
+          .map((p) => {
+            const pVideos = index.videos.filter((v) => v.playlistSlug === p.slug);
+            return A.playlistCell(
+              {
+                slug: p.slug,
+                name: p.name,
+                topic: A.groupTopic(pVideos),
+                blurb: p.consensusSummary || "",
+                updatedAt: p.consensusUpdatedAt,
+              },
+              p.videoCount ?? pVideos.length
+            );
+          })
+          .join("")
+      : A.emptyState("Nothing matched", "Try a different search.");
+
+    if (showFilters) {
+      countEl.textContent = `${matched.length} of ${all.length} collection${all.length === 1 ? "" : "s"}`;
+    }
+  }
 });
 </script>
 </body>
