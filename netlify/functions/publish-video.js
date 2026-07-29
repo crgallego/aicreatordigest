@@ -29,7 +29,7 @@ import {
   json,
   respond,
 } from "./lib/pipeline.js";
-import { editMessageText } from "./lib/telegram.js";
+import { deleteMessage, sendMessage } from "./lib/telegram.js";
 
 const DRAFTS_STORE = "aicd-drafts";
 
@@ -117,17 +117,14 @@ export const handler = async (event) => {
 
     await store.delete(draftKey);
 
-    // Confirm in Telegram if Make told us which message to update — best
-    // effort, since the GitHub commit already succeeded either way.
+    // Remove the actionable card and drop a plain confirmation in its place —
+    // best effort, since the GitHub commit already succeeded either way.
     const chatId = payload.chatId;
     const messageId = payload.messageId;
     if (chatId && messageId) {
       try {
-        await editMessageText(
-          chatId,
-          messageId,
-          `✅ <b>Published:</b> ${draft.meta.videoTitle}\n${result.url}`
-        );
+        await deleteMessage(chatId, messageId);
+        await sendMessage(chatId, `✅ <b>Published:</b> ${draft.meta.videoTitle}\n${result.url}`);
       } catch (err) {
         console.error("Telegram confirmation failed (video was still published):", err.message);
       }

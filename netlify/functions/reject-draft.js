@@ -11,7 +11,7 @@
 
 import { getStore } from "@netlify/blobs";
 import { header, parseRequestBody, json, respond } from "./lib/pipeline.js";
-import { editMessageText } from "./lib/telegram.js";
+import { deleteMessage, sendMessage } from "./lib/telegram.js";
 
 const DRAFTS_STORE = "aicd-drafts";
 
@@ -50,11 +50,8 @@ export const handler = async (event) => {
     const messageId = payload.messageId;
     if (chatId && messageId) {
       try {
-        await editMessageText(
-          chatId,
-          messageId,
-          `❌ <b>Rejected:</b> ${draft?.meta?.videoTitle || draftKey}`
-        );
+        await deleteMessage(chatId, messageId);
+        await sendMessage(chatId, `❌ <b>Rejected:</b> ${draft?.meta?.videoTitle || draftKey}`);
       } catch (err) {
         console.error("Telegram confirmation failed:", err.message);
       }

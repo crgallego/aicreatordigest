@@ -50,12 +50,20 @@ export async function editMessageText(chatId, messageId, text, { buttons } = {})
 }
 
 /** Must be called after every callback_query, even just to acknowledge it —
- * otherwise Telegram leaves the button showing a loading spinner. */
+ * otherwise Telegram leaves the button showing a loading spinner. Make's own
+ * scenarios answer the callback directly (so the toast fires instantly,
+ * before any slow work), so this stays here for direct/local use only. */
 export async function answerCallbackQuery(callbackQueryId, text) {
   return call("answerCallbackQuery", {
     callback_query_id: callbackQueryId,
     ...(text ? { text, show_alert: false } : {}),
   });
+}
+
+/** Removes a message outright — used once a decision (published, rejected,
+ * discarded) is final, so the card is gone rather than sitting there edited. */
+export async function deleteMessage(chatId, messageId) {
+  return call("deleteMessage", { chat_id: chatId, message_id: messageId });
 }
 
 /** Escapes text for Telegram's HTML parse mode (a small tag subset, not full HTML). */
