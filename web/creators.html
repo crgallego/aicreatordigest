@@ -44,6 +44,23 @@
       <p class="dek">The people doing the actual teaching. Go subscribe to them — I mean it.</p>
     </div>
 
+    <section class="filters" id="filters" hidden>
+      <div class="filter-row">
+        <input type="search" id="q" class="filter-search" placeholder="Search creators, channels, topics…"
+               autocomplete="off" aria-label="Search creators">
+        <label class="filter-sort">
+          <span>Sort</span>
+          <select id="sort" aria-label="Sort creators">
+            <option value="name">A–Z</option>
+            <option value="digests">Most digests</option>
+            <option value="recent">Recently covered</option>
+          </select>
+        </label>
+      </div>
+      <div class="chips" id="topic-chips" aria-label="Filter by topic"></div>
+      <p class="filter-count" id="filter-count" aria-live="polite"></p>
+    </section>
+
     <section class="band" style="padding-top:0">
       <div class="rows" id="creator-rows"><p class="loading">Loading…</p></div>
     </section>
@@ -65,19 +82,97 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const creators = Object.values(index.creators).sort((a, b) =>
-    (a.creatorName || "").localeCompare(b.creatorName || "")
-  );
-
-  document.getElementById("creator-rows").innerHTML = creators.length
-    ? creators.map(A.creatorRow).join("")
-    : A.emptyState("No creators yet", "Creator profiles build themselves automatically as I process their videos.");
+  const all = Object.values(index.creators);
+  const rowsEl = document.getElementById("creator-rows");
+  const countEl = document.getElementById("filter-count");
 
   A.setMeta({
     title: "Creators",
     description: "Every creator I feature on AI Creator Digest, with a link to their channel and every digest of theirs I've written.",
     path: "/creators",
   });
+
+  if (!all.length) {
+    rowsEl.innerHTML = A.emptyState(
+      "No creators yet",
+      "Creator profiles build themselves automatically as I process their videos."
+    );
+    return;
+  }
+
+  // Only offer the controls once there is enough here for them to earn their
+  // space. A filter bar over three creators is furniture, not help.
+  const topics = A.topicsAcross(all);
+  const showFilters = all.length >= 4 || topics.length >= 3;
+  document.getElementById("filters").hidden = !showFilters;
+
+  const state = { q: "", topic: "", sort: "name" };
+
+  if (showFilters) {
+    document.getElementById("topic-chips").innerHTML = topics
+      .map((t) => `<button class="chip" data-topic="${A.escapeHtml(t.label)}">${A.escapeHtml(t.label)} <span class="n">${t.count}</span></button>`)
+      .join("");
+
+    document.getElementById("q").addEventListener("input", (e) => {
+      state.q = e.target.value.trim().toLowerCase();
+      render();
+    });
+    document.getElementById("sort").addEventListener("change", (e) => {
+      state.sort = e.target.value;
+      render();
+    });
+    document.getElementById("topic-chips").addEventListener("click", (e) => {
+      const btn = e.target.closest(".chip");
+      if (!btn) return;
+      // Clicking the active topic clears it, so the filter is always escapable.
+      state.topic = state.topic === btn.dataset.topic ? "" : btn.dataset.topic;
+      document.querySelectorAll(".chip").forEach((c) =>
+        c.classList.toggle("active", c.dataset.topic === state.topic)
+      );
+      render();
+    });
+  }
+
+  render();
+
+  function render() {
+    const matched = A.browseCreators(all, state);
+
+    rowsEl.innerHTML = matched.length
+      ? matched.map(creatorCard).join("")
+      : A.emptyState("Nothing matches that", "Try a different search, or clear the topic filter.");
+
+    if (!showFilters) return;
+    const bits = [`${matched.length} of ${all.length} creator${all.length === 1 ? "" : "s"}`];
+    if (state.topic) bits.push(`in ${state.topic}`);
+    countEl.textContent = bits.join(" ");
+  }
+
+
+
+
+  function creatorCard(c) {
+    const name = c.creatorName || c.channelName || c.slug;
+    const sub = A.joinMeta([
+      c.channelName && c.channelName !== name ? c.channelName : "",
+      A.plural(c.videoCount || 0, "digest", "digests"),
+      c.lastPublishedAt ? `last covered ${A.formatDateShort(c.lastPublishedAt)}` : "",
+    ]);
+    const tags = (c.topics || [])
+      .slice(0, 4)
+      .map((t) => `<span class="topic-tag">${A.escapeHtml(t.label)}</span>`)
+      .join("");
+
+    return `
+      <a class="creator-card" href="/creator/${encodeURIComponent(c.slug)}">
+        <div class="stack">
+          <span class="name">${A.escapeHtml(name)}</span>
+          <span class="subline">${A.escapeHtml(sub)}</span>
+          ${c.bio ? `<p class="bio">${A.escapeHtml(c.bio)}</p>` : ""}
+          ${tags ? `<div class="topic-tags">${tags}</div>` : ""}
+        </div>
+      </a>`;
+  }
 });
 </script>
 </body>

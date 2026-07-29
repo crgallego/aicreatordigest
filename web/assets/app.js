@@ -397,6 +397,60 @@
 
   /* ----------------------------------------------------------- Export */
 
+
+  /* ------------------------------------------------- Creator directory */
+  /* Kept here rather than inline in creators.html so the browse logic is
+     testable and can be reused by any other index page that needs it. */
+
+  /** Every topic across a set of creators, ranked by how many cover it. */
+  function topicsAcross(creators) {
+    const tally = new Map();
+    for (const c of creators) {
+      for (const t of c.topics || []) tally.set(t.label, (tally.get(t.label) || 0) + 1);
+    }
+    return [...tally.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([label, count]) => ({ label, count }));
+  }
+
+  /** Free-text match across name, channel, bio, topics and playlists. */
+  function creatorMatches(c, { q = "", topic = "" } = {}) {
+    if (topic && !(c.topics || []).some((t) => t.label === topic)) return false;
+    if (!q) return true;
+    const haystack = [
+      c.creatorName,
+      c.channelName,
+      c.bio,
+      ...(c.topics || []).map((t) => t.label),
+      ...(c.playlists || []).map((p) => p.playlistName),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(String(q).toLowerCase());
+  }
+
+  function byCreatorName(a, b) {
+    return (a.creatorName || "").localeCompare(b.creatorName || "");
+  }
+
+  /** Ties always fall back to name, so ordering is stable and predictable. */
+  function creatorComparator(sort) {
+    if (sort === "digests") {
+      return (a, b) => (b.videoCount || 0) - (a.videoCount || 0) || byCreatorName(a, b);
+    }
+    if (sort === "recent") {
+      return (a, b) =>
+        String(b.lastPublishedAt || "").localeCompare(String(a.lastPublishedAt || "")) ||
+        byCreatorName(a, b);
+    }
+    return byCreatorName;
+  }
+
+  function browseCreators(creators, state) {
+    return creators.filter((c) => creatorMatches(c, state)).sort(creatorComparator(state && state.sort));
+  }
+
   window.ACD = {
     SITE_NAME,
     SITE_URL,
@@ -423,6 +477,10 @@
     playlistCell,
     videoRow,
     creatorRow,
+    topicsAcross,
+    creatorMatches,
+    creatorComparator,
+    browseCreators,
     plVideoRow,
     emptyState,
   };

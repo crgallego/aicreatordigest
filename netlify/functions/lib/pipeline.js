@@ -1104,9 +1104,33 @@ function withCounts(index) {
   }
   const creators = {};
   for (const [slug, c] of Object.entries(index.creators)) {
+    const mine = index.videos.filter((v) => v.creatorSlug === slug);
+
+    // Topics a creator actually covers, ranked by how often they come up, so
+    // the directory can be browsed by subject rather than only by name.
+    const tally = new Map();
+    for (const v of mine) {
+      for (const cat of asArray(v.categories)) {
+        const label = clean(cat);
+        if (label) tally.set(label, (tally.get(label) || 0) + 1);
+      }
+    }
+    const topics = [...tally.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 8)
+      .map(([label, count]) => ({ label, count }));
+
+    const playlistNames = [
+      ...new Map(mine.map((v) => [v.playlistSlug, v.playlistName])).entries(),
+    ].map(([playlistSlug, playlistName]) => ({ playlistSlug, playlistName }));
+
     creators[slug] = {
       ...c,
-      videoCount: index.videos.filter((v) => v.creatorSlug === slug).length,
+      videoCount: mine.length,
+      topics,
+      playlists: playlistNames,
+      lastPublishedAt:
+        mine.map((v) => v.addedAt).filter(Boolean).sort().slice(-1)[0] || c.firstSeenAt || "",
     };
   }
   return { ...index, playlists, creators, updatedAt: nowIso() };

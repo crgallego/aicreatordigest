@@ -152,3 +152,49 @@ assert.equal(A.readTimeLabel({ readTimeMinutes: 7 }), "7 min");
 assert.equal(A.readTimeLabel({}), "1 min");
 
 console.log("\nALL RENDER TESTS PASSED");
+
+/* ============ creator directory: browse, filter, sort ============ */
+{
+  const creators = [
+    { slug: "flux", creatorName: "Ran Segall", channelName: "Flux Academy", bio: "Teaches value pricing.",
+      videoCount: 5, lastPublishedAt: "2026-07-20T00:00:00.000Z",
+      topics: [{ label: "Pricing", count: 4 }, { label: "Positioning", count: 2 }],
+      playlists: [{ playlistSlug: "premium-websites", playlistName: "Premium Websites" }] },
+    { slug: "jake", creatorName: "Jake Van Clief", channelName: "Jake Van Clief", bio: "Frameworks for agents.",
+      videoCount: 9, lastPublishedAt: "2026-07-10T00:00:00.000Z",
+      topics: [{ label: "AI Tooling", count: 6 }, { label: "Pricing", count: 1 }],
+      playlists: [{ playlistSlug: "ai-automations", playlistName: "AI Automations" }] },
+    { slug: "aria", creatorName: "Aria Chen", channelName: "Aria Builds", bio: "Ships SaaS in public.",
+      videoCount: 2, lastPublishedAt: "2026-07-28T00:00:00.000Z",
+      topics: [{ label: "SaaS", count: 2 }],
+      playlists: [] },
+  ];
+
+  const topics = A.topicsAcross(creators);
+  assert.equal(topics[0].label, "Pricing", "the most widely covered topic ranks first");
+  assert.equal(topics[0].count, 2, "counted by how many creators cover it, not how often");
+  assert.ok(topics.some((t) => t.label === "SaaS"));
+
+  // Search reaches beyond the name, into channel, bio, topics and playlists.
+  assert.equal(A.browseCreators(creators, { q: "value pricing" }).length, 1, "bio is searchable");
+  assert.equal(A.browseCreators(creators, { q: "ai automations" }).length, 1, "playlist name is searchable");
+  assert.equal(A.browseCreators(creators, { q: "AI TOOLING" }).length, 1, "search is case-insensitive");
+  assert.equal(A.browseCreators(creators, { q: "nothing here" }).length, 0);
+
+  // Topic filter is exact, not substring: "Pricing" must not sweep in "SaaS".
+  const priced = A.browseCreators(creators, { topic: "Pricing" });
+  assert.equal(priced.length, 2, "both creators covering Pricing are kept");
+  assert.ok(!priced.some((c) => c.slug === "aria"), "a creator without the topic is excluded");
+
+  // Sorting, with name as the stable tiebreak.
+  assert.deepEqual(A.browseCreators(creators, { sort: "name" }).map((c) => c.slug), ["aria", "jake", "flux"]);
+  assert.deepEqual(A.browseCreators(creators, { sort: "digests" }).map((c) => c.slug), ["jake", "flux", "aria"]);
+  assert.deepEqual(A.browseCreators(creators, { sort: "recent" }).map((c) => c.slug), ["aria", "flux", "jake"]);
+
+  // Filter and sort compose.
+  assert.deepEqual(
+    A.browseCreators(creators, { topic: "Pricing", sort: "digests" }).map((c) => c.slug),
+    ["jake", "flux"]
+  );
+  console.log("creator directory: OK — search spans bio/topics/playlists, topic filter is exact, sorts are stable");
+}
