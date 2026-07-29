@@ -1,6 +1,8 @@
 ## Why this place exists
 
-Name's Chris Gallego. I've run agencies, produced films, started companies. Three different rackets, same complaint: everything worth knowing is buried in a forty minute video that nobody's going to watch twice, and gone the second the feed moves on.
+Name's Chris Gallego. I produce documentaries, and I co-founded a company that makes steel fence. Two rackets that have nothing to do with each other, which is the point.
+
+They work the same way. Somebody hands you a field you've never worked and you have to be good at it by Tuesday. The people who actually know how are out there talking about it, forty minutes at a time, buried in a feed that forgets them by morning.
 
 I got tired of watching. So I opened a shop that reads instead.
 
@@ -20,7 +22,7 @@ It's also not a replacement for the people I cover. Every digest points back at 
 
 ## Who it's for
 
-People building things. Agencies, SaaS shops, design studios, founders working alone. Anybody who'd rather have last month's good advice in the time it takes to read a few pages than the time it takes to watch a few hours.
+People building things, and people who just got handed something they don't know how to build yet. Founders, operators, studios, anybody who'd rather have last month's good advice in the time it takes to read a few pages than the time it takes to watch a few hours.
 
 ## If something's wrong
 

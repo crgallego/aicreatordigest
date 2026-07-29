@@ -1,6 +1,8 @@
 ## Why this exists
 
-I'm Chris Gallego. I've spent my career building things — I've run agencies, produced films, and started companies. All three jobs have the same problem: the good advice is scattered across a hundred YouTube channels, buried in 40-minute videos, and gone the second the algorithm moves on.
+I'm Chris Gallego. I produce documentaries, and I co-founded a company that builds steel fencing. That is a stranger pair of sentences than it sounds, and it explains this site better than a tidier one would.
+
+Both jobs work the same way: you walk into a field you don't know yet and you have to get good at it fast. The advice for doing that is real, and it's scattered across a hundred YouTube channels, buried in 40-minute videos, and gone the second the algorithm moves on.
 
 I got tired of watching. So I had a pipeline built instead.
 
@@ -10,7 +12,7 @@ I choose the playlists, I decide which videos are worth the cost of analyzing, a
 
 Every video that makes it through gets the same treatment: the transcript goes to an AI pass that pulls out the take-away, the actual tactics, the numbers, and the quotes worth keeping, and then I edit it. No paraphrasing away what a creator actually said. If they gave a number, the number stays. If they named a framework, the framework keeps its name.
 
-When enough videos land in one collection, I write a consensus guide — where the creators agree, and where they don't. That second part matters to me. Most "best practices" roundups smooth over disagreement to sound authoritative. I'd rather show you the actual argument.
+When enough videos land in one collection, there's a consensus guide: where the creators agree, and where they don't. That second part matters to me. Most "best practices" roundups smooth over disagreement to sound authoritative. I'd rather show you the actual argument.
 
 ## What this isn't
 
@@ -20,7 +22,7 @@ It's also not a replacement for the creators I cover. Every digest links back to
 
 ## Who it's for
 
-People building things — agencies, SaaS products, web design studios, solo founders — who want the last month's worth of good YouTube advice in the time it takes to read a few pages, not watch a few hours.
+People building things, or people who have just been handed something they don't know how to build yet. Founders, operators, studios, anyone who wants the last month's worth of good YouTube advice in the time it takes to read a few pages, not watch a few hours.
 
 ## Get in touch
 
