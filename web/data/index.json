@@ -1,7 +1,135 @@
 {
   "site": "AI Creator Digest",
-  "updatedAt": "",
-  "playlists": {},
-  "creators": {},
-  "videos": []
+  "updatedAt": "2026-07-29T15:54:16.770Z",
+  "playlists": {
+    "codex-strategies": {
+      "slug": "codex-strategies",
+      "name": "Codex Strategies",
+      "playlistId": "PL-79AAEwfoR0pDlmU9-QT7Lax1mB8xzmW",
+      "firstSeenAt": "2026-07-29T15:54:16.747Z",
+      "consensusUpdatedAt": "2026-07-29T15:54:16.747Z",
+      "consensusSummary": "One creator anchors this collection so far: Silicon Valley Girl’s interview with OpenAI’s Tibo (ChatGPT, Codex, APIs). The through-line is narrow and concrete—agents are crossing from early-adopter le",
+      "videoCount": 1,
+      "creatorCount": 1
+    }
+  },
+  "creators": {
+    "silicon-valley-girl": {
+      "slug": "silicon-valley-girl",
+      "creatorName": "Silicon Valley Girl",
+      "channelName": "Silicon Valley Girl",
+      "channelUrl": "https://www.youtube.com/channel/UCNjPtOCvMrKY5eLwr_-7eUg",
+      "bio": "Silicon Valley Girl interviews AI and tech leaders and translates what they ship into workflows for knowledge workers, creators, and non-engineers. She covers agents, vibe coding, and day-to-day AI productivity, and runs a free newsletter on tools and career strategy. Worth following if you want practitioner demos with the people building the stack, not just commentary.",
+      "image": "https://yt3.ggpht.com/GyB-y4OaSnY_0JkaC3Na-Ib7O3iDPBIzujw6hUwddDkmlxXwcONWWRJVRdDJqAeAIvBjs6ax=s800-c-k-c0x00ffffff-no-rj",
+      "firstSeenAt": "2026-07-29T15:54:16.747Z",
+      "videoCount": 1,
+      "topics": [
+        {
+          "label": "AI Agents",
+          "count": 1
+        },
+        {
+          "label": "Codex",
+          "count": 1
+        },
+        {
+          "label": "Knowledge Work",
+          "count": 1
+        },
+        {
+          "label": "Productivity",
+          "count": 1
+        },
+        {
+          "label": "Vibe Coding",
+          "count": 1
+        }
+      ],
+      "playlists": [
+        {
+          "playlistSlug": "codex-strategies",
+          "playlistName": "Codex Strategies"
+        }
+      ],
+      "lastPublishedAt": "2026-07-29T15:54:04.635Z"
+    }
+  },
+  "videos": [
+    {
+      "slug": "head-of-chatgpt-codex-agents-for-normal-people-are-here",
+      "path": "playlists/codex-strategies/videos/head-of-chatgpt-codex-agents-for-normal-people-are-here.md",
+      "videoId": "DPe_srf0GlI",
+      "title": "Head of ChatGPT & Codex: agents for normal people are HERE",
+      "videoUrl": "https://www.youtube.com/watch?v=DPe_srf0GlI",
+      "videoDuration": "",
+      "playlistSlug": "codex-strategies",
+      "playlistName": "Codex Strategies",
+      "creatorSlug": "silicon-valley-girl",
+      "creatorName": "Silicon Valley Girl",
+      "creatorImage": "https://yt3.ggpht.com/GyB-y4OaSnY_0JkaC3Na-Ib7O3iDPBIzujw6hUwddDkmlxXwcONWWRJVRdDJqAeAIvBjs6ax=s800-c-k-c0x00ffffff-no-rj",
+      "embeddable": true,
+      "channelName": "Silicon Valley Girl",
+      "channelUrl": "https://www.youtube.com/channel/UCNjPtOCvMrKY5eLwr_-7eUg",
+      "keyTakeaway": "OpenAI’s head of ChatGPT and Codex says agents are finally reliable enough that non-technical knowledge workers will get the same leverage early adopters spent two years earning—within months, not years.",
+      "executiveSummary": "Silicon Valley Girl interviews Tibo, who runs ChatGPT, Codex, and the APIs at OpenAI, on why agents are crossing from technical early adopters into ordinary knowledge work. The conversation is a live working session as much as a talk: they run Codex against email, calendar, computer use, and a half-built content app while Tibo explains what matured (long-horizon reliability, browser/computer use, 100+ plugins, auto-review safety) and what still needs packaging. It responds to the gap between software engineering’s AI transformation—Google’s 75% AI-written code is the reference point—and everyone else’s still-manual research, inbox, and ops load. Tibo’s through-line is augmentation with humans still on the hook, plus a near-term shift of agent memory and files into the cloud so the same assistant follows you across devices.",
+      "summary": "Silicon Valley Girl interviews OpenAI’s Tibo (ChatGPT, Codex, APIs) on agents becoming reliable for non-technical knowledge workers within months. They demo live Codex workflows—scheduled research, inbox/calendar agents, computer use, skill creator—while he argues humans stay responsible and prompting skill stops being the main moat.",
+      "description": "Silicon Valley Girl talks with OpenAI’s Tibo on ChatGPT Codex agents for knowledge workers, auto review, and live workflows.",
+      "categories": [
+        "AI Agents",
+        "Codex",
+        "Knowledge Work",
+        "Productivity",
+        "Vibe Coding"
+      ],
+      "keyPointTitles": [
+        "Agents finally work for regular people",
+        "Knowledge work shifts in six months",
+        "Marketer day compressed by schedules",
+        "Auto review unlocks longer autonomy",
+        "Local files give way to cloud memory",
+        "Tone of voice needs examples",
+        "Vibe coding still needs tech for scale",
+        "Humans stay on the hook",
+        "Half of Codex use is non-code",
+        "Prompt skill stops being the moat"
+      ],
+      "readTimeMinutes": 6,
+      "hasEditorNote": true,
+      "featuredPeople": [
+        {
+          "name": "Tibo",
+          "role": "interviewee",
+          "links": []
+        }
+      ],
+      "creatorLinks": [
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/silicon.valley.girl/",
+          "handle": "silicon.valley.girl"
+        },
+        {
+          "platform": "X",
+          "url": "https://x.com/linguamarina",
+          "handle": "linguamarina"
+        },
+        {
+          "platform": "LinkedIn",
+          "url": "https://www.linkedin.com/in/linguamarina/",
+          "handle": "linguamarina"
+        }
+      ],
+      "run": {
+        "model": "grok-4.5",
+        "seconds": 68.2,
+        "promptTokens": 8515,
+        "completionTokens": 2263,
+        "totalTokens": 12744,
+        "costUsd": null,
+        "ranAt": "2026-07-29T15:26:23.106Z"
+      },
+      "addedAt": "2026-07-29T15:54:04.635Z",
+      "updatedAt": "2026-07-29T15:54:04.635Z"
+    }
+  ]
 }
