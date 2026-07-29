@@ -2,11 +2,13 @@
 
 I'm Chris Gallego. I've spent my career building things — I've run agencies, produced films, and started companies. All three jobs have the same problem: the good advice is scattered across a hundred YouTube channels, buried in 40-minute videos, and gone the second the algorithm moves on.
 
-I got tired of watching. So I built a pipeline instead.
+I got tired of watching. So I had a pipeline built instead.
 
 ## What I actually do
 
-Every video that goes into a playlist here gets the same treatment: I pull the transcript, run it through an AI pass that pulls out the take-away, the actual tactics, the numbers, the quotes worth keeping — and I write it up. No paraphrasing away what a creator actually said. If they gave a number, the number stays. If they named a framework, the framework keeps its name.
+I choose the playlists, I decide which videos are worth the cost of analyzing, and I edit and approve every digest before it goes anywhere. The software that does the mechanical part was built by Claude, from my direction; the [build story](/how-this-works) is explicit about which parts of this are mine and which aren't.
+
+Every video that makes it through gets the same treatment: the transcript goes to an AI pass that pulls out the take-away, the actual tactics, the numbers, and the quotes worth keeping, and then I edit it. No paraphrasing away what a creator actually said. If they gave a number, the number stays. If they named a framework, the framework keeps its name.
 
 When enough videos land in one collection, I write a consensus guide — where the creators agree, and where they don't. That second part matters to me. Most "best practices" roundups smooth over disagreement to sound authoritative. I'd rather show you the actual argument.
 

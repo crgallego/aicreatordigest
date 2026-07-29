@@ -1,6 +1,6 @@
 ## The short version
 
-I read a video's transcript, ask an AI model to pull out the structure — takeaway, key points, tactics, quotes — and then I edit that draft myself and look at the finished page before anything publishes. Nothing goes live that I haven't personally approved. When a collection has enough videos in it, I write a consensus guide showing where those creators agree and where they don't. That's the whole system.
+A video's transcript goes to an AI model, which pulls out the structure: takeaway, key points, tactics, quotes. Then I edit that draft myself and look at the finished page before anything publishes. Nothing goes live that I haven't personally approved. When a collection has enough videos in it, I write a consensus guide showing where those creators agree and where they don't. That's the whole system.
 
 ## Step by step
 
@@ -8,15 +8,15 @@ I read a video's transcript, ask an AI model to pull out the structure — takea
 
 **2. I pick which videos are worth it.** Once a day, new videos from those playlists show up in a queue for me to triage: process it now, snooze it for a few days, or drop it entirely. Analyzing a video costs real money, so nothing gets processed just for being new. There's a hard cap on how many can sit waiting at once, which keeps the queue something I actually get through instead of a backlog I start ignoring.
 
-**3. The transcript goes to an AI model, with instructions.** I use xAI's Grok to turn a raw transcript into a structured digest: one key takeaway, the specific points the creator made, any named tactic or framework (with the real numbers attached), and the quotes worth keeping verbatim. The instructions are explicit about two things — preserve the creator's actual language instead of paraphrasing it into mush, and never fabricate a number, a timestamp, or a claim that isn't in the transcript. If the data isn't there, the digest just leaves it out instead of guessing.
+**3. The transcript goes to an AI model, with instructions.** The pipeline uses xAI's Grok to turn a raw transcript into a structured digest: one key takeaway, the specific points the creator made, any named tactic or framework (with the real numbers attached), and the quotes worth keeping verbatim. The instructions are explicit about two things — preserve the creator's actual language instead of paraphrasing it into mush, and never fabricate a number, a timestamp, or a claim that isn't in the transcript. If the data isn't there, the digest just leaves it out instead of guessing.
 
 **4. I edit the draft, then I look at the real page.** The AI's output is a draft, not a publication. I rewrite whatever needs rewriting — the takeaway, any key point, the whole tactics section — and I can delete anything entirely; an emptied section means "leave this out," not "fall back to what the AI said." Then I preview it, and the preview isn't a mockup: it's this site's own page template rendering the unpublished draft, so what I approve is exactly what ships. Only then does it publish.
 
 **5. Where I add my own take, it says so.** When I have something to add that the creator didn't say, it goes in a clearly marked section under my name, visually separated from the summary. You should always be able to tell which sentences came from the video and which came from me.
 
-**6. Every digest is a real markdown file in a public repo.** Nothing here lives in a private database. You can read the raw file on GitHub, you can see exactly what changed and when, and you can open an issue against a specific line if something's off.
+**6. Every digest is a real markdown file in a public repo.** Nothing here lives in a private database. You can read the raw file on GitHub, you can see exactly what changed and when, and you can open an issue against a specific line if something's off. The same repository holds the software, which was built by Claude rather than by me. The [build story](/how-this-works) says which parts of this project are my work and which aren't.
 
-**7. Consensus guides get rewritten as a playlist grows.** Once a few videos are in a collection, I synthesize what they collectively agree on — and just as importantly, what they don't. I'd rather show you three creators actually disagreeing about test coverage or design-system guardrails than flatten it into fake consensus.
+**7. Consensus guides get rewritten as a playlist grows.** Once a few videos are in a collection, a synthesis pass draws out what they collectively agree on — and just as importantly, what they don't. I'd rather show you three creators actually disagreeing about test coverage or design-system guardrails than flatten it into fake consensus.
 
 ## About the links to people
 

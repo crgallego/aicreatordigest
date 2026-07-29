@@ -4,7 +4,11 @@ I'm Chris Gallego. I've spent my career building things: agencies, films, and co
 
 ## What I actually do here
 
-I curate the playlists, I write the pipeline that turns transcripts into digests, and I make the final editorial call on every piece before it publishes. The AI does the first pass; I do the last one. When you read "Chris's take" on a digest page, that's a real note I wrote, not something generated on my behalf.
+I curate the playlists, I set the editorial rules, and I make the final call on every piece before it publishes. I decide what this thing is allowed to do and what it must never do, and I say no a lot.
+
+What I don't do is write the software. The pipeline was built by Claude, working in Claude Code, from my direction and my arguments about how it should behave. The engineering and the debugging are its work. The judgment calls, the refusals, and the editorial line are mine. An earlier version of this page said I wrote the pipeline. That wasn't true, and the [build story](/how-this-works) now splits the credit properly.
+
+When you read "My Thoughts" on a digest page, that is a real note I wrote, not something generated on my behalf. That part has always been true and it's the part I'd most want you to hold me to.
 
 ## Why I build in public
 
