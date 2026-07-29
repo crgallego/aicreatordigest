@@ -104,6 +104,9 @@ export default async (req) => {
     ]);
     if (avatar) shaped.creatorImage = avatar.imageUrl;
     shaped.embeddable = embeddable;
+    // Logged because both are silent when they fail: a missing avatar and a
+    // refused embed look identical to an unset API key from the outside.
+    console.log(`YouTube lookups: avatar=${avatar ? "found" : "none"} embeddable=${embeddable}`);
 
     const draftKey = meta.videoId;
     const store = getStore(DRAFTS_STORE);
