@@ -26,6 +26,7 @@ const SUITES = [
   ["webapp-auth", "Telegram initData verification and preview tokens"],
   ["transcript-sources", "vendor-first transcript chain, with the free library as fallback"],
   ["timestamps", "anchors matched against caption segments, never guessed"],
+  ["watchdog", "silent losses are noticed, recovered once, and reported exactly once"],
 ];
 
 function runSuite(name) {

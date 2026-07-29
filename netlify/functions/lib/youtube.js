@@ -62,6 +62,45 @@ export async function fetchChannelAvatar(channelUrl) {
 }
 
 /**
+ * Returns { title, description, channelId, channelTitle, channelUrl } or null.
+ *
+ * Used only by the watchdog, to rebuild the metadata of a video whose analysis
+ * was lost in transit. Make deletes the candidate record the moment it fires
+ * the analysis, so by the time anything notices the loss, the title and channel
+ * are gone with it. YouTube is the one place they can still be recovered from
+ * a bare video id — and recovering them is what makes an automatic retry
+ * possible instead of just an apology.
+ */
+export async function fetchVideoDetails(videoId) {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key || !videoId) return null;
+
+  try {
+    const url = `${VIDEOS_API}?part=snippet&id=${encodeURIComponent(videoId)}&key=${encodeURIComponent(key)}`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.warn(`YouTube videos.list(snippet) failed (${res.status}) for ${videoId}`);
+      return null;
+    }
+
+    const snippet = (await res.json())?.items?.[0]?.snippet;
+    if (!snippet) return null;
+
+    const channelId = snippet.channelId || "";
+    return {
+      title: snippet.title || "",
+      description: snippet.description || "",
+      channelId,
+      channelTitle: snippet.channelTitle || "",
+      channelUrl: channelId ? `https://www.youtube.com/channel/${channelId}` : "",
+    };
+  } catch (err) {
+    console.warn("Could not resolve video details:", err.message);
+    return null;
+  }
+}
+
+/**
  * Whether a video may be embedded on another site.
  *
  * Returns true only when YouTube explicitly says so. A missing key, a failed
