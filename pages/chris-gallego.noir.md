@@ -6,7 +6,9 @@ Before that, and still: I produced a feature documentary called **VINNIE PLAYS V
 
 I also co-founded an outfit that builds non-combustible steel fence. My cousin and I started it. Nobody sees that one coming and I've stopped explaining it.
 
-May of 2026 I sat down on *That's Right with Chris Voss*, shot in Beverly Hills, went out on ABC, CBS, NBC and Fox affiliates. Tactical empathy in business, and building fences that don't burn in the places that already did. That one meant more to me than it looks like in print.
+May of 2026 I was the guest on *That's Right with Chris Voss*. Emmy Award-winning crew running the room, Beverly Hills, went out on ABC, CBS, NBC and Fox affiliates. Tactical empathy in business, and building the kind of fence that doesn't burn in the places that already did.
+
+Straight about it, because straight is the house style: the Emmys are theirs. I'm the man they pointed the cameras at. Still one of the better days I've had.
 
 Picked up Best Documentary Producer in Los Angeles for 2025 while I was at it.
 
