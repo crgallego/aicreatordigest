@@ -37,6 +37,21 @@ export async function sendMessage(chatId, text, { buttons } = {}) {
   return result.message_id;
 }
 
+/** Sends a photo with an HTML caption and optional inline keyboard buttons.
+ * Used for "unprocessed" cards (candidate queue, draft review) so they stand
+ * out visually from the plain-text history lines left behind after a
+ * decision. Returns the sent message's id. */
+export async function sendPhoto(chatId, photoUrl, caption, { buttons } = {}) {
+  const result = await call("sendPhoto", {
+    chat_id: chatId,
+    photo: photoUrl,
+    caption: caption.length > 1024 ? `${caption.slice(0, 1021)}...` : caption,
+    parse_mode: "HTML",
+    ...(buttons ? { reply_markup: { inline_keyboard: buttons } } : {}),
+  });
+  return result.message_id;
+}
+
 /** Edits an existing message's text, typically to reflect a decision
  * (published / rejected) and to remove its buttons. */
 export async function editMessageText(chatId, messageId, text, { buttons } = {}) {

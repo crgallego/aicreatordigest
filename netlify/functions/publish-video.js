@@ -124,7 +124,10 @@ export const handler = async (event) => {
     if (chatId && messageId) {
       try {
         await deleteMessage(chatId, messageId);
-        await sendMessage(chatId, `✅ <b>Published:</b> ${draft.meta.videoTitle}\n${result.url}`);
+        const lines = [`✅ <b>Published:</b> ${draft.meta.videoTitle}`, draft.meta.channelName, result.url].filter(
+          Boolean
+        );
+        await sendMessage(chatId, lines.join("\n"));
       } catch (err) {
         console.error("Telegram confirmation failed (video was still published):", err.message);
       }

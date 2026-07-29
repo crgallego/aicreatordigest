@@ -51,7 +51,10 @@ export const handler = async (event) => {
     if (chatId && messageId) {
       try {
         await deleteMessage(chatId, messageId);
-        await sendMessage(chatId, `❌ <b>Rejected:</b> ${draft?.meta?.videoTitle || draftKey}`);
+        const lines = [`❌ <b>Rejected:</b> ${draft?.meta?.videoTitle || draftKey}`, draft?.meta?.channelName].filter(
+          Boolean
+        );
+        await sendMessage(chatId, lines.join("\n"));
       } catch (err) {
         console.error("Telegram confirmation failed:", err.message);
       }

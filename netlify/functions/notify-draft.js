@@ -3,8 +3,9 @@
  * https://aicreatordigest.com
  *
  * Called by Make right after it creates and shares the Google Doc for a
- * draft (see analyze-video.js for the step before this one). Sends a
- * condensed summary + a link to the Doc + Approve/Reject buttons.
+ * draft (see analyze-video.js for the step before this one). Sends the
+ * video's thumbnail with a condensed summary caption + a link to the Doc +
+ * Approve/Reject buttons.
  *
  * Also records docUrl onto the stored draft (Blobs) so the publish webhook
  * can find it later. Your editorial note lives inside the Doc itself (its
@@ -17,7 +18,7 @@
  */
 
 import { getStore } from "@netlify/blobs";
-import { sendMessage, escapeTelegramHtml } from "./lib/telegram.js";
+import { sendPhoto, escapeTelegramHtml } from "./lib/telegram.js";
 import { header, parseRequestBody, json, respond } from "./lib/pipeline.js";
 
 const DRAFTS_STORE = "aicd-drafts";
@@ -72,7 +73,7 @@ export const handler = async (event) => {
     const categories = (payload.categories || draft.shaped.categories || []).join(", ");
     const readTime = payload.readTimeMinutes || draft.shaped.readTimeMinutes || 1;
 
-    const text = [
+    const caption = [
       `<b>${title}</b>`,
       `${creatorName} · ${playlistName}`,
       "",
@@ -82,8 +83,6 @@ export const handler = async (event) => {
       `~${readTime} min read`,
       "",
       `📝 <a href="${docUrl}">Review or edit the full draft</a>`,
-      "",
-      "Edit anything in the doc — including the Editor's Note section at the bottom for your own take — then tap Approve when ready.",
     ]
       .filter(Boolean)
       .join("\n");
@@ -95,7 +94,8 @@ export const handler = async (event) => {
       ],
     ];
 
-    const messageId = await sendMessage(process.env.TELEGRAM_CHAT_ID, text, { buttons });
+    const thumbnailUrl = `https://i.ytimg.com/vi/${draft.meta.videoId}/hqdefault.jpg`;
+    const messageId = await sendPhoto(process.env.TELEGRAM_CHAT_ID, thumbnailUrl, caption, { buttons });
 
     return json(200, { ok: true, draftKey, messageId });
   } catch (err) {
