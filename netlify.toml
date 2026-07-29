@@ -10,6 +10,11 @@
 
 [functions]
   node_bundler = "esbuild"
+  # @netlify/blobs must stay unbundled: it reads its configuration from the
+  # context Netlify injects at runtime, and bundling it can detach it from
+  # that context, producing "The environment has not been configured to use
+  # Netlify Blobs" on an otherwise healthy deploy.
+  external_node_modules = ["@netlify/blobs"]
 
 [functions."process-video"]
   # Honoured on plans that allow extended synchronous function timeouts.
