@@ -38,6 +38,7 @@ export const run = async (event) => {
       meta: draft.meta,
       shaped: draft.shaped,
       editorNote: draft.editorNote || "",
+      run: draft.run,
     });
 
     return {

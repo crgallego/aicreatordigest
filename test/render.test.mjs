@@ -38,8 +38,11 @@ assert.equal(vData.tactics.length, 1);
 assert.equal(vData.tactics[0].kind, "pricing");
 
 assert.equal(vData.quotes.length, 2);
+// Timestamps are never taken from the model, only matched against timed
+// caption segments. These fixtures are generated without segments, so both
+// quotes correctly carry no timestamp even though the stub model offered one.
 assert.equal(vData.quotes[0].at, "", "quote with no discernible timestamp must stay empty, never fabricated");
-assert.equal(vData.quotes[1].at, "14:22");
+assert.equal(vData.quotes[1].at, "", "a model-supplied timestamp must be discarded, not trusted");
 
 console.log("video frontmatter (structured content as data, not parsed markdown): OK");
 

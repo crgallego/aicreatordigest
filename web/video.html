@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="key-point">
           <span class="n">${String(i + 1).padStart(2, "0")}</span>
           <div>
-            <h3>${A.escapeHtml(p.title || "")}</h3>
+            <h3>${A.escapeHtml(p.title || "")}${p.atUrl ? ` <a class="at-link" href="${A.escapeHtml(p.atUrl)}" target="_blank" rel="noopener" title="Play the video from here">${A.escapeHtml(p.at)}</a>` : ""}</h3>
             <p>${A.escapeHtml(p.body || "")}</p>
             ${p.thought ? `<p class="point-thought"><span class="who">Chris</span>${A.escapeHtml(p.thought)}</p>` : ""}
           </div>
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="tactic">
           <span class="kind">${A.escapeHtml(t.kind || "")}</span>
           <div>
-            <div class="title">${A.escapeHtml(t.title || "")}</div>
+            <div class="title">${A.escapeHtml(t.title || "")}${t.atUrl ? ` <a class="at-link" href="${A.escapeHtml(t.atUrl)}" target="_blank" rel="noopener" title="Play the video from here">${A.escapeHtml(t.at)}</a>` : ""}</div>
             <p>${A.escapeHtml(t.body || "")}</p>
           </div>
         </div>`
@@ -239,7 +239,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         (q) => `
         <div class="quote">
           <p>"${A.escapeHtml(String(q.text || "").replace(/^["“]|["”]$/g, ""))}"</p>
-          ${q.at ? `<span class="at">— ${A.escapeHtml(q.at)}</span>` : ""}
+          ${q.at ? (q.atUrl
+              ? `<a class="at at-link" href="${A.escapeHtml(q.atUrl)}" target="_blank" rel="noopener" title="Play the video from here">— ${A.escapeHtml(q.at)}</a>`
+              : `<span class="at">— ${A.escapeHtml(q.at)}</span>`) : ""}
         </div>`
       )
       .join("");
@@ -281,6 +283,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     ["digest", `${A.readTimeLabel(meta)} read`],
     meta.categories && meta.categories.length ? ["topics", meta.categories.join(", ")] : null,
     meta.updatedAt ? ["synthesized", A.formatDateLong(meta.updatedAt)] : null,
+    meta.run && meta.run.model ? ["model", meta.run.model] : null,
+    meta.run && meta.run.seconds ? ["analysis time", `${meta.run.seconds}s`] : null,
+    meta.run && meta.run.totalTokens ? ["tokens", meta.run.totalTokens.toLocaleString()] : null,
+    meta.run && meta.run.costUsd ? ["cost", `$${meta.run.costUsd.toFixed(4)}`] : null,
   ]
     .filter(Boolean)
     .map(([k, v]) => `<span>${A.escapeHtml(k)}: <span class="v">${A.escapeHtml(v)}</span></span>`)

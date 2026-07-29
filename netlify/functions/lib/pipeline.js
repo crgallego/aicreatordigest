@@ -12,6 +12,8 @@
  * See each function's own file for its environment variables.
  */
 
+import { resolveTimestamps } from "./timestamps.js";
+
 const XAI_URL = "https://api.x.ai/v1/chat/completions";
 // xAI accepted the dashed alias "grok-4-5" until 2026-07-29, then began
 // rejecting it with "Model not found". The dotted id is what /v1/models
@@ -74,6 +76,9 @@ export function normalizePayload(p) {
     playlistSlug,
     transcript,
     transcriptTruncated: truncated,
+    // Timed caption segments, kept so timestamps can be re-derived whenever the
+    // content is edited, exactly as social links are.
+    segments: Array.isArray(p.segments) ? p.segments : [],
   };
 }
 
@@ -190,8 +195,19 @@ async function callXai(userPrompt, { label, model }) {
   if (!parsed) {
     throw httpError(502, `xAI ${label} call returned unparseable JSON: ${content.slice(0, 400)}`);
   }
-  console.log(`xAI ${label} via ${chosen} took ${Date.now() - startedAt}ms`);
-  return parsed;
+  const tookMs = Date.now() - startedAt;
+  console.log(`xAI ${label} via ${chosen} took ${tookMs}ms`);
+
+  // Token counts come from the API's own usage block. Nothing here is
+  // estimated: if xAI does not report it, it is not published.
+  const u = data?.usage || {};
+  const usage = {
+    promptTokens: Number(u.prompt_tokens) || null,
+    completionTokens: Number(u.completion_tokens) || null,
+    totalTokens: Number(u.total_tokens) || null,
+  };
+
+  return { data: parsed, usage, model: chosen, tookMs };
 }
 
 export async function analyzeTranscript(meta, { model } = {}) {
@@ -218,17 +234,18 @@ Return ONLY this JSON object:
   "keyTakeaway": "ONE sentence capturing the single most useful thing this video gives the reader.",
   "executiveSummary": "3-5 sentences of flowing prose that ground a reader who knows nothing about this video before they reach the points below. Cover who the creator is and what standing they have on this subject, what the video actually sets out to do, the setting or occasion where it matters (an interview, a teardown, a lesson, a conference talk, a live build), what problem or moment it is responding to, and how they go about it. Write it as a paragraph, never as a list or as labelled who/what/why fields. Do not restate the key takeaway. Use only what is in the transcript — if the setting or the creator's background genuinely is not discoverable, write around it rather than guessing.",
   "keyPoints": [
-    { "title": "A short phrase naming the point (4-8 words)", "body": "1-3 sentences developing it in the creator's own framing, with their real numbers and examples kept intact." }
+    { "title": "A short phrase naming the point (4-8 words)", "body": "1-3 sentences developing it in the creator's own framing, with their real numbers and examples kept intact.", "anchor": "A verbatim run of 8-15 words copied exactly from the transcript where this point is made. Copy it character for character, do not paraphrase or tidy it. This is used to link the reader to that moment in the video, so an inexact copy simply loses the link." }
   ],
   "tactics": [
     {
       "kind": "A short lowercase label for what type of tactic this is, e.g. workflow, review, pricing, guardrail, measurement, framework",
       "title": "The name the creator gives this process or system — or a faithful short name if they don't name it",
-      "body": "1-3 sentences on what it is and how to apply it, with any real numbers, prices, or timeframes the creator attaches to it."
+      "body": "1-3 sentences on what it is and how to apply it, with any real numbers, prices, or timeframes the creator attaches to it.",
+      "anchor": "A verbatim run of 8-15 words copied exactly from the transcript where this tactic is described. Copy it character for character."
     }
   ],
   "quotes": [
-    { "text": "A memorable line worth preserving verbatim, exactly as spoken (light cleanup of filler words only)", "at": "A timestamp like '12:34' ONLY if one genuinely appears in the transcript near this line. Otherwise an empty string — never guess a timestamp." }
+    { "text": "A memorable line worth preserving verbatim, exactly as spoken (light cleanup of filler words only)" }
   ],
   "categories": ["2-5 short topic tags in Title Case, e.g. Pricing, Positioning, AI Tooling, Client Acquisition"],
   "summary": "2-3 sentences summarizing the video for listing pages and the playlist consensus guide.",
@@ -240,11 +257,21 @@ Return ONLY this JSON object:
 
 Produce 6-10 keyPoints, 2-5 tactics, 2-5 quotes. featuredPeople should be empty unless someone other than the channel's own creator is genuinely a focus of the video (an interview, a panel, a profile) — do not list every name that gets mentioned once. Never include a social media handle or profile URL for anyone; only their name and role. Return valid JSON only. No markdown fences, no commentary.`;
 
-  const analysis = await callXai(prompt, { label: "analysis", model });
-  if (!analysis.keyTakeaway && !asArray(analysis.keyPoints).length) {
+  const { data, usage, model: usedModel, tookMs } = await callXai(prompt, { label: "analysis", model });
+
+  if (!data.keyTakeaway && !asArray(data.keyPoints).length) {
     throw httpError(502, "xAI analysis was missing required fields");
   }
-  return analysis;
+
+  return {
+    analysis: data,
+    run: {
+      model: usedModel,
+      tookMs,
+      usage,
+      ranAt: new Date().toISOString(),
+    },
+  };
 }
 
 export async function synthesizeConsensus(meta, videos, { model } = {}) {
@@ -289,7 +316,7 @@ Return ONLY this JSON object:
 
 Return valid JSON only. No markdown fences, no commentary.`;
 
-  const consensus = await callXai(prompt, { label: "consensus", model });
+  const { data: consensus } = await callXai(prompt, { label: "consensus", model });
   if (!asArray(consensus.agree).length) {
     throw httpError(502, "xAI consensus returned no agreement points");
   }
@@ -311,13 +338,16 @@ export function shapeAnalysis(analysis, meta = {}) {
   // is what lets the published page attribute it to him without qualification.
   const keyPoints = asArray(analysis.keyPoints)
     .filter((p) => p && (p.title || p.body))
-    .map((p) => ({ title: clean(p.title), body: clean(p.body), thought: "" }));
+    .map((p) => ({ title: clean(p.title), body: clean(p.body), anchor: clean(p.anchor), at: "", thought: "" }));
   const tactics = asArray(analysis.tactics)
     .filter((t) => t && (t.title || t.body))
-    .map((t) => ({ kind: clean(t.kind), title: clean(t.title), body: clean(t.body) }));
+    .map((t) => ({ kind: clean(t.kind), title: clean(t.title), body: clean(t.body), anchor: clean(t.anchor), at: "" }));
   const quotes = asArray(analysis.quotes)
     .filter((q) => q && q.text)
-    .map((q) => ({ text: clean(q.text), at: clean(q.at) }));
+    // Any `at` the model volunteers is discarded: it cannot know one, because
+    // the transcript it sees carries no timing. Timestamps are resolved from
+    // the caption segments in resolveTimestamps instead.
+    .map((q) => ({ text: clean(q.text), at: "" }));
   const categories = asArray(analysis.categories).map(clean).filter(Boolean).slice(0, 8);
   const featuredNames = asArray(analysis.featuredPeople)
     .filter((p) => p && p.name)
@@ -340,6 +370,15 @@ export function shapeAnalysis(analysis, meta = {}) {
     ...quotes.map((q) => q.text),
   ]);
 
+  const resolved = resolveTimestamps(
+    {
+      keyPoints,
+      tactics,
+      quotes,
+    },
+    { segments: meta.segments, videoUrl: meta.videoUrl, videoId: meta.videoId }
+  );
+
   return {
     creatorName: clean(analysis.creatorName),
     creatorBio: clean(analysis.creatorBio),
@@ -347,9 +386,9 @@ export function shapeAnalysis(analysis, meta = {}) {
     executiveSummary: clean(analysis.executiveSummary),
     summary: clean(analysis.summary),
     seoDescription: clean(analysis.seoDescription),
-    keyPoints,
-    tactics,
-    quotes,
+    keyPoints: resolved.keyPoints,
+    tactics: resolved.tactics,
+    quotes: resolved.quotes,
     categories,
     featuredPeople,
     creatorLinks,
@@ -392,15 +431,31 @@ export function applyDraftEdits(draft, edits) {
     executiveSummary: clean(edits.executiveSummary),
     keyPoints: asArray(edits.keyPoints)
       .filter((p) => clean(p.title) || clean(p.body))
-      .map((p) => ({ title: clean(p.title), body: clean(p.body), thought: clean(p.thought) })),
-    tactics: asArray(edits.tactics).filter((t) => clean(t.title) || clean(t.body)),
-    quotes: asArray(edits.quotes).filter((q) => clean(q.text)),
+      .map((p) => ({ title: clean(p.title), body: clean(p.body), anchor: clean(p.anchor), thought: clean(p.thought) })),
+    tactics: asArray(edits.tactics)
+      .filter((t) => clean(t.title) || clean(t.body))
+      .map((t) => ({ kind: clean(t.kind), title: clean(t.title), body: clean(t.body), anchor: clean(t.anchor) })),
+    quotes: asArray(edits.quotes)
+      .filter((q) => clean(q.text))
+      .map((q) => ({ text: clean(q.text), anchor: clean(q.anchor) })),
     categories: asArray(edits.categories).map(clean).filter(Boolean).slice(0, 8).length
       ? asArray(edits.categories).map(clean).filter(Boolean).slice(0, 8)
       : draft.shaped.categories,
     featuredPeople,
     creatorLinks,
   };
+
+  // Re-derive timestamps from the anchors after editing, so a reworded point
+  // still links to the right moment and a removed anchor loses its link
+  // rather than keeping a stale one.
+  Object.assign(
+    shaped,
+    resolveTimestamps(shaped, {
+      segments: draft.meta.segments,
+      videoUrl: draft.meta.videoUrl,
+      videoId: draft.meta.videoId,
+    })
+  );
 
   shaped.readTimeMinutes = estimateReadMinutes([
     shaped.keyTakeaway,
@@ -422,7 +477,38 @@ export function applyDraftEdits(draft, edits) {
  * its markdown page. Split out of publishVideo so the review preview can
  * build the exact same object without touching GitHub — preview and publish
  * therefore render from identical data by construction, not by convention. */
-export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt }) {
+
+/**
+ * Trims a run down to what is worth publishing, and prices it only when real
+ * per-million-token rates are configured. An unconfigured price yields null,
+ * never an estimate: a made-up cost is as much a fabrication as a made-up
+ * quote. Set XAI_PRICE_IN and XAI_PRICE_OUT in dollars per million tokens.
+ */
+function summariseRun(run) {
+  const usage = run.usage || {};
+  const priceIn = Number(process.env.XAI_PRICE_IN);
+  const priceOut = Number(process.env.XAI_PRICE_OUT);
+
+  let costUsd = null;
+  if (Number.isFinite(priceIn) && Number.isFinite(priceOut) && usage.promptTokens && usage.completionTokens) {
+    costUsd =
+      Number(
+        ((usage.promptTokens / 1e6) * priceIn + (usage.completionTokens / 1e6) * priceOut).toFixed(4)
+      );
+  }
+
+  return {
+    model: run.model || null,
+    seconds: Number.isFinite(run.tookMs) ? Number((run.tookMs / 1000).toFixed(1)) : null,
+    promptTokens: usage.promptTokens ?? null,
+    completionTokens: usage.completionTokens ?? null,
+    totalTokens: usage.totalTokens ?? null,
+    costUsd,
+    ranAt: run.ranAt || null,
+  };
+}
+
+export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt, run }) {
   return {
     slug: videoSlug,
     path: `playlists/${meta.playlistSlug}/videos/${videoSlug}.md`,
@@ -446,6 +532,9 @@ export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt }
     hasEditorNote: Boolean(editorNote),
     featuredPeople: shaped.featuredPeople || [],
     creatorLinks: shaped.creatorLinks || [],
+    // How this digest was produced. Published so a reader can see which model
+    // wrote it and what it cost, rather than taking "AI-assisted" on trust.
+    run: run ? summariseRun(run) : null,
     addedAt,
     updatedAt: nowIso(),
   };
@@ -457,10 +546,10 @@ export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt }
  * before approving is the same markdown that later lands in the repo — only
  * the slug is provisional, since the real one isn't settled until publish.
  */
-export function renderPreviewMarkdown({ meta, shaped, editorNote }) {
+export function renderPreviewMarkdown({ meta, shaped, editorNote, run }) {
   const videoSlug =
     slugify(meta.videoTitle).slice(0, 80).replace(/-+$/, "") || slugify(meta.videoId);
-  const entry = buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt: nowIso() });
+  const entry = buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt: nowIso(), run });
   return buildVideoMarkdown(entry, {
     keyPoints: shaped.keyPoints,
     tactics: shaped.tactics,
@@ -469,7 +558,7 @@ export function renderPreviewMarkdown({ meta, shaped, editorNote }) {
   });
 }
 
-export async function publishVideo({ meta, shaped, editorNote }) {
+export async function publishVideo({ meta, shaped, editorNote, run }) {
   const startedAt = Date.now();
 
   const creatorName = shaped.creatorName || meta.channelName;
@@ -491,7 +580,7 @@ export async function publishVideo({ meta, shaped, editorNote }) {
   const addedAt =
     index.videos.find((v) => v.videoId === meta.videoId)?.addedAt || nowIso();
 
-  const entry = buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt });
+  const entry = buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt, run });
 
   const videoMarkdown = buildVideoMarkdown(entry, {
     keyPoints: shaped.keyPoints,
@@ -597,6 +686,7 @@ function buildVideoMarkdown(entry, { keyPoints, tactics, quotes, editorNote }) {
     editorNote: clean(editorNote),
     featuredPeople: entry.featuredPeople,
     creatorLinks: entry.creatorLinks,
+    run: entry.run,
     readTimeMinutes: entry.readTimeMinutes,
     addedAt: entry.addedAt,
     updatedAt: entry.updatedAt,

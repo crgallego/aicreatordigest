@@ -161,6 +161,7 @@ export const run = async (event) => {
         meta: updated.meta,
         shaped: updated.shaped,
         editorNote: updated.editorNote,
+        run: updated.run,
       });
 
       await store.delete(draftKey);

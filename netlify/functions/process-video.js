@@ -90,7 +90,7 @@ export const handler = async (event) => {
     const meta = normalizePayload(payload);
     console.log(`Processing "${meta.videoTitle}" by ${meta.channelName}`);
 
-    const analysis = await analyzeTranscript(meta);
+    const { analysis, run } = await analyzeTranscript(meta);
     const shaped = shapeAnalysis(analysis, meta);
     const result = await publishVideo({ meta, shaped, editorNote: "" });
 

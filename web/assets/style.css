@@ -419,6 +419,22 @@ section.band {
   margin-bottom: 16px;
 }
 
+/* A jump-to-the-moment link. Present only where the passage was matched
+   against the real caption track, so a missing one means "not located",
+   never "not important". */
+.at-link {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px dotted var(--accent);
+}
+.at-link:hover {
+  color: var(--accent-hover);
+  border-bottom-style: solid;
+}
+
 /* Chris's own response to a key point. Deliberately distinct from the body
    copy above it: this is the one place inside an AI-drafted section where the
    words are his, and a reader should never have to wonder which is which. */

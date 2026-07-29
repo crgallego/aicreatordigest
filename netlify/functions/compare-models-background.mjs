@@ -86,7 +86,7 @@ async function runComparison({ videoId, payload, models }) {
   for (const model of models) {
     const startedAt = Date.now();
     try {
-      const analysis = await analyzeTranscript(meta, { model });
+      const { analysis, run } = await analyzeTranscript(meta, { model });
       const shaped = shapeAnalysis(analysis, meta);
       results.push({
         model,

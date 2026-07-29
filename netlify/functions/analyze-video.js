@@ -65,7 +65,7 @@ export const run = async (event) => {
     const meta = normalizePayload(payload);
     console.log(`Analyzing "${meta.videoTitle}" by ${meta.channelName}`);
 
-    const analysis = await analyzeTranscript(meta);
+    const { analysis, run } = await analyzeTranscript(meta);
     const shaped = shapeAnalysis(analysis, meta);
 
     const draftKey = meta.videoId;

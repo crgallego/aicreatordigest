@@ -75,7 +75,7 @@ export default async (req) => {
     console.log(`Analyzing "${meta.videoTitle}" by ${meta.channelName} via ${model}`);
     const startedAt = Date.now();
 
-    const analysis = await analyzeTranscript(meta, { model });
+    const { analysis, run } = await analyzeTranscript(meta, { model });
     const shaped = shapeAnalysis(analysis, meta);
 
     const draftKey = meta.videoId;
@@ -84,6 +84,7 @@ export default async (req) => {
       meta,
       shaped,
       model, // recorded so a published digest can be traced to the model that wrote it
+      run,   // model, duration and token usage, published with the digest
       createdAt: new Date().toISOString(),
     });
 
