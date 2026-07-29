@@ -2,9 +2,10 @@
  * AI Creator Digest — reject a pending draft
  * https://aicreatordigest.com
  *
- * Called by Make's publish scenario when you tap Reject in Telegram. Deletes
- * the stored draft (nothing was ever committed to GitHub, so there's nothing
- * else to undo) and updates the Telegram message to reflect the decision.
+ * Called by Make when you tap Reject on a draft card. Deletes the stored
+ * draft (nothing was ever committed to GitHub, so there's nothing else to
+ * undo), removes the card, and leaves a one-line history record in its place.
+ * The Mini App editor has its own reject path in review-api.js.
  *
  * Environment variables: TELEGRAM_BOT_TOKEN, MAKE_WEBHOOK_SECRET (optional).
  */

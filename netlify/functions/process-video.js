@@ -3,9 +3,9 @@
  * https://aicreatordigest.com
  *
  * Analyzes a transcript with xAI Grok 4.5 and publishes immediately — no
- * Telegram/Google Docs approval gate. Use this for testing, or if you want
- * to bypass review for trusted content. For the approval-gated flow, Make
- * should call analyze-video.js instead; see that file and publish-video.js.
+ * review gate at all. Use this for testing, or to bypass review for trusted
+ * content. Nothing in production calls it: the reviewed path runs
+ * analyze-video.js, then the Mini App editor (review-api.js).
  *
  * Commits, per run:
  *   playlists/<playlist-slug>/videos/<video-slug>.md   the video digest

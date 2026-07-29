@@ -2,10 +2,12 @@
  * AI Creator Digest — shared pipeline library
  * https://aicreatordigest.com
  *
- * Two entry points share this file:
- *   - process-video.js   analyze THEN publish immediately (no approval gate)
- *   - analyze-video.js   analyze only, for the Telegram/Google-Docs approval flow
- *   - publish-video.js   publish only, given a (possibly human-edited) draft
+ * Shared by every entry point:
+ *   - process-video.js      analyze THEN publish immediately (no approval gate)
+ *   - analyze-video.js      analyze only, storing a draft for review
+ *   - review-api.js         the Mini App editor's backend: load, save, publish, reject
+ *   - preview-markdown.js   renders a draft exactly as it would be published
+ *   - publish-video.js      publish a stored draft as-is, from the card shortcut
  *
  * See each function's own file for its environment variables.
  */
