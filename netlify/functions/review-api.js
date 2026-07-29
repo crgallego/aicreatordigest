@@ -24,6 +24,9 @@ import {
   applyDraftEdits,
   publishVideo,
   parseRequestBody,
+  availableModels,
+  defaultModel,
+  siteUrl,
   json,
   respond,
 } from "./lib/pipeline.js";
@@ -124,7 +127,13 @@ export const run = async (event) => {
     }
 
     if (event.httpMethod === "GET") {
-      return json(200, { ok: true, ...toEditable(draftKey, draft), previewToken: signPreviewToken(draftKey) });
+      return json(200, {
+        ok: true,
+        ...toEditable(draftKey, draft),
+        previewToken: signPreviewToken(draftKey),
+        models: availableModels(),
+        currentModel: draft.model || draft.run?.model || defaultModel(),
+      });
     }
 
     if (event.httpMethod !== "POST") return json(405, { error: "Method not allowed." });
@@ -138,6 +147,38 @@ export const run = async (event) => {
         previewToken: signPreviewToken(draftKey),
         derivedLinks: toEditable(draftKey, updated).derivedLinks,
       });
+    }
+
+    if (action === "reprocess") {
+      const model = String(payload.model || "").trim() || defaultModel();
+      if (!availableModels().includes(model)) {
+        return json(400, { error: `Unknown model: ${model}` });
+      }
+
+      // Re-run analysis in the background, reusing the transcript and caption
+      // segments already stored on the draft. That keeps timestamps resolvable
+      // and avoids paying the transcript vendor a second time for a video we
+      // have already fetched.
+      const { meta } = draft;
+      const res = await fetch(`${siteUrl()}/.netlify/functions/analyze-video-background`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-webhook-secret": process.env.MAKE_WEBHOOK_SECRET || "",
+        },
+        body: JSON.stringify({ ...meta, model }),
+      });
+      if (!res.ok && res.status !== 202) {
+        return json(502, { error: `Could not start reprocessing (${res.status})` });
+      }
+
+      // Clear the current card; the fresh one arrives when analysis finishes.
+      await closeOutCard(
+        draft,
+        `🔄 <b>Reprocessing with ${model}:</b> ${draft.meta.videoTitle}\nThe new draft card will arrive shortly.`
+      );
+
+      return json(200, { ok: true, draftKey, model });
     }
 
     if (action === "reject") {

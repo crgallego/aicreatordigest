@@ -59,7 +59,7 @@ export default async (req) => {
     return new Response("Body is not valid JSON", { status: 400 });
   }
 
-  const missing = ["videoId", "videoTitle", "channelName", "transcript"].filter(
+  const missing = ["videoId", "videoTitle", "channelName"].filter(
     (k) => !String(payload[k] || "").trim()
   );
   if (missing.length) {
@@ -68,12 +68,29 @@ export default async (req) => {
 
   // Everything past this point runs after Netlify has already answered 202,
   // so nothing here can be reported back to Make. Failures go to Telegram.
-  const meta = normalizePayload(payload);
   const model = clean(payload.model) || defaultModel();
+  let meta = normalizePayload(payload);
 
   try {
     console.log(`Analyzing "${meta.videoTitle}" by ${meta.channelName} via ${model}`);
     const startedAt = Date.now();
+
+    // Fetch the transcript here rather than upstream. Doing it inside this
+    // function is what makes timestamps possible: the caption segments carry
+    // the timing, and they are far too bulky to pass through a form-encoded
+    // webhook body. It also means one vendor call instead of two.
+    if (!meta.transcript) {
+      const res = await fetch(
+        `${siteUrl()}/.netlify/functions/fetch-transcript?videoId=${encodeURIComponent(meta.videoId)}`,
+        { headers: { "x-webhook-secret": process.env.MAKE_WEBHOOK_SECRET || "" } }
+      );
+      const data = await res.json();
+      if (!data.transcript) {
+        throw new Error(data.error || `No transcript available for ${meta.videoId}`);
+      }
+      meta = normalizePayload({ ...payload, transcript: data.transcript, segments: data.segments });
+      console.log(`Transcript via ${data.source}: ${data.transcript.length} chars, ${(data.segments || []).length} segments`);
+    }
 
     const { analysis, run } = await analyzeTranscript(meta, { model });
     const shaped = shapeAnalysis(analysis, meta);

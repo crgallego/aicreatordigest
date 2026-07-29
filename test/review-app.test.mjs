@@ -54,6 +54,10 @@ globalThis.fetch = async (url, opts = {}) => {
     }
   }
 
+  if (u.includes("/.netlify/functions/analyze-video-background")) {
+    return { ok: true, status: 202, json: async () => ({}), text: async () => "" };
+  }
+
   if (u.startsWith("https://api.telegram.org/")) {
     const method = u.split("/").pop();
     telegramCalls.push({ method, body: JSON.parse(opts.body) });
@@ -227,3 +231,45 @@ assert.equal(res.statusCode, 404, "preview of a consumed draft should 404");
 console.log("publish: OK — draft consumed, no double-publish, preview retired");
 
 console.log("\nALL REVIEW MINI APP TESTS PASSED");
+
+/* ===================== reprocess with a model picker ===================== */
+{
+  // Set up a fresh draft to regenerate.
+  let r = await analyzeVideo.run({
+    httpMethod: "POST", headers: {},
+    body: JSON.stringify({
+      videoId: "regen01", videoTitle: "Regen Probe", channelName: "Flux Academy",
+      transcript: "transcript ".repeat(60), playlistName: "Premium Websites", playlistSlug: "premium-websites",
+    }),
+  });
+  assert.equal(r.statusCode, 200, "setup analyze: " + r.body);
+
+  // Give it a card, as every real draft has: that is what reprocessing clears.
+  r = await notifyDraft.run({ httpMethod: "POST", headers: {}, body: JSON.stringify({ draftKey: "regen01" }) });
+  assert.equal(r.statusCode, 200, "setup notify: " + r.body);
+
+  // The editor is told which models it may offer, and which wrote this draft.
+  r = await reviewApi.run(req({ method: "GET", query: { draftKey: "regen01" } }));
+  const loaded = JSON.parse(r.body);
+  assert.ok(Array.isArray(loaded.models) && loaded.models.length, "a model list is offered");
+  assert.ok(loaded.currentModel, "the draft reports which model produced it");
+  assert.ok(loaded.models.includes(loaded.currentModel), "the running model is always in the picker");
+
+  // An unknown model is refused rather than passed through to the API.
+  r = await reviewApi.run(req({ body: { draftKey: "regen01", action: "reprocess", model: "definitely-not-a-model" } }));
+  assert.equal(r.statusCode, 400, "an unlisted model must be rejected");
+  assert.ok(JSON.parse(r.body).error.includes("Unknown model"));
+
+  // A valid model starts a background run and clears the current card.
+  const before = telegramCalls.length;
+  r = await reviewApi.run(req({ body: { draftKey: "regen01", action: "reprocess", model: loaded.models[0] } }));
+  assert.equal(r.statusCode, 200, "reprocess: " + r.body);
+  assert.equal(JSON.parse(r.body).model, loaded.models[0]);
+
+  const since = telegramCalls.slice(before);
+  assert.ok(
+    since.some((c) => c.method === "sendMessage" && String(c.body.text).includes("Reprocessing")),
+    "the operator is told regeneration started"
+  );
+  console.log("reprocess: OK — model list offered, unknown models refused, run started and card cleared");
+}

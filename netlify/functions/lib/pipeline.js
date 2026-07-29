@@ -24,6 +24,20 @@ const XAI_MODEL = process.env.XAI_MODEL || "grok-4.5";
 export function defaultModel() {
   return XAI_MODEL;
 }
+
+/**
+ * Models offered in the reprocess picker. Set XAI_MODELS to a comma-separated
+ * list to change what appears without touching code; the current default is
+ * always included so the picker can never omit what is actually running.
+ */
+export function availableModels() {
+  const configured = String(process.env.XAI_MODELS || "")
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean);
+  const list = configured.length ? configured : ["grok-4.5", "grok-4.3", "grok-4.20-0309-non-reasoning"];
+  return [...new Set([XAI_MODEL, ...list])];
+}
 const GITHUB_API = "https://api.github.com";
 
 const MAX_TRANSCRIPT_CHARS = 120000; // ~30k tokens; longer transcripts are trimmed

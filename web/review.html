@@ -195,6 +195,35 @@ textarea { min-height: 76px; }
 
 /* ------------------------------------------------------------------ danger */
 
+.reprocess-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.reprocess-row select {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--tg-text);
+  background: var(--tg-secondary-bg);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+.btn-secondary {
+  flex: none;
+  background: var(--tg-secondary-bg);
+  border: 1px solid var(--tg-link);
+  border-radius: 8px;
+  color: var(--tg-link);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+.btn-secondary:active { opacity: 0.7; }
+
 .danger-zone { padding: 22px 16px 0; }
 .btn-danger {
   width: 100%;
@@ -311,6 +340,16 @@ textarea { min-height: 76px; }
     <h2>Your take</h2>
     <p class="help">Published as Chris's Take, credited separately from the AI summary. Leave empty to omit.</p>
     <textarea id="f-editornote" rows="4"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Regenerate</h2>
+    <p class="help">Not happy with this analysis? Run it again, optionally on a different model. Your edits are discarded and a fresh draft card replaces this one.</p>
+    <div class="reprocess-row">
+      <select id="f-model" aria-label="Model to analyse with"></select>
+      <button class="btn-secondary" id="btn-reprocess">Regenerate</button>
+    </div>
+    <p class="help" id="model-note"></p>
   </div>
 
   <div class="danger-zone">
@@ -673,6 +712,28 @@ textarea { min-height: 76px; }
       el(id).addEventListener("input", markDirty);
     });
 
+    el("btn-reprocess").addEventListener("click", () => {
+      const model = el("f-model").value;
+      const same = model === state.currentModel;
+      tg.showConfirm(
+        same
+          ? `Run the analysis again on ${model}? Your edits to this draft will be lost.`
+          : `Re-analyse with ${model} instead of ${state.currentModel}? Your edits to this draft will be lost.`,
+        async (ok) => {
+          if (!ok) return;
+          try {
+            tg.MainButton.showProgress(true);
+            await api("POST", { action: "reprocess", model });
+            tg.disableClosingConfirmation();
+            tg.close();
+          } catch (err) {
+            tg.MainButton.hideProgress();
+            tg.showAlert(`Couldn't regenerate: ${err.message}`);
+          }
+        }
+      );
+    });
+
     el("btn-reject").addEventListener("click", () => {
       tg.showConfirm("Reject this draft? Nothing gets published and the draft is discarded.", async (ok) => {
         if (!ok) return;
@@ -688,7 +749,23 @@ textarea { min-height: 76px; }
 
     try {
       const data = await api("GET");
-      state = { video: data.video, edits: data.edits, derivedLinks: data.derivedLinks };
+      state = {
+        video: data.video,
+        edits: data.edits,
+        derivedLinks: data.derivedLinks,
+        models: data.models || [],
+        currentModel: data.currentModel || "",
+      };
+
+      el("f-model").innerHTML = state.models
+        .map(
+          (m) =>
+            `<option value="${escapeHtml(m)}"${m === state.currentModel ? " selected" : ""}>${escapeHtml(m)}</option>`
+        )
+        .join("");
+      el("model-note").textContent = state.currentModel
+        ? `This draft was written by ${state.currentModel}.`
+        : "";
       previewToken = data.previewToken;
       renderAll();
       show("edit");
