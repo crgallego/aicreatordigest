@@ -18,6 +18,12 @@ Every transcript needs to come from somewhere. Paid APIs exist for this, but the
 
 It worked on the first video. It got blocked on the second. It worked on the third. Three real attempts, two different outcomes, right there in the logs. That's not a hypothetical risk in a README, that's a measured fact about how Netlify's shared IP ranges look to YouTube's bot detection. I wrote it up exactly that plainly instead of either overselling "it's free!" or underselling "it's unreliable, don't bother."
 
+**Update, same night.** One in three became three in three, then six in six. I ran it again properly: six attempts from the live function, every one blocked. Then I tried routing the fetch through Make instead, on the theory their IPs might be clean — I got a real page back, and it had YouTube's "sign in to confirm you're not a bot" notice sitting in it with the caption tracks stripped out. Same request from my own laptop, on a home connection: worked instantly, every time.
+
+So it isn't flaky. It's finished, for anything running in a data center. The free path is now the local-development convenience and nothing more, and the pipeline reaches for a paid transcript vendor first. That's the thing I'd been calling a documented tradeoff, arriving as a bill.
+
+There was a version of this where I got clever — spoof a mobile client, slip past the check, keep it free. I didn't. It's a control YouTube put there deliberately, it breaks the week they change it, and I'd rather pay a few dollars a month than build my publication on top of a workaround I'd have to keep re-earning.
+
 ## The wrong YouTube account
 
 Before any of the playlist automation could go live, I needed to know which actual playlists were feeding the system. The first account I checked had two empty default playlists and nothing else, a channel from a completely different project. The real curated playlists, twenty-two of them, spanning AI tooling, sales prospecting, web design, and a half-dozen other categories, were sitting in a different Google account entirely. Small thing, but it's the kind of detail that would have quietly broken the whole pipeline if I'd assumed instead of checking.
@@ -94,10 +100,14 @@ Test the risky assumption for real before you build around it. "Free" and "relia
 
 Two more from this round. When a tool tells you it did something, check through a different door — most of my lost time this build was spent trusting a success message. And pick the borrowed tool on purpose, knowing when you'll outgrow it. Google Docs was the right call for exactly as long as I was reviewing words, and the wrong one the second I needed to review a page. That's not a mistake, that's a stage. The mistake would have been not noticing it had ended.
 
+One more, learned the expensive way at the end of the night. Don't ship a change you have no way to test. I added a small nicety to the approval flow — an instant confirmation when you tap a button — and got one field's format wrong in a way nothing could catch until a real person tapped a real button. It broke every path through the flow, silently, for three hours, while everything else looked healthy. The fix was to delete it. A feature you can't verify isn't a feature yet, it's a wager.
+
 ## Where this actually stands
 
 Honest status: nothing has been published yet. Zero digests. The whole chain — discovery, triage, transcript, analysis, edit, preview, publish — is built, tested, and deployed, and it has never once run end to end against a real video and produced a page. Every test passes; that's not the same thing as it working.
 
-That's the next thing. One real video, all the way through, and a live page that matches the preview exactly. Until that happens I'd rather say it's built than say it works.
+Right now it's waiting on one API key for the transcript vendor. That's the entire remaining distance between a pipeline that works in pieces and a pipeline that works.
+
+Then: one real video, all the way through, and a live page that matches the preview exactly. Until that happens I'd rather say it's built than say it works.
 
 This project is still growing. The consensus guides get rewritten every time a playlist gets a new video. The playlist list itself is a living registry, not a fixed set. I said last time this page would need an update before too long — it took about six hours. I'll keep writing them down.
