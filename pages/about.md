@@ -1,10 +1,12 @@
 ## Why this exists
 
-I'm Chris Gallego. I produce documentaries, and I co-founded a company that builds steel fencing. That is a stranger pair of sentences than it sounds, and it explains this site better than a tidier one would.
+I'm Chris Gallego. My job is fractional Chief AI Officer at Coker Construction, which in practice means I'm the person who has to decide which of this AI stuff is actually worth putting in front of a business that builds things in the physical world.
 
-Both jobs work the same way: you walk into a field you don't know yet and you have to get good at it fast. The advice for doing that is real, and it's scattered across a hundred YouTube channels, buried in 40-minute videos, and gone the second the algorithm moves on.
+That is the whole reason this site exists. The good advice on that question is real, and it's scattered across a hundred YouTube channels, buried in 40-minute videos, and gone the second the algorithm moves on. I was already watching it. I was already taking notes.
 
 I got tired of watching. So I had a pipeline built instead.
+
+I've done a couple of other things that shape how I read this stuff: I produced a feature documentary, and I co-founded a company that builds steel fencing. Both taught me the same lesson this site runs on. You get handed a field you don't know yet and you have to get good at it fast, and the difference between advice that works and advice that sounds good is expensive.
 
 ## What I actually do
 
@@ -22,7 +24,7 @@ It's also not a replacement for the creators I cover. Every digest links back to
 
 ## Who it's for
 
-People building things, or people who have just been handed something they don't know how to build yet. Founders, operators, studios, anyone who wants the last month's worth of good YouTube advice in the time it takes to read a few pages, not watch a few hours.
+People building things, and people who have just been handed something they don't know how to build yet. Founders, operators, studios, and anyone whose job quietly became "figure out the AI part" without anyone telling them how.
 
 ## Get in touch
 

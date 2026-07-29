@@ -1,12 +1,14 @@
 ## Who I am
 
-I'm Chris Gallego. Born and raised in Hawai'i, film and media production degree from Arizona State, and a working history that ran through post-production, field producing, and a streaming startup before it landed in two places at once.
+I'm Chris Gallego. Right now I'm a fractional Chief AI Officer at Coker Construction, which means my actual job is working out which parts of all this are real and which parts are noise, for a business that builds things in the physical world. That is also the short answer for why this site exists.
 
-I produced the feature documentary **VINNIE PLAYS VEGAS**, about insult comic Vinnie Favorito and the gambling addiction that cost him his Las Vegas headline show. It's on Tubi.
+Before that, and still: I produced the feature documentary **VINNIE PLAYS VEGAS**, about insult comic Vinnie Favorito and the gambling addiction that cost him his Las Vegas headline show. It's on Tubi, and it's my credit on it. It was made under Degen Films, a production company that exists mostly on paper and was set up to handle that one picture.
 
 I'm also a co-founder of Firewise Fences, which builds non-combustible steel fencing. My cousin and I started it together.
 
-I have never run an agency. An earlier version of this page said I had, along with a few other things nobody ever told it. That copy was written to fill a bio-shaped hole and it stayed up longer than it should have. It's corrected now, and everything above is something you can find without taking my word for it.
+Born and raised in Hawai'i. Film and media production degree from Arizona State.
+
+I have never run an agency. An earlier version of this page said I had, along with a few other things nobody ever told it. That copy was written to fill a bio-shaped hole and it stayed up longer than it should have.
 
 ## What I actually do here
 
@@ -14,7 +16,7 @@ I curate the playlists, I set the editorial rules, and I make the final call on 
 
 What I don't do is write the software. The pipeline was built by Claude, working in Claude Code, from my direction and my arguments about how it should behave. The engineering and the debugging are its work. The judgment calls, the refusals, and the editorial line are mine. An earlier version of this page said I wrote the pipeline. That wasn't true either, and the [build story](/how-this-works) now splits the credit properly.
 
-I'm not a technical person. That's changing, slowly, and mostly by doing this.
+I'm not a technical person by training. That's changing, slowly, and mostly by doing this.
 
 When you read "My Thoughts" on a digest page, that is a real note I wrote, not something generated on my behalf. That part has always been true and it's the part I'd most want you to hold me to.
 

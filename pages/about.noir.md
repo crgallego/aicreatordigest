@@ -1,10 +1,12 @@
 ## Why this place exists
 
-Name's Chris Gallego. I produce documentaries, and I co-founded a company that makes steel fence. Two rackets that have nothing to do with each other, which is the point.
+Name's Chris Gallego. Day job is fractional Chief AI Officer at a construction company, which means somebody pays me to figure out which of this AI business is real before it gets anywhere near a crew, a schedule, or a bid.
 
-They work the same way. Somebody hands you a field you've never worked and you have to be good at it by Tuesday. The people who actually know how are out there talking about it, forty minutes at a time, buried in a feed that forgets them by morning.
+That's the whole reason for this place. The people who actually know are out there talking about it, forty minutes at a time, buried in a feed that forgets them by morning. I was already watching. I was already taking notes.
 
 I got tired of watching. So I opened a shop that reads instead.
+
+Couple of other rackets shaped how I read it. I produced a documentary. I co-founded a company that makes steel fence. Both taught the same lesson this place runs on: somebody hands you a field you've never worked, you have to be good at it by Tuesday, and the gap between advice that works and advice that sounds good gets expensive fast.
 
 ## What actually happens here
 
@@ -22,7 +24,7 @@ It's also not a replacement for the people I cover. Every digest points back at 
 
 ## Who it's for
 
-People building things, and people who just got handed something they don't know how to build yet. Founders, operators, studios, anybody who'd rather have last month's good advice in the time it takes to read a few pages than the time it takes to watch a few hours.
+People building things, and people who just got handed something they don't know how to build yet. Founders, operators, studios, and anybody whose job quietly turned into "figure out the AI part" without anyone telling them how.
 
 ## If something's wrong
 
