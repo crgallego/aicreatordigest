@@ -46,8 +46,8 @@ export const handler = async (event) => {
     const draft = await store.get(draftKey, { type: "json" });
     await store.delete(draftKey);
 
-    const chatId = payload.chatId;
-    const messageId = payload.messageId;
+    const chatId = payload.chatId || draft?.chatId;
+    const messageId = payload.messageId || draft?.messageId;
     if (chatId && messageId) {
       try {
         await deleteMessage(chatId, messageId);

@@ -101,9 +101,17 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const A = window.ACD;
 
-  const { playlist: playlistSlug, video: videoSlug } = A.routeParams("video", ["playlist", "video"]);
+  // Preview mode: the review editor loads this same page inside an iframe with
+  // a short-lived token, so an unpublished draft renders through the exact
+  // template, CSS and logic a published digest does. Nothing to keep in sync.
+  const previewToken = new URLSearchParams(location.search).get("token");
+  const isPreview = Boolean(previewToken);
 
-  if (!playlistSlug || !videoSlug) {
+  const { playlist: playlistSlug, video: videoSlug } = isPreview
+    ? { playlist: "", video: "" }
+    : A.routeParams("video", ["playlist", "video"]);
+
+  if (!isPreview && (!playlistSlug || !videoSlug)) {
     document.getElementById("title").textContent = "Digest not found";
     document.getElementById("not-found").innerHTML = A.emptyState("No video specified", "Head back to the homepage to browse everything I've published.");
     return;
@@ -112,15 +120,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const index = await A.loadIndex();
   A.renderIssueMarker(index);
 
-  const entry = index.videos.find((v) => v.playlistSlug === playlistSlug && v.slug === videoSlug);
+  const entry = isPreview
+    ? null
+    : index.videos.find((v) => v.playlistSlug === playlistSlug && v.slug === videoSlug);
 
   const raw = await A.fetchMarkdown(
-    `/playlists/${encodeURIComponent(playlistSlug)}/videos/${encodeURIComponent(videoSlug)}.md`
+    isPreview
+      ? `/api/preview-markdown?token=${encodeURIComponent(previewToken)}`
+      : `/playlists/${encodeURIComponent(playlistSlug)}/videos/${encodeURIComponent(videoSlug)}.md`
   );
 
   if (!raw) {
-    document.getElementById("title").textContent = "Digest not found";
-    document.getElementById("not-found").innerHTML = A.emptyState("I couldn't find that digest", "It may have been renamed. Browse the collection to find it.");
+    document.getElementById("title").textContent = isPreview ? "Preview unavailable" : "Digest not found";
+    document.getElementById("not-found").innerHTML = isPreview
+      ? A.emptyState("This preview link has expired", "Close the preview and reopen it from the editor.")
+      : A.emptyState("I couldn't find that digest", "It may have been renamed. Browse the collection to find it.");
     return;
   }
 
@@ -135,8 +149,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("dek").textContent = meta.description || meta.keyTakeaway || "";
 
   const crumb = document.getElementById("crumb");
-  crumb.textContent = `← playlist: ${meta.playlistName || playlistSlug}`;
-  crumb.href = `/playlist/${encodeURIComponent(playlistSlug)}`;
+  if (isPreview) {
+    // Inside the editor's iframe there's nowhere to navigate back to, and the
+    // banner needs to make unmistakably clear this isn't live yet.
+    crumb.classList.add("preview-flag");
+    crumb.removeAttribute("href");
+    crumb.textContent = "preview — not published yet";
+  } else {
+    crumb.textContent = `← playlist: ${meta.playlistName || playlistSlug}`;
+    crumb.href = `/playlist/${encodeURIComponent(playlistSlug)}`;
+  }
 
   // Credit block
   document.getElementById("credit").hidden = false;
@@ -250,6 +272,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     .filter(Boolean)
     .map(([k, v]) => `<span>${A.escapeHtml(k)}: <span class="v">${A.escapeHtml(v)}</span></span>`)
     .join("");
+
+  // A draft has no canonical URL yet, and must never be indexed — so the
+  // preview stops here rather than advertising itself to crawlers.
+  if (isPreview) {
+    const robots = document.createElement("meta");
+    robots.name = "robots";
+    robots.content = "noindex, nofollow";
+    document.head.appendChild(robots);
+    return;
+  }
 
   A.setMeta({
     title: `${title} — ${creatorName}`,

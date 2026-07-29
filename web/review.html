@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Review draft · AI Creator Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+/* The editor deliberately wears Telegram's theme rather than the site's own
+   look — it's a tool inside Telegram, not a page of the publication. The
+   preview screen is where the real site design shows up, and the contrast
+   between the two is the point: you always know which one you're looking at. */
+:root {
+  --tg-bg: #ffffff;
+  --tg-text: #151412;
+  --tg-hint: #8a867b;
+  --tg-link: #b5602b;
+  --tg-button: #b5602b;
+  --tg-button-text: #ffffff;
+  --tg-section-bg: #ffffff;
+  --tg-secondary-bg: #f4f2ed;
+  --line: rgba(128, 128, 128, 0.25);
+  --sans: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--tg-secondary-bg);
+  color: var(--tg-text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ------------------------------------------------------------------ screens */
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+#screen-edit { padding: 0 0 40px; }
+
+/* ------------------------------------------------------------------ header */
+
+.masthead {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--tg-section-bg);
+  border-bottom: 1px solid var(--line);
+  align-items: flex-start;
+}
+.masthead img {
+  width: 96px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--tg-secondary-bg);
+  flex: none;
+}
+.masthead .who { min-width: 0; }
+.masthead h1 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 3px;
+  line-height: 1.35;
+}
+.masthead .sub {
+  font-size: 12.5px;
+  color: var(--tg-hint);
+  margin: 0;
+}
+.masthead a { color: var(--tg-link); text-decoration: none; }
+
+/* ------------------------------------------------------------------ sections */
+
+.section {
+  margin-top: 14px;
+  background: var(--tg-section-bg);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 16px 16px;
+}
+.section > h2 {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tg-hint);
+  margin: 0 0 4px;
+}
+.section > .help {
+  font-size: 12.5px;
+  color: var(--tg-hint);
+  margin: 0 0 12px;
+}
+
+/* ------------------------------------------------------------------ fields */
+
+label.field { display: block; margin-bottom: 10px; }
+label.field > span {
+  display: block;
+  font-size: 11.5px;
+  color: var(--tg-hint);
+  margin-bottom: 4px;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--tg-text);
+  background: var(--tg-secondary-bg);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 11px;
+  resize: vertical;
+  -webkit-appearance: none;
+}
+input[type="text"]:focus, textarea:focus {
+  outline: none;
+  border-color: var(--tg-link);
+}
+textarea { min-height: 76px; }
+
+/* ------------------------------------------------------------------ repeatable rows */
+
+.row {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 12px 4px;
+  margin-bottom: 10px;
+}
+.row .row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.row .row-n {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--tg-hint);
+}
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--tg-hint);
+  font-size: 13px;
+  padding: 2px 4px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-remove:active { color: #d0453b; }
+
+.btn-add {
+  width: 100%;
+  background: var(--tg-secondary-bg);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  color: var(--tg-link);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 9px;
+  cursor: pointer;
+}
+.btn-add:active { opacity: 0.7; }
+
+.empty-note {
+  font-size: 12.5px;
+  color: var(--tg-hint);
+  font-style: italic;
+  margin: 0 0 10px;
+}
+
+/* ------------------------------------------------------------------ derived links */
+
+.derived {
+  font-size: 12.5px;
+  color: var(--tg-hint);
+  margin-top: 6px;
+}
+.derived a { color: var(--tg-link); }
+.derived .none { opacity: 0.75; }
+
+/* ------------------------------------------------------------------ danger */
+
+.danger-zone { padding: 22px 16px 0; }
+.btn-danger {
+  width: 100%;
+  background: none;
+  border: 1px solid rgba(208, 69, 59, 0.5);
+  border-radius: 8px;
+  color: #d0453b;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 11px;
+  cursor: pointer;
+}
+.btn-danger:active { background: rgba(208, 69, 59, 0.08); }
+
+/* ------------------------------------------------------------------ status */
+
+.status {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-size: 12.5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+  z-index: 50;
+}
+.status.show { opacity: 1; }
+
+/* ------------------------------------------------------------------ preview */
+
+#screen-preview { position: fixed; inset: 0; background: #fff; }
+#preview-frame { width: 100%; height: 100%; border: 0; display: block; }
+
+/* ------------------------------------------------------------------ boot */
+
+.boot {
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--tg-hint);
+  font-size: 14px;
+}
+.boot strong { display: block; color: var(--tg-text); margin-bottom: 6px; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="screen-boot">
+  <div class="boot" id="boot-message"><strong>Loading draft…</strong></div>
+</div>
+
+<div class="screen" id="screen-edit">
+  <div class="masthead">
+    <img id="v-thumb" alt="">
+    <div class="who">
+      <h1 id="v-title"></h1>
+      <p class="sub" id="v-sub"></p>
+      <p class="sub"><a id="v-watch" target="_blank" rel="noopener">watch original ↗</a></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Key takeaway</h2>
+    <p class="help">The one-line promise at the top of the digest.</p>
+    <textarea id="f-takeaway" rows="3"></textarea>
+  </div>
+
+  <div class="section">
+    <h2>Key points</h2>
+    <p class="help">The numbered spine of the piece.</p>
+    <div id="list-keypoints"></div>
+    <button class="btn-add" data-add="keypoints">+ Add key point</button>
+  </div>
+
+  <div class="section">
+    <h2>Tactics</h2>
+    <p class="help">Concrete things a reader can steal. Leave empty to drop the section.</p>
+    <div id="list-tactics"></div>
+    <button class="btn-add" data-add="tactics">+ Add tactic</button>
+  </div>
+
+  <div class="section">
+    <h2>Quotes</h2>
+    <p class="help">Verbatim lines worth pulling out. Timestamp optional.</p>
+    <div id="list-quotes"></div>
+    <button class="btn-add" data-add="quotes">+ Add quote</button>
+  </div>
+
+  <div class="section">
+    <h2>Topics</h2>
+    <p class="help">Comma-separated. Used for filtering and the consensus guides.</p>
+    <input type="text" id="f-categories" placeholder="Pricing, Sales, Positioning">
+  </div>
+
+  <div class="section">
+    <h2>Featured people</h2>
+    <p class="help">Guests or subjects, not the channel owner. Links are pulled from the video's own description — never guessed — so they appear here read-only once the name matches.</p>
+    <div id="list-people"></div>
+    <button class="btn-add" data-add="people">+ Add person</button>
+    <div class="derived" id="derived-creator"></div>
+  </div>
+
+  <div class="section">
+    <h2>Your take</h2>
+    <p class="help">Published as Chris's Take, credited separately from the AI summary. Leave empty to omit.</p>
+    <textarea id="f-editornote" rows="4"></textarea>
+  </div>
+
+  <div class="danger-zone">
+    <button class="btn-danger" id="btn-reject">Reject this draft</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-preview">
+  <iframe id="preview-frame" referrerpolicy="no-referrer"></iframe>
+</div>
+
+<div class="status" id="status"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const tg = window.Telegram && window.Telegram.WebApp;
+  const draftKey = decodeURIComponent((location.pathname.split("/review/")[1] || "").replace(/\/+$/, ""));
+
+  const el = (id) => document.getElementById(id);
+  const boot = (title, body) => {
+    el("boot-message").innerHTML = `<strong>${escapeHtml(title)}</strong>${escapeHtml(body || "")}`;
+    show("boot");
+  };
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  if (!tg || !tg.initData) {
+    boot("Open this from Telegram", "This editor authenticates through the Telegram app, so it can't run in a normal browser tab.");
+    return;
+  }
+  if (!draftKey) {
+    boot("No draft specified", "Reopen the editor from the draft card in Telegram.");
+    return;
+  }
+
+  /* ------------------------------------------------------------ theming */
+
+  function applyTheme() {
+    const p = tg.themeParams || {};
+    const set = (name, value) => value && document.documentElement.style.setProperty(name, value);
+    set("--tg-bg", p.bg_color);
+    set("--tg-text", p.text_color);
+    set("--tg-hint", p.hint_color);
+    set("--tg-link", p.link_color);
+    set("--tg-button", p.button_color);
+    set("--tg-button-text", p.button_text_color);
+    set("--tg-section-bg", p.section_bg_color || p.bg_color);
+    set("--tg-secondary-bg", p.secondary_bg_color);
+  }
+
+  /* ------------------------------------------------------------ state */
+
+  let state = null;      // { video, edits, derivedLinks }
+  let previewToken = null;
+  let dirty = false;
+  let saveTimer = null;
+  let screen = "boot";
+
+  function show(name) {
+    screen = name;
+    ["boot", "edit", "preview"].forEach((s) => {
+      el("screen-" + s).classList.toggle("active", s === name);
+    });
+    syncButtons();
+  }
+
+  function status(text, sticky) {
+    const node = el("status");
+    node.textContent = text;
+    node.classList.add("show");
+    clearTimeout(node._t);
+    if (!sticky) node._t = setTimeout(() => node.classList.remove("show"), 1400);
+  }
+
+  /* ------------------------------------------------------------ api */
+
+  async function api(method, body) {
+    const res = await fetch("/api/review" + (method === "GET" ? `?draftKey=${encodeURIComponent(draftKey)}` : ""), {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-InitData": tg.initData,
+      },
+      body: method === "GET" ? undefined : JSON.stringify({ draftKey, ...body }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+    return data;
+  }
+
+  /* ------------------------------------------------------------ field plumbing */
+
+  // Each repeatable section is described once, so adding a row, reading it
+  // back, and rendering it all stay in step.
+  const LISTS = {
+    keypoints: {
+      key: "keyPoints",
+      node: "list-keypoints",
+      label: "Point",
+      fields: [
+        { name: "title", label: "Title", type: "text" },
+        { name: "body", label: "Detail", type: "textarea" },
+      ],
+    },
+    tactics: {
+      key: "tactics",
+      node: "list-tactics",
+      label: "Tactic",
+      fields: [
+        { name: "kind", label: "Kind (e.g. pricing)", type: "text" },
+        { name: "title", label: "Title", type: "text" },
+        { name: "body", label: "Detail", type: "textarea" },
+      ],
+    },
+    quotes: {
+      key: "quotes",
+      node: "list-quotes",
+      label: "Quote",
+      fields: [
+        { name: "text", label: "Quote", type: "textarea" },
+        { name: "at", label: "Timestamp (optional)", type: "text" },
+      ],
+    },
+    people: {
+      key: "featuredPeople",
+      node: "list-people",
+      label: "Person",
+      fields: [
+        { name: "name", label: "Name", type: "text" },
+        { name: "role", label: "Role", type: "text" },
+      ],
+    },
+  };
+
+  function renderList(listName) {
+    const spec = LISTS[listName];
+    const items = state.edits[spec.key] || [];
+    const host = el(spec.node);
+    host.innerHTML = "";
+
+    if (!items.length) {
+      const p = document.createElement("p");
+      p.className = "empty-note";
+      p.textContent = "None — this section won't appear on the page.";
+      host.appendChild(p);
+    }
+
+    items.forEach((item, i) => {
+      const row = document.createElement("div");
+      row.className = "row";
+
+      const head = document.createElement("div");
+      head.className = "row-head";
+      const n = document.createElement("span");
+      n.className = "row-n";
+      n.textContent = `${spec.label} ${String(i + 1).padStart(2, "0")}`;
+      const remove = document.createElement("button");
+      remove.className = "btn-remove";
+      remove.textContent = "Remove";
+      remove.addEventListener("click", () => {
+        items.splice(i, 1);
+        markDirty();
+        renderList(listName);
+        if (listName === "people") renderDerived();
+      });
+      head.append(n, remove);
+      row.appendChild(head);
+
+      spec.fields.forEach((f) => {
+        const label = document.createElement("label");
+        label.className = "field";
+        const span = document.createElement("span");
+        span.textContent = f.label;
+        const input = document.createElement(f.type === "textarea" ? "textarea" : "input");
+        if (f.type !== "textarea") input.type = "text";
+        else input.rows = 3;
+        input.value = item[f.name] || "";
+        input.addEventListener("input", () => {
+          item[f.name] = input.value;
+          markDirty();
+        });
+        label.append(span, input);
+        row.appendChild(label);
+      });
+
+      // Show the links we resolved for this person, so it's obvious whether a
+      // name matched something in the description or not.
+      if (listName === "people") {
+        const note = document.createElement("div");
+        note.className = "derived";
+        row.appendChild(note);
+      }
+
+      host.appendChild(row);
+    });
+
+    if (listName === "people") refreshPeopleLinks();
+  }
+
+  /**
+   * Updates just the resolved-links note under each person, leaving the inputs
+   * untouched — a save can land while you're still typing a name, and
+   * rebuilding the rows would yank focus out from under you.
+   */
+  function refreshPeopleLinks() {
+    const people = state.edits.featuredPeople || [];
+    const resolved = state.derivedLinks.featuredPeople || [];
+    el("list-people").querySelectorAll(".row").forEach((row, i) => {
+      const note = row.querySelector(".derived");
+      if (!note) return;
+      const name = (people[i] && people[i].name) || "";
+      const found = resolved.find((p) => p.name && name && p.name.toLowerCase() === name.toLowerCase());
+      const links = (found && found.links) || [];
+      note.innerHTML = links.length
+        ? "Links found: " + links.map((l) => `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.platform)}</a>`).join(" · ")
+        : `<span class="none">No links for this name in the video description.</span>`;
+    });
+  }
+
+  function renderDerived() {
+    const links = state.derivedLinks.creatorLinks || [];
+    el("derived-creator").innerHTML = links.length
+      ? `<strong>${escapeHtml(state.video.creatorName)}:</strong> ` +
+        links.map((l) => `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.platform)}</a>`).join(" · ")
+      : `<span class="none">No creator links found in the video description.</span>`;
+  }
+
+  function renderAll() {
+    el("v-thumb").src = state.video.thumbnailUrl;
+    el("v-title").textContent = state.video.title;
+    el("v-sub").textContent = [state.video.creatorName, state.video.playlistName, state.video.videoDuration]
+      .filter(Boolean)
+      .join(" · ");
+    el("v-watch").href = state.video.videoUrl;
+
+    el("f-takeaway").value = state.edits.keyTakeaway || "";
+    el("f-categories").value = (state.edits.categories || []).join(", ");
+    el("f-editornote").value = state.edits.editorNote || "";
+
+    Object.keys(LISTS).forEach(renderList);
+    renderDerived();
+  }
+
+  /** Pulls the non-repeating fields out of the DOM into state. */
+  function collect() {
+    state.edits.keyTakeaway = el("f-takeaway").value;
+    state.edits.categories = el("f-categories").value.split(",").map((s) => s.trim()).filter(Boolean);
+    state.edits.editorNote = el("f-editornote").value;
+    return state.edits;
+  }
+
+  function markDirty() {
+    dirty = true;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { save().catch(() => {}); }, 1500);
+  }
+
+  async function save() {
+    if (!dirty) return;
+    dirty = false;
+    status("Saving…", true);
+    const data = await api("POST", { action: "save", edits: collect() });
+    previewToken = data.previewToken;
+    state.derivedLinks = data.derivedLinks || state.derivedLinks;
+    renderDerived();
+    refreshPeopleLinks();
+    status("Saved");
+  }
+
+  /* ------------------------------------------------------------ telegram buttons */
+
+  function syncButtons() {
+    if (!tg || !tg.MainButton) return;
+    if (screen === "edit") {
+      tg.BackButton.hide();
+      tg.MainButton.setText("Preview");
+      tg.MainButton.show();
+    } else if (screen === "preview") {
+      tg.BackButton.show();
+      tg.MainButton.setText("Publish");
+      tg.MainButton.show();
+    } else {
+      tg.MainButton.hide();
+      tg.BackButton.hide();
+    }
+  }
+
+  async function onMainButton() {
+    if (screen === "edit") {
+      try {
+        tg.MainButton.showProgress(true);
+        dirty = true;            // always re-save so the preview matches the form exactly
+        await save();
+        el("preview-frame").src = `/preview?token=${encodeURIComponent(previewToken)}`;
+        show("preview");
+      } catch (err) {
+        tg.showAlert(`Couldn't build the preview: ${err.message}`);
+      } finally {
+        tg.MainButton.hideProgress();
+      }
+      return;
+    }
+
+    if (screen === "preview") {
+      tg.showConfirm("Publish this digest to the site?", async (ok) => {
+        if (!ok) return;
+        try {
+          tg.MainButton.showProgress(true);
+          await api("POST", { action: "publish", edits: collect() });
+          tg.HapticFeedback && tg.HapticFeedback.notificationOccurred("success");
+          tg.disableClosingConfirmation();
+          // The card in the chat is cleared and replaced with the published
+          // confirmation server-side, so there's nothing left to do but
+          // get out of the way.
+          tg.close();
+        } catch (err) {
+          tg.MainButton.hideProgress();
+          tg.showAlert(`Publish failed: ${err.message}`);
+        }
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------ boot */
+
+  async function start() {
+    tg.ready();
+    tg.expand();
+    applyTheme();
+    tg.onEvent("themeChanged", applyTheme);
+    tg.enableClosingConfirmation();
+
+    tg.MainButton.onClick(onMainButton);
+    tg.BackButton.onClick(() => {
+      el("preview-frame").src = "about:blank";
+      show("edit");
+    });
+
+    document.querySelectorAll("[data-add]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const spec = LISTS[btn.dataset.add];
+        (state.edits[spec.key] ||= []).push(
+          Object.fromEntries(spec.fields.map((f) => [f.name, ""]))
+        );
+        markDirty();
+        renderList(btn.dataset.add);
+      });
+    });
+
+    ["f-takeaway", "f-categories", "f-editornote"].forEach((id) => {
+      el(id).addEventListener("input", markDirty);
+    });
+
+    el("btn-reject").addEventListener("click", () => {
+      tg.showConfirm("Reject this draft? Nothing gets published and the draft is discarded.", async (ok) => {
+        if (!ok) return;
+        try {
+          await api("POST", { action: "reject" });
+          tg.disableClosingConfirmation();
+          tg.close();
+        } catch (err) {
+          tg.showAlert(`Couldn't reject: ${err.message}`);
+        }
+      });
+    });
+
+    try {
+      const data = await api("GET");
+      state = { video: data.video, edits: data.edits, derivedLinks: data.derivedLinks };
+      previewToken = data.previewToken;
+      renderAll();
+      show("edit");
+    } catch (err) {
+      boot("Couldn't load this draft", err.message);
+    }
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>

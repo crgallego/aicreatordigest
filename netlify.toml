@@ -47,6 +47,13 @@
 [functions."get-draft"]
   timeout = 26
 
+[functions."review-api"]
+  # Publishing runs the same multi-commit cascade as publish-video.
+  timeout = 180
+
+[functions."preview-markdown"]
+  timeout = 26
+
 # ----------------------------------------------------------------------
 # Clean URLs
 # ----------------------------------------------------------------------
@@ -62,6 +69,30 @@
   to = "/.netlify/functions/fetch-transcript"
   status = 200
   force = true
+
+# Telegram Mini App: the review editor and the draft preview it embeds.
+[[redirects]]
+  from = "/api/review"
+  to = "/.netlify/functions/review-api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/preview-markdown"
+  to = "/.netlify/functions/preview-markdown"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/review/*"
+  to = "/web/review.html"
+  status = 200
+
+# The preview renders the real digest template against an unpublished draft.
+[[redirects]]
+  from = "/preview"
+  to = "/web/video.html"
+  status = 200
 
 [[redirects]]
   from = "/"

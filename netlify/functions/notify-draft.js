@@ -2,14 +2,14 @@
  * AI Creator Digest — sends the Telegram approval card
  * https://aicreatordigest.com
  *
- * Called by Make right after it creates and shares the Google Doc for a
- * draft (see analyze-video.js for the step before this one). Sends the
- * video's thumbnail with a condensed summary caption + a link to the Doc +
- * Approve/Reject buttons.
+ * Called by Make once a draft has been analysed (see analyze-video.js for the
+ * step before this one). Sends the video's thumbnail with a condensed summary
+ * caption, a button that opens the Mini App editor, and a shortcut pair for
+ * publishing as-is or rejecting outright.
  *
- * Also records docUrl onto the stored draft (Blobs) so the publish webhook
- * can find it later. Your editorial note lives inside the Doc itself (its
- * own EDITOR'S NOTE section) — there's no separate Telegram-side note flow.
+ * Records the chat/message ids onto the stored draft so whichever surface
+ * resolves it later can clear the card. docUrl is optional and only set when
+ * the legacy Google Doc round trip is still in play.
  *
  * Environment variables:
  *   TELEGRAM_BOT_TOKEN   from @BotFather                       (required)
@@ -19,7 +19,7 @@
 
 import { getStore } from "@netlify/blobs";
 import { sendPhoto, escapeTelegramHtml } from "./lib/telegram.js";
-import { header, parseRequestBody, json, respond } from "./lib/pipeline.js";
+import { header, parseRequestBody, json, respond, siteUrl } from "./lib/pipeline.js";
 
 const DRAFTS_STORE = "aicd-drafts";
 
@@ -45,9 +45,9 @@ export const handler = async (event) => {
   }
 
   const draftKey = String(payload.draftKey || "").trim();
-  const docUrl = String(payload.docUrl || "").trim();
-  if (!draftKey || !docUrl) {
-    return json(400, { error: "Missing required field(s): draftKey, docUrl" });
+  const docUrl = String(payload.docUrl || "").trim(); // optional legacy Google Doc round trip
+  if (!draftKey) {
+    return json(400, { error: "Missing required field: draftKey" });
   }
 
   for (const key of ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"]) {
@@ -63,8 +63,7 @@ export const handler = async (event) => {
       return json(404, { error: `No stored draft found for ${draftKey}. It may have already been published or rejected.` });
     }
 
-    draft.docUrl = docUrl;
-    await store.setJSON(draftKey, draft);
+    if (docUrl) draft.docUrl = docUrl;
 
     const title = escapeTelegramHtml(payload.title || draft.meta.videoTitle);
     const creatorName = escapeTelegramHtml(payload.creatorName || draft.shaped.creatorName || draft.meta.channelName);
@@ -81,21 +80,30 @@ export const handler = async (event) => {
       "",
       categories ? `Topics: ${escapeTelegramHtml(categories)}` : "",
       `~${readTime} min read`,
-      "",
-      `📝 <a href="${docUrl}">Review or edit the full draft</a>`,
     ]
       .filter(Boolean)
       .join("\n");
 
+    // "Review & edit" opens the Mini App: a full editor with a live preview of
+    // the real page, right inside Telegram. The second row is the shortcut for
+    // drafts that need no changes — it publishes exactly what's stored, so it
+    // always reflects the editor's most recent save.
     const buttons = [
+      [{ text: "📝 Review & edit", web_app: { url: `${siteUrl()}/review/${draftKey}` } }],
       [
-        { text: "✅ Approve & Publish", callback_data: `approve:${draftKey}` },
+        { text: "✅ Publish as-is", callback_data: `approve:${draftKey}` },
         { text: "❌ Reject", callback_data: `reject:${draftKey}` },
       ],
     ];
 
     const thumbnailUrl = `https://i.ytimg.com/vi/${draft.meta.videoId}/hqdefault.jpg`;
     const messageId = await sendPhoto(process.env.TELEGRAM_CHAT_ID, thumbnailUrl, caption, { buttons });
+
+    // Recorded so whichever surface resolves this draft — the Mini App or a
+    // card button — can clear the card and leave the history line behind.
+    draft.chatId = process.env.TELEGRAM_CHAT_ID;
+    draft.messageId = messageId;
+    await store.setJSON(draftKey, draft);
 
     return json(200, { ok: true, draftKey, messageId });
   } catch (err) {

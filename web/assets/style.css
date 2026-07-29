@@ -425,6 +425,20 @@ section.band {
   cursor: pointer;
 }
 
+/* Shown instead of the breadcrumb when this page is rendering an unpublished
+   draft inside the review editor. */
+.crumb.preview-flag {
+  display: inline-block;
+  cursor: default;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px dashed var(--accent);
+  padding: 4px 10px;
+}
+
 .page-head h1 {
   font-size: 24px;
   font-weight: 700;

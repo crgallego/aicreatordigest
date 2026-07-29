@@ -21,9 +21,8 @@
 import { getStore } from "@netlify/blobs";
 import {
   parseDraftText,
+  applyDraftEdits,
   publishVideo,
-  estimateReadMinutes,
-  extractSocialLinks,
   header,
   parseRequestBody,
   json,
@@ -56,8 +55,8 @@ export const handler = async (event) => {
 
   const draftKey = String(payload.draftKey || "").trim();
   const docText = String(payload.docText || "");
-  if (!draftKey || !docText.trim()) {
-    return json(400, { error: "Missing required field(s): draftKey, docText" });
+  if (!draftKey) {
+    return json(400, { error: "Missing required field: draftKey" });
   }
 
   for (const key of ["GITHUB_TOKEN", "GITHUB_REPO"]) {
@@ -75,52 +74,33 @@ export const handler = async (event) => {
       });
     }
 
-    const parsed = parseDraftText(docText);
-
-    // Links are never hand-typed in the doc — they're re-derived from the
-    // video's own description every time, so an edited name still gets its
-    // real link (or none) rather than carrying over stale ones.
-    const { creatorLinks, personLinks } = extractSocialLinks(
-      draft.meta.videoDescription,
-      parsed.featuredPeople.map((p) => p.name)
-    );
-    const featuredPeople = parsed.featuredPeople.map((p) => ({
-      ...p,
-      links: personLinks[p.name] || [],
-    }));
-
-    // keyTakeaway is required for the page to make sense — treat an emptied
-    // one as an accidental deletion, not an intentional edit. Every other
-    // section is trusted at face value: empty means "drop it."
-    const finalShaped = {
-      ...draft.shaped,
-      keyTakeaway: parsed.keyTakeaway || draft.shaped.keyTakeaway,
-      keyPoints: parsed.keyPoints,
-      tactics: parsed.tactics,
-      quotes: parsed.quotes,
-      categories: parsed.categories.length ? parsed.categories : draft.shaped.categories,
-      featuredPeople,
-      creatorLinks,
-    };
-    finalShaped.readTimeMinutes = estimateReadMinutes([
-      finalShaped.keyTakeaway,
-      ...finalShaped.keyPoints.map((p) => `${p.title} ${p.body}`),
-      ...finalShaped.tactics.map((t) => `${t.title} ${t.body}`),
-      ...finalShaped.quotes.map((q) => q.text),
-    ]);
+    // Two ways in. With docText, the edits came from the Google Doc round trip
+    // and are folded onto the draft. Without it, the draft in Blobs is already
+    // the final word — that's the "publish as-is" button, and it carries
+    // whatever the Mini App editor last saved.
+    let finalShaped;
+    let editorNote;
+    if (docText.trim()) {
+      const parsed = parseDraftText(docText);
+      finalShaped = applyDraftEdits(draft, parsed);
+      editorNote = parsed.editorNote;
+    } else {
+      finalShaped = draft.shaped;
+      editorNote = draft.editorNote || "";
+    }
 
     const result = await publishVideo({
       meta: draft.meta,
       shaped: finalShaped,
-      editorNote: parsed.editorNote,
+      editorNote,
     });
 
     await store.delete(draftKey);
 
     // Remove the actionable card and drop a plain confirmation in its place —
     // best effort, since the GitHub commit already succeeded either way.
-    const chatId = payload.chatId;
-    const messageId = payload.messageId;
+    const chatId = payload.chatId || draft.chatId;
+    const messageId = payload.messageId || draft.messageId;
     if (chatId && messageId) {
       try {
         await deleteMessage(chatId, messageId);

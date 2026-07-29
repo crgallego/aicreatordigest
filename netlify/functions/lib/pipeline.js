@@ -480,10 +480,108 @@ export function parseDraftText(text) {
   return { keyTakeaway, keyPoints, tactics, quotes, categories, featuredPeople, editorNote };
 }
 
+/**
+ * Folds a set of human edits back onto a stored draft's shaped analysis.
+ *
+ * Shared by both review surfaces — the Google Doc round trip and the Telegram
+ * Mini App editor — so the two can't drift on the rules that matter:
+ *   - An emptied section means "drop it", except keyTakeaway and categories,
+ *     where empty reads as an accidental deletion and the original stands.
+ *   - Social links are never taken from the edit. They're re-derived from the
+ *     video's own description every time, so renaming a featured person gets
+ *     their real link or none at all, never a stale or invented one.
+ */
+export function applyDraftEdits(draft, edits) {
+  const { creatorLinks, personLinks } = extractSocialLinks(
+    draft.meta.videoDescription,
+    asArray(edits.featuredPeople).map((p) => p.name)
+  );
+
+  const featuredPeople = asArray(edits.featuredPeople)
+    .filter((p) => p && clean(p.name))
+    .map((p) => ({
+      name: clean(p.name),
+      role: clean(p.role),
+      links: personLinks[clean(p.name)] || [],
+    }));
+
+  const shaped = {
+    ...draft.shaped,
+    keyTakeaway: clean(edits.keyTakeaway) || draft.shaped.keyTakeaway,
+    keyPoints: asArray(edits.keyPoints).filter((p) => clean(p.title) || clean(p.body)),
+    tactics: asArray(edits.tactics).filter((t) => clean(t.title) || clean(t.body)),
+    quotes: asArray(edits.quotes).filter((q) => clean(q.text)),
+    categories: asArray(edits.categories).map(clean).filter(Boolean).slice(0, 8).length
+      ? asArray(edits.categories).map(clean).filter(Boolean).slice(0, 8)
+      : draft.shaped.categories,
+    featuredPeople,
+    creatorLinks,
+  };
+
+  shaped.readTimeMinutes = estimateReadMinutes([
+    shaped.keyTakeaway,
+    ...shaped.keyPoints.map((p) => `${p.title} ${p.body}`),
+    ...shaped.tactics.map((t) => `${t.title} ${t.body}`),
+    ...shaped.quotes.map((q) => q.text),
+  ]);
+
+  return shaped;
+}
+
 /* ------------------------------------------------------------------ *
  * Publish — everything from "we have final structured content" onward.
  * Used both by the direct (no-approval) path and the approved-draft path.
  * ------------------------------------------------------------------ */
+
+/** The index entry for a video, which doubles as the frontmatter source for
+ * its markdown page. Split out of publishVideo so the review preview can
+ * build the exact same object without touching GitHub — preview and publish
+ * therefore render from identical data by construction, not by convention. */
+export function buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt }) {
+  return {
+    slug: videoSlug,
+    path: `playlists/${meta.playlistSlug}/videos/${videoSlug}.md`,
+    videoId: meta.videoId,
+    title: meta.videoTitle,
+    videoUrl: meta.videoUrl,
+    videoDuration: meta.videoDuration,
+    playlistSlug: meta.playlistSlug,
+    playlistName: meta.playlistName,
+    creatorSlug: slugify(meta.channelName),
+    creatorName: shaped.creatorName || meta.channelName,
+    channelName: meta.channelName,
+    channelUrl: meta.channelUrl,
+    keyTakeaway: shaped.keyTakeaway,
+    summary: shaped.summary,
+    description: shaped.seoDescription || shaped.summary,
+    categories: shaped.categories,
+    keyPointTitles: shaped.keyPoints.map((p) => p.title).filter(Boolean),
+    readTimeMinutes: shaped.readTimeMinutes,
+    hasEditorNote: Boolean(editorNote),
+    featuredPeople: shaped.featuredPeople || [],
+    creatorLinks: shaped.creatorLinks || [],
+    addedAt,
+    updatedAt: nowIso(),
+  };
+}
+
+/**
+ * Renders a draft exactly as publishVideo would commit it, without any
+ * GitHub round trip. This is what the review preview reads, so what you see
+ * before approving is the same markdown that later lands in the repo — only
+ * the slug is provisional, since the real one isn't settled until publish.
+ */
+export function renderPreviewMarkdown({ meta, shaped, editorNote }) {
+  const videoSlug =
+    slugify(meta.videoTitle).slice(0, 80).replace(/-+$/, "") || slugify(meta.videoId);
+  const entry = buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt: nowIso() });
+  return buildVideoMarkdown(entry, {
+    keyPoints: shaped.keyPoints,
+    tactics: shaped.tactics,
+    quotes: shaped.quotes,
+    editorNote,
+  });
+}
 
 export async function publishVideo({ meta, shaped, editorNote }) {
   const startedAt = Date.now();
@@ -507,31 +605,7 @@ export async function publishVideo({ meta, shaped, editorNote }) {
   const addedAt =
     index.videos.find((v) => v.videoId === meta.videoId)?.addedAt || nowIso();
 
-  const entry = {
-    slug: videoSlug,
-    path: videoPath,
-    videoId: meta.videoId,
-    title: meta.videoTitle,
-    videoUrl: meta.videoUrl,
-    videoDuration: meta.videoDuration,
-    playlistSlug: meta.playlistSlug,
-    playlistName: meta.playlistName,
-    creatorSlug,
-    creatorName,
-    channelName: meta.channelName,
-    channelUrl: meta.channelUrl,
-    keyTakeaway: shaped.keyTakeaway,
-    summary: shaped.summary,
-    description: shaped.seoDescription || shaped.summary,
-    categories: shaped.categories,
-    keyPointTitles: shaped.keyPoints.map((p) => p.title).filter(Boolean),
-    readTimeMinutes: shaped.readTimeMinutes,
-    hasEditorNote: Boolean(editorNote),
-    featuredPeople: shaped.featuredPeople || [],
-    creatorLinks: shaped.creatorLinks || [],
-    addedAt,
-    updatedAt: nowIso(),
-  };
+  const entry = buildVideoEntry({ meta, shaped, editorNote, videoSlug, addedAt });
 
   const videoMarkdown = buildVideoMarkdown(entry, {
     keyPoints: shaped.keyPoints,
