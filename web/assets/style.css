@@ -419,6 +419,73 @@ section.band {
   margin-bottom: 16px;
 }
 
+/* ------------------------------------------------------------------- Player */
+/* Shown only when the video's owner permits embedding. A facade until clicked:
+   the page requests nothing from YouTube until the reader asks for the video,
+   which keeps a digest fast and avoids handing over a visit nobody chose. */
+
+.player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin: 0 0 34px;
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+}
+.player iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.player-facade {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.player-facade img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.player-facade .play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: rgba(21, 20, 18, 0.72);
+  transition: background 0.15s ease;
+}
+/* A plain triangle rather than the YouTube mark: this is our control, and it
+   should not imply YouTube endorses the page. */
+.player-facade .play::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 11px 0 11px 18px;
+  border-color: transparent transparent transparent #ffffff;
+}
+.player-facade:hover .play {
+  background: var(--accent);
+}
+.player-facade:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ------------------------------------------------------------------ Avatars */
 /* A creator's own channel picture. Present only when we actually resolved one,
    so the absence of an image is a real absence rather than a placeholder

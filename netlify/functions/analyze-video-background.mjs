@@ -36,7 +36,7 @@ import {
   clean,
 } from "./lib/pipeline.js";
 import { sendCard, sendMessage, escapeTelegramHtml } from "./lib/telegram.js";
-import { fetchChannelAvatar } from "./lib/youtube.js";
+import { fetchChannelAvatar, fetchVideoEmbeddable } from "./lib/youtube.js";
 import { siteUrl } from "./lib/pipeline.js";
 
 const DRAFTS_STORE = "aicd-drafts";
@@ -98,8 +98,12 @@ export default async (req) => {
 
     // The creator's own channel avatar, or nothing. Resolved after the model
     // call so a lookup failure cannot waste an analysis.
-    const avatar = await fetchChannelAvatar(meta.channelUrl);
+    const [avatar, embeddable] = await Promise.all([
+      fetchChannelAvatar(meta.channelUrl),
+      fetchVideoEmbeddable(meta.videoId),
+    ]);
     if (avatar) shaped.creatorImage = avatar.imageUrl;
+    shaped.embeddable = embeddable;
 
     const draftKey = meta.videoId;
     const store = getStore(DRAFTS_STORE);

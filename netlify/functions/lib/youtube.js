@@ -16,7 +16,8 @@
  *   YOUTUBE_API_KEY   optional. Without it, avatars are simply absent.
  */
 
-const API = "https://www.googleapis.com/youtube/v3/channels";
+const CHANNELS_API = "https://www.googleapis.com/youtube/v3/channels";
+const VIDEOS_API = "https://www.googleapis.com/youtube/v3/videos";
 
 /** Pulls a UC… channel id out of the channel URLs this pipeline stores. */
 export function channelIdFrom(channelUrl) {
@@ -36,7 +37,7 @@ export async function fetchChannelAvatar(channelUrl) {
   if (!key || !channelId) return null;
 
   try {
-    const url = `${API}?part=snippet&id=${encodeURIComponent(channelId)}&key=${encodeURIComponent(key)}`;
+    const url = `${CHANNELS_API}?part=snippet&id=${encodeURIComponent(channelId)}&key=${encodeURIComponent(key)}`;
     const res = await fetch(url);
     if (!res.ok) {
       console.warn(`YouTube channels.list failed (${res.status}) for ${channelId}`);
@@ -57,5 +58,34 @@ export async function fetchChannelAvatar(channelUrl) {
   } catch (err) {
     console.warn("Could not resolve a channel avatar:", err.message);
     return null;
+  }
+}
+
+/**
+ * Whether a video may be embedded on another site.
+ *
+ * Returns true only when YouTube explicitly says so. A missing key, a failed
+ * lookup, or a video we cannot find all return false, because the cost of
+ * being wrong is asymmetric: refusing to embed an embeddable video loses a
+ * convenience, while embedding a video whose owner disallowed it puts a
+ * permanent "Video unavailable" box in the middle of the digest.
+ */
+export async function fetchVideoEmbeddable(videoId) {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key || !videoId) return false;
+
+  try {
+    const url = `${VIDEOS_API}?part=status&id=${encodeURIComponent(videoId)}&key=${encodeURIComponent(key)}`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.warn(`YouTube videos.list failed (${res.status}) for ${videoId}`);
+      return false;
+    }
+    const data = await res.json();
+    const status = data?.items?.[0]?.status;
+    return status?.embeddable === true;
+  } catch (err) {
+    console.warn("Could not check embeddability:", err.message);
+    return false;
   }
 }
