@@ -89,7 +89,7 @@ function req({ method = "POST", body, query, initData = OWNER } = {}) {
 
 /* ===================== set up a draft ===================== */
 
-let res = await analyzeVideo.handler({
+let res = await analyzeVideo.run({
   httpMethod: "POST",
   headers: {},
   body: JSON.stringify({
@@ -107,22 +107,22 @@ let res = await analyzeVideo.handler({
 });
 assert.equal(res.statusCode, 200, "analyze: " + res.body);
 
-res = await notifyDraft.handler({ httpMethod: "POST", headers: {}, body: JSON.stringify({ draftKey: "mini01" }) });
+res = await notifyDraft.run({ httpMethod: "POST", headers: {}, body: JSON.stringify({ draftKey: "mini01" }) });
 assert.equal(res.statusCode, 200, "notify: " + res.body);
 console.log("setup: OK — draft analysed and card sent");
 
 /* ===================== auth boundary ===================== */
 
-res = await reviewApi.handler(req({ method: "GET", query: { draftKey: "mini01" }, initData: "" }));
+res = await reviewApi.run(req({ method: "GET", query: { draftKey: "mini01" }, initData: "" }));
 assert.equal(res.statusCode, 401, "review-api must reject a request with no initData");
 
-res = await reviewApi.handler(req({ method: "GET", query: { draftKey: "mini01" }, initData: initDataFor(999888777) }));
+res = await reviewApi.run(req({ method: "GET", query: { draftKey: "mini01" }, initData: initDataFor(999888777) }));
 assert.equal(res.statusCode, 403, "review-api must reject a valid signature from a non-owner");
 console.log("review-api: OK — unauthenticated and non-owner requests refused");
 
 /* ===================== load into the editor ===================== */
 
-res = await reviewApi.handler(req({ method: "GET", query: { draftKey: "mini01" } }));
+res = await reviewApi.run(req({ method: "GET", query: { draftKey: "mini01" } }));
 assert.equal(res.statusCode, 200, "review-api GET: " + res.body);
 const loaded = JSON.parse(res.body);
 assert.equal(loaded.video.title, "Designing For Retainers");
@@ -153,7 +153,7 @@ const edits = {
   editorNote: "Only works if your delivery is already boringly consistent.",
 };
 
-res = await reviewApi.handler(req({ body: { draftKey: "mini01", action: "save", edits } }));
+res = await reviewApi.run(req({ body: { draftKey: "mini01", action: "save", edits } }));
 assert.equal(res.statusCode, 200, "review-api save: " + res.body);
 const saved = JSON.parse(res.body);
 assert.ok(saved.previewToken, "save should return a fresh preview token");
@@ -161,10 +161,10 @@ console.log("review-api: OK — edits saved");
 
 /* ===================== preview ===================== */
 
-res = await previewMarkdown.handler({ httpMethod: "GET", headers: {}, queryStringParameters: { token: "bogus.123.deadbeef" } });
+res = await previewMarkdown.run({ httpMethod: "GET", headers: {}, queryStringParameters: { token: "bogus.123.deadbeef" } });
 assert.equal(res.statusCode, 401, "preview-markdown must reject a forged token");
 
-res = await previewMarkdown.handler({ httpMethod: "GET", headers: {}, queryStringParameters: { token: saved.previewToken } });
+res = await previewMarkdown.run({ httpMethod: "GET", headers: {}, queryStringParameters: { token: saved.previewToken } });
 assert.equal(res.statusCode, 200, "preview-markdown: " + res.body);
 const previewMd = res.body;
 
@@ -184,7 +184,7 @@ console.log("preview-markdown: OK — renders the saved edits, drops emptied sec
 
 /* ===================== publish ===================== */
 
-res = await reviewApi.handler(req({ body: { draftKey: "mini01", action: "publish", edits } }));
+res = await reviewApi.run(req({ body: { draftKey: "mini01", action: "publish", edits } }));
 assert.equal(res.statusCode, 200, "review-api publish: " + res.body);
 const published = JSON.parse(res.body);
 
@@ -211,11 +211,11 @@ assert.ok(historyLine.body.text.includes(published.url));
 console.log("publish: OK — card cleared, history line left in the chat");
 
 // The draft is consumed, so a second publish must not republish.
-res = await reviewApi.handler(req({ body: { draftKey: "mini01", action: "publish", edits } }));
+res = await reviewApi.run(req({ body: { draftKey: "mini01", action: "publish", edits } }));
 assert.equal(res.statusCode, 404, "a published draft must not be publishable twice");
 
 // ...and its preview token must stop resolving too.
-res = await previewMarkdown.handler({ httpMethod: "GET", headers: {}, queryStringParameters: { token: saved.previewToken } });
+res = await previewMarkdown.run({ httpMethod: "GET", headers: {}, queryStringParameters: { token: saved.previewToken } });
 assert.equal(res.statusCode, 404, "preview of a consumed draft should 404");
 console.log("publish: OK — draft consumed, no double-publish, preview retired");
 

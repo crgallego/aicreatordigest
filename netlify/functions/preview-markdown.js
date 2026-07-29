@@ -14,10 +14,11 @@
 import { getStore } from "@netlify/blobs";
 import { renderPreviewMarkdown, respond, json } from "./lib/pipeline.js";
 import { verifyPreviewToken } from "./lib/webapp-auth.js";
+import { toV2 } from "./lib/http-compat.js";
 
 const DRAFTS_STORE = "aicd-drafts";
 
-export const handler = async (event) => {
+export const run = async (event) => {
   if (event.httpMethod === "OPTIONS") return respond(204, "");
   if (event.httpMethod !== "GET") return json(405, { error: "Method not allowed." });
 
@@ -54,3 +55,8 @@ export const handler = async (event) => {
     return json(err.statusCode || 500, { error: err.message || "Unknown error" });
   }
 };
+
+// Netlify selects the v1 runtime whenever a `handler` export exists, and the v1
+// runtime never receives the Blobs context. The export is named `run` so this file
+// resolves as v2; tests call `run` directly. See lib/http-compat.js.
+export default toV2(run);

@@ -25,10 +25,11 @@ import {
   json,
   respond,
 } from "./lib/pipeline.js";
+import { toV2 } from "./lib/http-compat.js";
 
 const DRAFTS_STORE = "aicd-drafts";
 
-export const handler = async (event) => {
+export const run = async (event) => {
   if (event.httpMethod === "OPTIONS") return respond(204, "");
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed. POST a video payload." });
@@ -92,3 +93,8 @@ export const handler = async (event) => {
     });
   }
 };
+
+// Netlify selects the v1 runtime whenever a `handler` export exists, and the v1
+// runtime never receives the Blobs context. The export is named `run` so this file
+// resolves as v2; tests call `run` directly. See lib/http-compat.js.
+export default toV2(run);

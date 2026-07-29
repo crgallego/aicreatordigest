@@ -29,6 +29,7 @@ import {
 } from "./lib/pipeline.js";
 import { requireWebAppUser, signPreviewToken } from "./lib/webapp-auth.js";
 import { deleteMessage, sendMessage } from "./lib/telegram.js";
+import { toV2 } from "./lib/http-compat.js";
 
 const DRAFTS_STORE = "aicd-drafts";
 
@@ -89,7 +90,7 @@ async function closeOutCard(draft, text) {
   }
 }
 
-export const handler = async (event) => {
+export const run = async (event) => {
   if (event.httpMethod === "OPTIONS") return respond(204, "");
 
   let payload = {};
@@ -176,3 +177,8 @@ export const handler = async (event) => {
     return json(err.statusCode || 500, { ok: false, error: err.message || "Unknown error", draftKey });
   }
 };
+
+// Netlify selects the v1 runtime whenever a `handler` export exists, and the v1
+// runtime never receives the Blobs context. The export is named `run` so this file
+// resolves as v2; tests call `run` directly. See lib/http-compat.js.
+export default toV2(run);

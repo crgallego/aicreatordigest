@@ -154,12 +154,12 @@ const payload = {
   playlistSlug: "interviews",
 };
 
-let res = await analyzeVideo.handler(req({ body: payload }));
+let res = await analyzeVideo.run(req({ body: payload }));
 assert.equal(res.statusCode, 200, "analyze-video: " + res.body);
 
 // Load the draft the way the editor does, and confirm the AI supplied a name
 // and role but never a handle — the link came from the description instead.
-res = await reviewApi.handler({
+res = await reviewApi.run({
   httpMethod: "GET",
   headers: { "x-telegram-initdata": ownerInitData() },
   queryStringParameters: { draftKey: "interview1" },
@@ -177,7 +177,7 @@ console.log("review-api: OK — featured person loads with name+role only, no ha
 
 // Chris keeps Jane Guest and adds a second name the AI missed — someone who
 // also happens to have a link in the original description.
-res = await reviewApi.handler(
+res = await reviewApi.run(
   appReq({
     draftKey: "interview1",
     action: "publish",

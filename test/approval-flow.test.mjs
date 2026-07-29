@@ -115,13 +115,13 @@ const payload = {
 
 /* ===================== analyze-video ===================== */
 
-let res = await analyzeVideo.handler(req({ secret: "" }));
+let res = await analyzeVideo.run(req({ secret: "" }));
 assert.equal(res.statusCode, 401, "analyze-video: missing secret should 401");
 
-res = await analyzeVideo.handler(req({ body: { videoId: "x" } }));
+res = await analyzeVideo.run(req({ body: { videoId: "x" } }));
 assert.equal(res.statusCode, 400, "analyze-video: missing fields should 400");
 
-res = await analyzeVideo.handler(req({ body: payload }));
+res = await analyzeVideo.run(req({ body: payload }));
 assert.equal(res.statusCode, 200, "analyze-video happy path: " + res.body);
 const analyzeResult = JSON.parse(res.body);
 assert.equal(analyzeResult.ok, true);
@@ -133,10 +133,10 @@ console.log("analyze-video: OK — draft stored, summary returned for the card")
 
 /* ===================== notify-draft ===================== */
 
-res = await notifyDraft.handler(req({ body: { draftKey: "does-not-exist" } }));
+res = await notifyDraft.run(req({ body: { draftKey: "does-not-exist" } }));
 assert.equal(res.statusCode, 404, "notify-draft: unknown draft should 404");
 
-res = await notifyDraft.handler(
+res = await notifyDraft.run(
   req({
     body: {
       draftKey: "abc123",
@@ -172,10 +172,10 @@ console.log("notify-draft: OK — card carries the Mini App button plus publish/
 // the Mini App editor last saved to the draft is exactly what ships. Editing
 // behaviour itself lives in test-review-app.mjs, which drives the editor.
 
-res = await publishVideo.handler(req({ body: { draftKey: "does-not-exist" } }));
+res = await publishVideo.run(req({ body: { draftKey: "does-not-exist" } }));
 assert.equal(res.statusCode, 404, "publish-video: unknown draft should 404");
 
-res = await publishVideo.handler(
+res = await publishVideo.run(
   req({ body: { draftKey: "abc123", chatId: "1000000000", messageId: 555 } })
 );
 assert.equal(res.statusCode, 200, "publish-video happy path: " + res.body);
@@ -198,19 +198,19 @@ assert.ok(publishConfirm, "should have sent a plain publish confirmation");
 assert.ok(publishConfirm.body.text.includes(publishResult.url));
 assert.ok(publishConfirm.body.text.includes("Flux Academy"), "confirmation should include the channel name");
 
-res = await publishVideo.handler(req({ body: { draftKey: "abc123" } }));
+res = await publishVideo.run(req({ body: { draftKey: "abc123" } }));
 assert.equal(res.statusCode, 404, "re-publishing the same draftKey after it's been consumed should 404");
 console.log("publish-video: OK — draft deleted after publish, can't double-publish");
 
 /* ===================== reject-draft ===================== */
 
 // Set up a second draft to reject.
-res = await analyzeVideo.handler(
+res = await analyzeVideo.run(
   req({ body: { ...payload, videoId: "def456", videoTitle: "A Second Video" } })
 );
 assert.equal(res.statusCode, 200);
 
-res = await rejectDraft.handler(req({ body: { draftKey: "def456", chatId: "1000000000", messageId: 999 } }));
+res = await rejectDraft.run(req({ body: { draftKey: "def456", chatId: "1000000000", messageId: 999 } }));
 assert.equal(res.statusCode, 200, "reject-draft happy path: " + res.body);
 const rejectResult = JSON.parse(res.body);
 assert.equal(rejectResult.existed, true);
@@ -222,7 +222,7 @@ assert.ok(rejectConfirm, "should have sent a plain rejection confirmation");
 assert.ok(rejectConfirm.body.text.includes("A Second Video"));
 assert.ok(rejectConfirm.body.text.includes("Flux Academy"), "confirmation should include the channel name");
 
-res = await publishVideo.handler(req({ body: { draftKey: "def456" } }));
+res = await publishVideo.run(req({ body: { draftKey: "def456" } }));
 assert.equal(res.statusCode, 404, "a rejected draft should no longer be publishable");
 console.log("reject-draft: OK — draft discarded, nothing committed, can't be published afterward");
 
@@ -236,7 +236,7 @@ console.log(`(${xaiCallCount} xAI calls, ${telegramCalls.length} Telegram calls,
 // JSON escaping in its mapper. Confirm that path survives characters a real
 // video title actually contains: quotes, an em dash, an ampersand.
 const trickyTitle = 'A "quoted" title — with a dash & an ampersand';
-res = await analyzeVideo.handler(
+res = await analyzeVideo.run(
   req({
     body: {
       ...payload,
@@ -252,7 +252,7 @@ const formResult = JSON.parse(res.body);
 assert.equal(formResult.draftKey, "form789");
 assert.equal(formResult.title, trickyTitle, "the title should survive form encoding byte for byte");
 
-res = await publishVideo.handler(
+res = await publishVideo.run(
   req({ body: { draftKey: "form789", chatId: "1000000000", messageId: 1 }, form: true })
 );
 assert.equal(res.statusCode, 200, "publish-video (form-urlencoded): " + res.body);
