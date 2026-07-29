@@ -13,7 +13,10 @@
  */
 
 const XAI_URL = "https://api.x.ai/v1/chat/completions";
-const XAI_MODEL = "grok-4-5";
+// xAI accepted the dashed alias "grok-4-5" until 2026-07-29, then began
+// rejecting it with "Model not found". The dotted id is what /v1/models
+// actually lists. Overridable so the next rename needs no code change.
+const XAI_MODEL = process.env.XAI_MODEL || "grok-4.5";
 const GITHUB_API = "https://api.github.com";
 
 const MAX_TRANSCRIPT_CHARS = 120000; // ~30k tokens; longer transcripts are trimmed
