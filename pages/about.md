@@ -22,6 +22,8 @@ This isn't a SEO content farm wearing a nicer font. I'm not trying to rank for "
 
 It's also not a replacement for the creators I cover. Every digest links back to the original video and the channel, prominently, more than once. If a digest sends you to subscribe instead of back to me, it did its job.
 
+And it isn't a fan page. If I think something is wrong I'll say so, in my own marked section, with the creator's actual argument represented fairly above it. Coverage here is attention, not endorsement. A site that promised only to be nice would be worth reading for exactly nothing.
+
 ## Who it's for
 
 People building things, and people who have just been handed something they don't know how to build yet. Founders, operators, studios, and anyone whose job quietly became "figure out the AI part" without anyone telling them how.

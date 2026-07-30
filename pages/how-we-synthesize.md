@@ -32,11 +32,26 @@ That costs coverage, on purpose. A wrong social handle isn't a typo. It's a link
 
 ## What I won't do
 
-- I won't publish a digest that reads like a takedown. If I cover a video, it's because there's something worth learning from it — the tone here is "here's what I got out of this," not a review score.
+- I won't misrepresent what a creator said. The summary is my best account of their actual argument, made as strong as they made it, and that holds whether I agree with it or not.
 - I won't strip a creator's numbers or specifics down to generic advice. "Charge more" is useless. "Raised the minimum project fee from $3,000 to $12,000" is the actual content.
 - I won't invent a quote, a timestamp, a subscriber count, or a runtime I don't actually have. If the transcript or the metadata doesn't give me something, the digest just doesn't show it — I'd rather have a gap than a fabrication.
 - I won't let a model guess a real person's social profile. Those links come from the source or they don't appear.
 - I won't publish anything I haven't read. There's no path through this system that skips me.
+- I won't dress up an argument I think is wrong just to keep things comfortable.
+
+## Where I disagree
+
+I reserve the right to say a creator is wrong.
+
+This page used to promise the opposite. It said I'd never publish anything that read like a takedown, and I've changed my mind, because a publication that guarantees it will never criticize is a publication whose praise is worth nothing. If you know before you start reading that I'll only ever be encouraging, my encouragement carries no information, and the whole thing quietly becomes promotion in a nicer font.
+
+So if I think a tactic doesn't work, or a claim is overstated, or the numbers don't support the conclusion, I'll say so.
+
+What doesn't change is where it goes. The summary of a video is a faithful account of that creator's argument, and my disagreement is not in it. It lives under **My Thoughts**, in my name, visually separated. You should always be able to read what someone said without reading what I think about it, and then read what I think about it on purpose.
+
+Two other things hold. I take issue with the argument, not the person. And every digest still points back at the original video, prominently, more than once. Disagreeing with someone is not a reason to keep you away from them; if anything it's a reason to make the source easier to reach.
+
+Coverage here isn't endorsement. It's attention.
 
 ## On cadence
 
@@ -44,4 +59,8 @@ I'm not promising a digest a day. The queue gets reviewed daily; what comes out 
 
 ## If something's wrong
 
-Wrong attribution, a framing you don't like, or you'd just rather not be on here — [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and tell me what to fix. I take these seriously because the entire premise of this site depends on creators trusting it.
+Wrong attribution, a misquote, a number I got wrong, or a summary that doesn't represent your argument — [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and I'll fix it, usually the same day. Those are errors, and I want to know about them.
+
+If you'd rather not be covered here at all, say so and I'll take it down. That's your call to make about your own work.
+
+What I won't do is remove fair criticism because the subject didn't enjoy it. If I've said something you think is wrong, tell me and I'll publish your side of it next to mine. But quietly deleting a disagreement on request would make everything else on this site worth less, including the parts that are complimentary.

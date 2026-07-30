@@ -34,11 +34,26 @@ Costs coverage. On purpose. A wrong handle isn't a typo. It's a link under a rea
 
 ## What I won't do
 
-- I won't run a takedown. If it's here, there's something in it worth having. The tone is "here's what I got out of this," not a scorecard.
+- I won't misrepresent what somebody said. The summary is their argument at full strength, whether I buy it or not.
 - I won't sand a creator's numbers down to generic advice. "Charge more" is worth nothing. "Raised the floor from $3,000 to $12,000" is the whole point.
 - I won't invent a quote, a timestamp, a subscriber count, or a runtime I don't have. Gap beats fabrication, every time.
 - I won't let a model guess a real person's profile.
 - I won't publish anything I haven't read.
+- I won't dress up an argument I think is wrong to keep the room comfortable.
+
+## Where I disagree
+
+I reserve the right to say a man is wrong.
+
+This page used to swear the opposite. No takedowns, nothing but what I got out of it. I've changed my mind, and here's why: a shop that promises it will never say a hard word has made its kind words worthless. If you know going in that I'll only ever pat somebody on the back, the pat means nothing, and this whole operation is just advertising with better type.
+
+So if the tactic doesn't work, or the claim is bigger than the evidence, I'll say it.
+
+What doesn't move is where it goes. The summary is their case, put the way they'd put it. My argument with it isn't in there. It sits under **My Thoughts**, signed, kept apart, so you can read what they said without reading what I think, and then read what I think on purpose.
+
+Two other things hold. I go after the argument, never the man. And every piece still points back at the original, more than once, because disagreeing with somebody is no reason to stand between you and them.
+
+Being covered here isn't a compliment. It's attention.
 
 ## On cadence
 
@@ -46,4 +61,8 @@ Nobody's promising a piece a day. The queue gets looked at daily; what comes out
 
 ## If something's wrong
 
-Wrong attribution, a framing you don't like, or you'd just rather not be up here: [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and tell me what to fix. I take those seriously. This whole place runs on creators being willing to trust it.
+Wrong attribution, a misquote, a number I botched, a summary that isn't your case: [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and I'll fix it, usually same day. Those are mistakes and I want them.
+
+Don't want to be up here at all? Say so and you come down. Your work, your call.
+
+What I won't do is pull fair criticism because it stung. Think I've got it wrong, tell me and I'll run your side next to mine. Quietly deleting a disagreement on request would cheapen everything else on this wall, starting with the nice parts.

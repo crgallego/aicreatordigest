@@ -22,6 +22,8 @@ This isn't a content farm in a nicer coat. Nobody here is chasing "best AI tools
 
 It's also not a replacement for the people I cover. Every digest points back at the original video and the channel, more than once and prominently. If a piece sends you off to subscribe to somebody else instead of hanging around here, it did its job.
 
+And it isn't a fan club. If I think a man's wrong I'll say it, in my own column, with his case put fairly above it. Getting written up here is attention, not applause. A shop that only ever says nice things isn't worth walking into.
+
 ## Who it's for
 
 People building things, and people who just got handed something they don't know how to build yet. Founders, operators, studios, and anybody whose job quietly turned into "figure out the AI part" without anyone telling them how.
