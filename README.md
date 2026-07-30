@@ -1,8 +1,6 @@
 # AI Creator Digest
 
-**[aicreatordigest.com](https://aicreatordigest.com)** — currently served from
-[remarkable-figolla-6d707e.netlify.app](https://remarkable-figolla-6d707e.netlify.app) while the
-custom domain is connected.
+**[aicreatordigest.com](https://aicreatordigest.com)**
 
 I'm Chris Gallego. I watch the best YouTube channels in AI, tech, SaaS and web design and turn
 each video into a digest — read instead of watched. Every digest credits the creator and links

@@ -7,3 +7,11 @@ npm-debug.log*
 
 # Design handoff reference material — not part of the published site.
 from-claude-design/
+
+# Internal working material. Kept on disk and in the litbox project, never
+# committed here: this repository is public, and these are the notes,
+# writing packages and one-off scripts that are not part of the site.
+memory/
+reports/
+scripts/
+CLAUDE.md

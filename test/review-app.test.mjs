@@ -12,7 +12,7 @@ process.env.GITHUB_REPO = "crgallego/aicreatordigest";
 process.env.GITHUB_BRANCH = "main";
 process.env.TELEGRAM_BOT_TOKEN = BOT_TOKEN;
 process.env.TELEGRAM_CHAT_ID = "1000000000";
-process.env.SITE_URL = "https://remarkable-figolla-6d707e.netlify.app";
+process.env.SITE_URL = "https://aicreatordigest.com";
 
 const repoFiles = new Map();
 const telegramCalls = [];
