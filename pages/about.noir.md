@@ -2,7 +2,9 @@
 
 Name's Chris Gallego, and I don't have time to watch all of it.
 
-That's the motive. The people who actually know this stuff are out there talking about it, forty minutes at a stretch, more of them every week than anybody can sit through, and it's gone from the feed by morning. I still wanted what was inside. This is what I came up with.
+That's the motive. The people who actually know this stuff are out there talking about it, forty minutes at a stretch, more of them every week than anybody can sit through, and it's gone from the feed by morning. I still wanted what was inside, so I worked out a way around it.
+
+Didn't stay a workaround. It's where I publish now, where my own thinking sits next to theirs, and where the mechanics of the operation get written down instead of walking out the door with the night.
 
 Day job is fractional Chief AI Officer at a construction company, so which parts of this are real isn't a hobby question for me. Somebody pays me to get it right before it goes anywhere near a crew, a schedule, or a bid. That's why I was watching, and that's why I couldn't keep up.
 
@@ -21,8 +23,6 @@ Every video that makes it through gets the same treatment. Transcript goes to a 
 This isn't a content farm in a nicer coat. Nobody here is chasing "best AI tools 2026" with a pocket full of affiliate links. No ads. No sponsored placements. No pretending a mediocre video is essential viewing because somebody paid.
 
 It's also not a replacement for the people I cover. Every digest points back at the original video and the channel, more than once and prominently. If a piece sends you off to subscribe to somebody else instead of hanging around here, it did its job.
-
-And it isn't a fan club. If I think a man's wrong I'll say it, in my own column, with his case put fairly above it. Getting written up here is attention, not applause. A shop that only ever says nice things isn't worth walking into.
 
 ## Who it's for
 

@@ -1,6 +1,6 @@
 ## Why there's a system at all
 
-I don't have time to watch all of this, and I still wanted to learn from it. Everything below is the method I came up with, and the part of it I care most about is that nothing here skips me.
+I don't have time to watch all of this, and I still wanted to learn from it. What started as a workaround turned into where I publish, where I add my own thoughts, and where the machinery behind it gets written down. Everything below is the method, and the part I care most about is that nothing here skips me.
 
 ## The short version
 
@@ -16,7 +16,7 @@ A video's transcript goes to an AI model, which pulls out the structure: takeawa
 
 **4. I edit the draft, then I look at the real page.** The AI's output is a draft, not a publication. I rewrite whatever needs rewriting — the takeaway, any key point, the whole tactics section — and I can delete anything entirely; an emptied section means "leave this out," not "fall back to what the AI said." Then I preview it, and the preview isn't a mockup: it's this site's own page template rendering the unpublished draft, so what I approve is exactly what ships. Only then does it publish.
 
-**5. Where I add my own take, it says so.** When I have something to add that the creator didn't say, it goes in a clearly marked section under my name, visually separated from the summary. You should always be able to tell which sentences came from the video and which came from me.
+**5. Where I add my own take, it says so.** Whatever I have to say about a video that the creator didn't say goes in a clearly marked section under my name, visually separated from the summary. You should always be able to tell which sentences came from the video and which came from me.
 
 **6. Every digest is a real markdown file in a public repo.** Nothing here lives in a private database. You can read the raw file on GitHub, you can see exactly what changed and when, and you can open an issue against a specific line if something's off. The same repository holds the software, which was built by Claude rather than by me. The [build story](/how-this-works) says which parts of this project are my work and which aren't.
 
@@ -30,28 +30,16 @@ Those links are never guessed. The AI is allowed to tell me *who* appeared in a 
 
 That costs coverage, on purpose. A wrong social handle isn't a typo. It's a link under a real person's name pointing at a stranger.
 
-## What I won't do
+## What the analysis is not allowed to do
 
-- I won't misrepresent what a creator said. The summary is my best account of their actual argument, made as strong as they made it, and that holds whether I agree with it or not.
-- I won't strip a creator's numbers or specifics down to generic advice. "Charge more" is useless. "Raised the minimum project fee from $3,000 to $12,000" is the actual content.
-- I won't invent a quote, a timestamp, a subscriber count, or a runtime I don't actually have. If the transcript or the metadata doesn't give me something, the digest just doesn't show it — I'd rather have a gap than a fabrication.
-- I won't let a model guess a real person's social profile. Those links come from the source or they don't appear.
-- I won't publish anything I haven't read. There's no path through this system that skips me.
-- I won't dress up an argument I think is wrong just to keep things comfortable.
+These are constraints on the AI pass rather than a philosophy. They exist so the summary is an accurate account of the video and nothing more.
 
-## Where I disagree
+- No invented quotes, timestamps, subscriber counts or runtimes. If the transcript or the metadata doesn't contain it, the digest leaves it out. A gap is fine.
+- No sanding a creator's numbers down into generic advice. "Charge more" is useless. "Raised the minimum project fee from $3,000 to $12,000" is the actual content.
+- No guessing at a real person's social profile. Those links are pulled from the creator's own description or they don't appear.
+- No paraphrasing an argument into something weaker or tidier than the creator made it.
 
-I reserve the right to say a creator is wrong.
-
-This page used to promise the opposite. It said I'd never publish anything that read like a takedown, and I've changed my mind, because a publication that guarantees it will never criticize is a publication whose praise is worth nothing. If you know before you start reading that I'll only ever be encouraging, my encouragement carries no information, and the whole thing quietly becomes promotion in a nicer font.
-
-So if I think a tactic doesn't work, or a claim is overstated, or the numbers don't support the conclusion, I'll say so.
-
-What doesn't change is where it goes. The summary of a video is a faithful account of that creator's argument, and my disagreement is not in it. It lives under **My Thoughts**, in my name, visually separated. You should always be able to read what someone said without reading what I think about it, and then read what I think about it on purpose.
-
-Two other things hold. I take issue with the argument, not the person. And every digest still points back at the original video, prominently, more than once. Disagreeing with someone is not a reason to keep you away from them; if anything it's a reason to make the source easier to reach.
-
-Coverage here isn't endorsement. It's attention.
+Then I read it, and nothing publishes that I haven't.
 
 ## On cadence
 
@@ -59,8 +47,6 @@ I'm not promising a digest a day. The queue gets reviewed daily; what comes out 
 
 ## If something's wrong
 
-Wrong attribution, a misquote, a number I got wrong, or a summary that doesn't represent your argument — [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and I'll fix it, usually the same day. Those are errors, and I want to know about them.
+Wrong attribution, a misquote, a number I got wrong, or a summary that doesn't represent your argument — [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and I'll fix it, usually the same day.
 
 If you'd rather not be covered here at all, say so and I'll take it down. That's your call to make about your own work.
-
-What I won't do is remove fair criticism because the subject didn't enjoy it. If I've said something you think is wrong, tell me and I'll publish your side of it next to mine. But quietly deleting a disagreement on request would make everything else on this site worth less, including the parts that are complimentary.

@@ -4,9 +4,11 @@ I don't have time to watch all of it.
 
 That's the motive. No better one underneath it, and I'd rather put it flat on the table than dress it into something with a mission statement. There's real material in those videos. Forty minutes a piece, more of them landing every week than any man can sit through, and I still wanted what was inside.
 
-So this is what I came up with. Something that reads them for me and hands back the part worth keeping, with my name still on every one that goes out.
+So this is what I came up with. A workaround, first time out. Something that reads them for me and hands back the part worth keeping, with my name still on every one that goes out.
 
-Everything past this point is how it got built, fires included.
+It grew. It's where I publish now, where I put my own thinking down next to theirs, and where the mechanics of the thing get written up instead of vanishing into the air.
+
+Everything past this point is that last part: how it got built, fires included.
 
 ## The arrangement
 

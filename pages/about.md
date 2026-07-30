@@ -2,7 +2,9 @@
 
 I'm Chris Gallego, and I don't have time to watch all of this.
 
-That's the honest reason this site exists. There's a lot of genuinely useful material on YouTube, it arrives faster than anyone can keep up with, and getting to the six minutes that matter means sitting through forty. I still wanted to learn from it. This is what I came up with.
+That's the honest reason this site exists. There's a lot of genuinely useful material on YouTube, it arrives faster than anyone can keep up with, and getting to the six minutes that matter means sitting through forty. I still wanted to learn from it, so I came up with a workaround.
+
+It became more than a workaround. It's where I publish, where I put my own thoughts alongside what the creators actually said, and where I write down the technical journey of building the thing that makes it possible.
 
 My day job is fractional Chief AI Officer at Coker Construction, so the question of which parts of this are real and which are noise isn't academic for me. It's what I'm paid to get right for a business that builds things in the physical world. That's the reason I was watching in the first place, and the reason I couldn't keep up.
 
@@ -21,8 +23,6 @@ When enough videos land in one collection, there's a consensus guide: where the 
 This isn't a SEO content farm wearing a nicer font. I'm not trying to rank for "best AI tools 2026" and stuff it with affiliate links. There are no ads here, no sponsored placements, no pretending a mediocre video is essential viewing because someone paid for it.
 
 It's also not a replacement for the creators I cover. Every digest links back to the original video and the channel, prominently, more than once. If a digest sends you to subscribe instead of back to me, it did its job.
-
-And it isn't a fan page. If I think something is wrong I'll say so, in my own marked section, with the creator's actual argument represented fairly above it. Coverage here is attention, not endorsement. A site that promised only to be nice would be worth reading for exactly nothing.
 
 ## Who it's for
 

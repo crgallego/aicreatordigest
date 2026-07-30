@@ -1,6 +1,6 @@
 ## Why there's a system at all
 
-I don't have time to watch all of it. I still wanted what's inside. Everything under here is the method that came out of that, and the part that matters is the part where nothing gets past me.
+I don't have time to watch all of it. I still wanted what's inside. The workaround turned into the shop: where I publish, where my own thinking goes down next to theirs, and where the wiring gets written up. Everything under here is the method, and the part that matters is that nothing gets past me.
 
 ## The short version
 
@@ -18,7 +18,7 @@ Nothing goes out that I haven't read. There's no door around me.
 
 **Four. I rewrite whatever needs rewriting.** The model's work is a draft, not a verdict. I can replace any of it and I can delete any of it, and an emptied section means the section is gone, not that the machine's version quietly walks back in. Then I look at the real page, not a mockup of the page: the same template that serves everything else, pointed at the unpublished draft. What I approve is what ships.
 
-**Five. My own take stands where you can see it.** Anything I add that the creator didn't say goes under my name, marked, kept apart from the summary. You should never have to guess which sentences came off the tape and which came out of me.
+**Five. My own take stands where you can see it.** Whatever I've got to say that the creator didn't goes under my name, marked, kept apart from the summary. You should never have to guess which sentences came off the tape and which came out of me.
 
 **Six. Every digest is a file anybody can pull.** Nothing here lives in a locked drawer. Read the raw markdown on GitHub, see exactly what changed and when, argue with a specific line if it's wrong. The same repository holds the software, which my partner Claude built rather than me. The [build log](/how-this-works) says who did what.
 
@@ -32,28 +32,16 @@ Those links are never guessed. The model can tell me *who* was in the room and w
 
 Costs coverage. On purpose. A wrong handle isn't a typo. It's a link under a real person's name pointing at a stranger.
 
-## What I won't do
+## What the machine isn't allowed to do
 
-- I won't misrepresent what somebody said. The summary is their argument at full strength, whether I buy it or not.
-- I won't sand a creator's numbers down to generic advice. "Charge more" is worth nothing. "Raised the floor from $3,000 to $12,000" is the whole point.
-- I won't invent a quote, a timestamp, a subscriber count, or a runtime I don't have. Gap beats fabrication, every time.
-- I won't let a model guess a real person's profile.
-- I won't publish anything I haven't read.
-- I won't dress up an argument I think is wrong to keep the room comfortable.
+House rules for the analysis, not a creed. They're there so the summary is the video and nothing else.
 
-## Where I disagree
+- No invented quotes, timestamps, subscriber counts or runtimes. Not in the tape, not in the piece. A gap is fine.
+- No sanding the numbers down to generic advice. "Charge more" is worth nothing. "Raised the floor from $3,000 to $12,000" is the whole point.
+- No guessing at a real person's profile. Comes out of their own description or it doesn't run.
+- No paraphrasing a man's argument into something tidier than he made it.
 
-I reserve the right to say a man is wrong.
-
-This page used to swear the opposite. No takedowns, nothing but what I got out of it. I've changed my mind, and here's why: a shop that promises it will never say a hard word has made its kind words worthless. If you know going in that I'll only ever pat somebody on the back, the pat means nothing, and this whole operation is just advertising with better type.
-
-So if the tactic doesn't work, or the claim is bigger than the evidence, I'll say it.
-
-What doesn't move is where it goes. The summary is their case, put the way they'd put it. My argument with it isn't in there. It sits under **My Thoughts**, signed, kept apart, so you can read what they said without reading what I think, and then read what I think on purpose.
-
-Two other things hold. I go after the argument, never the man. And every piece still points back at the original, more than once, because disagreeing with somebody is no reason to stand between you and them.
-
-Being covered here isn't a compliment. It's attention.
+Then I read it, and nothing goes up that I haven't.
 
 ## On cadence
 
@@ -64,5 +52,3 @@ Nobody's promising a piece a day. The queue gets looked at daily; what comes out
 Wrong attribution, a misquote, a number I botched, a summary that isn't your case: [open an issue](https://github.com/crgallego/aicreatordigest/issues/new) and I'll fix it, usually same day. Those are mistakes and I want them.
 
 Don't want to be up here at all? Say so and you come down. Your work, your call.
-
-What I won't do is pull fair criticism because it stung. Think I've got it wrong, tell me and I'll run your side next to mine. Quietly deleting a disagreement on request would cheapen everything else on this wall, starting with the nice parts.

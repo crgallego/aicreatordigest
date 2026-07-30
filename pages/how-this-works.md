@@ -4,9 +4,11 @@ I don't have time to watch all of this.
 
 That's the whole motivation, and I'd rather state it plainly than dress it up into a mission. There is a lot of genuinely useful material in these videos, more of it every week than anyone can sit through, and watching forty minutes to get to the six that matter is not something I can do at the rate it arrives. I still wanted to learn from it.
 
-So this is what I came up with. Something that reads them for me and hands back the part worth having, with me still on the hook for every one that goes out.
+So this is what I came up with. A workaround, at first. Something that reads them for me and hands back the part worth having, with me still on the hook for every one that goes out.
 
-Everything below is how that got built, including the parts that went wrong.
+It turned into more than that. It's where I publish now, and where I put my own thinking next to what the creators said, and where the technical side of making it work gets written down instead of disappearing into a chat window.
+
+Everything below is that last part: how it got built, including where it went wrong.
 
 ## Who did what
 
