@@ -14,17 +14,14 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "netlify dev",
+    "dev": "npx --yes netlify-cli@17 dev",
     "serve": "npx --yes serve@14 -l 8888 .",
     "check": "for f in netlify/functions/*.js netlify/functions/lib/*.js; do node --check \"$f\" || exit 1; done",
     "test": "node test/run.mjs",
     "test:live": "node --import ./test/helpers/register.mjs test/live-transcript.test.mjs"
   },
   "dependencies": {
-    "youtube-caption-extractor": "^1.10.2",
-    "@netlify/blobs": "^8.1.0"
-  },
-  "devDependencies": {
-    "netlify-cli": "^17.0.0"
+    "@netlify/blobs": "^8.1.0",
+    "youtube-caption-extractor": "^1.10.2"
   }
 }

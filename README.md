@@ -254,6 +254,25 @@ Open an issue.
 
 ---
 
+## Deploying
+
+Git is the only path to production. The site builds from `crgallego/aicreatordigest`
+on `main`, and Netlify deploys every push.
+
+```
+Telegram publish ──► publish-video commits to GitHub ──┐
+                                                       ├──► Netlify builds ──► live
+local change ──► git push ─────────────────────────────┘
+```
+
+Do not run `netlify deploy`. A manual deploy publishes the local working
+directory and overwrites the git-built version, which rolls the site back
+whenever the working copy has drifted from `main`.
+
+`netlify-cli` is intentionally not a dependency, since Netlify installs
+devDependencies during builds. Use `npx --yes netlify-cli@17 …` for read-only
+work.
+
 ## Running it locally
 
 ```bash
