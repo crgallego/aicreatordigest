@@ -158,15 +158,56 @@
   status = 200
 
 # Keep the function and test sources out of the served site.
+# Everything below is in the repository because the repository is the project,
+# not because it belongs on the website. Without force = true these rules do
+# nothing at all: Netlify serves a matching static file before it consults the
+# redirect table, so a rule pointing at a path that exists is silently inert.
+# Both of the original rules here were in that state, and the function source
+# was being served at the domain.
+
 [[redirects]]
   from = "/netlify/*"
   to = "/web/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/test/*"
   to = "/web/404.html"
   status = 404
+  force = true
+
+# Writing packages. Held back deliberately: this material is intended for
+# publication later or elsewhere, and putting it on the domain publishes it now.
+[[redirects]]
+  from = "/memory/*"
+  to = "/web/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/web/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/CLAUDE.md"
+  to = "/web/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package.json"
+  to = "/web/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/web/404.html"
+  status = 404
+  force = true
 
 [[redirects]]
   from = "/*"

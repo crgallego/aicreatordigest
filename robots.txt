@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 Disallow: /netlify/
 Disallow: /.netlify/
+Disallow: /memory/
+Disallow: /test/
+Disallow: /scripts/
 
 Sitemap: https://aicreatordigest.com/sitemap.xml
