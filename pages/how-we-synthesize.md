@@ -32,7 +32,7 @@ That costs coverage, on purpose. A wrong social handle isn't a typo. It's a link
 
 ## What the analysis is not allowed to do
 
-These are constraints on the AI pass rather than a philosophy. They exist so the summary is an accurate account of the video and nothing more.
+No fabrication. That is the rule the analysis and summary layer runs on, it is not negotiable, and it is the thing I would defend hardest about how this system works. A summary that invents something is worse than no summary, because it puts words in a real person's mouth under their own name.
 
 - No invented quotes, timestamps, subscriber counts or runtimes. If the transcript or the metadata doesn't contain it, the digest leaves it out. A gap is fine.
 - No sanding a creator's numbers down into generic advice. "Charge more" is useless. "Raised the minimum project fee from $3,000 to $12,000" is the actual content.

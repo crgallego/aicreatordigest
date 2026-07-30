@@ -22,7 +22,7 @@ I pick the cases. I set the rules, including the ones that cost us coverage. I m
 
 What I don't do is write the software. That's my partner's work. Claude does the legwork, the debugging, and most of the finding out; I decide what's worth finding out and what we're not going to do to get there. An earlier version of this page had me holding the wrench. Also not true, and the [build log](/how-this-works) now says who held what.
 
-I'm not a technical man by training. That's changing, slowly, and mostly by doing this.
+I'm the idea man. Never was technical by training. Picking it up slow, by building with the machine instead of reading about it, and this operation is most of that schooling.
 
 When you read **My Thoughts** on a digest, that's mine. Actually typed, by me, about something I actually watched. That part was always true and it's the part I'd want you to hold me to.
 

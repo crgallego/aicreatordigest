@@ -4,7 +4,7 @@ Name's Chris Gallego, and I don't have time to watch all of it.
 
 That's the motive. The people who actually know this stuff are out there talking about it, forty minutes at a stretch, more of them every week than anybody can sit through, and it's gone from the feed by morning. I still wanted what was inside, so I worked out a way around it.
 
-Didn't stay a workaround. It's where I publish now, where my own thinking sits next to theirs, and where the mechanics of the operation get written down instead of walking out the door with the night.
+Didn't stay a workaround. It's where I publish now, where my own thinking sits next to theirs, and where the mechanics of the operation get written down instead of walking out the door with the night. Not by me. I'm the idea man, picking up the technical end as I go by building with the machine, and my partner writes that part.
 
 Day job is fractional Chief AI Officer at a construction company, so which parts of this are real isn't a hobby question for me. Somebody pays me to get it right before it goes anywhere near a crew, a schedule, or a bid. That's why I was watching, and that's why I couldn't keep up.
 

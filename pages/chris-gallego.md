@@ -20,7 +20,7 @@ I curate the playlists, I set the editorial rules, and I make the final call on 
 
 What I don't do is write the software. The pipeline was built by Claude, working in Claude Code, from my direction and my arguments about how it should behave. The engineering and the debugging are its work. The judgment calls, the refusals, and the editorial line are mine. An earlier version of this page said I wrote the pipeline. That wasn't true either, and the [build story](/how-this-works) now splits the credit properly.
 
-I'm not a technical person by training. That's changing, slowly, and mostly by doing this.
+I'm the idea guy. Not technical by training, and getting more technical slowly, by building things with AI rather than by studying it. This project is most of that education.
 
 When you read "My Thoughts" on a digest page, that is a real note I wrote, not something generated on my behalf. That part has always been true and it's the part I'd most want you to hold me to.
 

@@ -34,7 +34,7 @@ Costs coverage. On purpose. A wrong handle isn't a typo. It's a link under a rea
 
 ## What the machine isn't allowed to do
 
-House rules for the analysis, not a creed. They're there so the summary is the video and nothing else.
+No fabrication. That's the rule the analysis runs on, it doesn't bend, and it's the part of this operation I'd defend first. A summary that makes something up is worse than no summary, because it puts words in a real person's mouth with their name over the top.
 
 - No invented quotes, timestamps, subscriber counts or runtimes. Not in the tape, not in the piece. A gap is fine.
 - No sanding the numbers down to generic advice. "Charge more" is worth nothing. "Raised the floor from $3,000 to $12,000" is the whole point.

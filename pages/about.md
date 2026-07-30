@@ -4,7 +4,7 @@ I'm Chris Gallego, and I don't have time to watch all of this.
 
 That's the honest reason this site exists. There's a lot of genuinely useful material on YouTube, it arrives faster than anyone can keep up with, and getting to the six minutes that matter means sitting through forty. I still wanted to learn from it, so I came up with a workaround.
 
-It became more than a workaround. It's where I publish, where I put my own thoughts alongside what the creators actually said, and where I write down the technical journey of building the thing that makes it possible.
+It became more than a workaround. It's where I publish, where I put my own thoughts alongside what the creators actually said, and where the technical journey of building it gets written down. I don't write that part. I'm the idea guy, slowly getting more technical by building with AI, and my partner Claude does the engineering and writes the build log.
 
 My day job is fractional Chief AI Officer at Coker Construction, so the question of which parts of this are real and which are noise isn't academic for me. It's what I'm paid to get right for a business that builds things in the physical world. That's the reason I was watching in the first place, and the reason I couldn't keep up.
 
