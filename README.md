@@ -73,7 +73,7 @@ netlify/functions/
   fetch-transcript.js       transcript for one video: vendor first, free library as fallback
   analyze-video.js          analyze → store a draft in Netlify Blobs (publishes nothing)
   notify-draft.js           send the Telegram draft card
-  review-api.js             the Mini App's backend: load, save, publish, reject
+  review-api.js             the Mini App's backend: load, save, ask, publish, reject
   preview-markdown.js       a draft rendered exactly as it would be published
   publish-video.js          publish a stored draft as-is (the card's "Publish as-is" shortcut)
   reject-draft.js           discard a draft
@@ -125,6 +125,9 @@ YouTube playlists (a registry in a Make data store)
   │  "Review & edit" opens the Mini App (web/review.html) inside Telegram:       │
   │      edit every section  →  PREVIEW  →  publish                              │
   │                                                                              │
+  │  Ask about this video — a panel in the same editor that answers questions    │
+  │  from the stored transcript, for the videos I haven't watched. See below.    │
+  │                                                                              │
   │  The preview is web/video.html itself — the same template, styles and        │
   │  rendering code a published digest uses — pointed at the draft instead of a  │
   │  committed file. What you approve is byte-for-byte what ships, and a test    │
@@ -157,6 +160,35 @@ Creator profiles are rebuilt from the manifest without a model call.
 The front end is vanilla HTML, CSS and JavaScript. It fetches one JSON manifest plus the
 frontmatter of whatever markdown file the current page needs, renders it client-side, and sets its
 own meta tags, canonical URL and JSON-LD. No framework, no bundler, no build step.
+
+### Asking about a video
+
+I don't watch these videos. That's the point of the project, and it's also the one real weakness in
+editing a draft: when a key point reads oddly, or a number turns up without the setup that made it
+make sense, I have no way to check it short of going and watching the thing.
+
+So the editor has an **Ask about this video** panel. It's a conversation with the same model that
+wrote the draft, holding the same transcript — which is already stored on the draft, so asking costs
+a model call and nothing else. Ask what the creator actually said, whether a point in the draft is
+fair, what got left out, what a piece of jargon meant in context. The conversation is kept on the
+draft, so closing Telegram and coming back later doesn't lose it.
+
+Three rules make the answers worth trusting:
+
+- **The transcript is the only source.** The model is told to answer from the transcript and the
+  draft, and to say "the transcript doesn't cover that" rather than fill the gap from what it knows
+  about the topic. If I explicitly ask for outside context, it has to open that sentence with
+  `Outside the transcript:` so the seam is visible.
+- **Timestamps are checked, not trusted.** The transcript the panel sends carries a real `[mm:ss]`
+  marker every 30 seconds, taken from the caption timing. The model may only cite a moment by
+  copying one. Every timestamp in an answer is then matched back against the markers that were
+  actually sent, server-side: matches become links into the video, and anything else stays as plain
+  text with no link. A made-up timestamp can't dress itself up as a checked one. This is the same
+  rule the digests themselves follow — see [Editorial standards](#editorial-standards).
+- **None of it publishes.** The conversation lives on the draft and is never read by the publish
+  path. A test asserts that what's said in the panel can't reach a committed page.
+
+The panel edits nothing on its own. Whatever I do with an answer, I type myself.
 
 ### The payload
 
@@ -220,7 +252,7 @@ against it, and preview tokens are signed with it. There's no separate secret to
 | `/.netlify/functions/notify-draft` | webhook secret | send the Telegram draft card |
 | `/.netlify/functions/publish-video` | webhook secret | publish a stored draft as-is |
 | `/.netlify/functions/reject-draft` | webhook secret | discard a draft |
-| `/api/review` | Telegram initData | the Mini App backend: load, save, publish, reject |
+| `/api/review` | Telegram initData | the Mini App backend: load, save, ask, publish, reject |
 | `/api/preview-markdown` | preview token | a draft rendered as it would be published |
 | `/review/:draftKey` | page | the Mini App editor |
 | `/preview?token=…` | preview token | the real digest template rendering a draft |

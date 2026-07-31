@@ -17,11 +17,22 @@ process.env.SITE_URL = "https://aicreatordigest.com";
 const repoFiles = new Map();
 const telegramCalls = [];
 
+// The "ask" calls are prose, not JSON, and the tests drive what comes back so
+// they can check how an answer is treated rather than what a model happens to say.
+const askCalls = [];
+let askReply = "The transcript doesn't cover that.";
+
 globalThis.fetch = async (url, opts = {}) => {
   const u = String(url);
 
   if (u.startsWith("https://api.x.ai/")) {
     const body = JSON.parse(opts.body);
+
+    if (String(body.messages[0].content).includes("research assistant behind AI Creator Digest")) {
+      askCalls.push(body);
+      return { ok: true, status: 200, json: async () => ({ choices: [{ message: { content: askReply } }] }), text: async () => "" };
+    }
+
     const isConsensus = body.messages[1].content.includes("updating the consensus guide for the");
     const payload = isConsensus
       ? { title: "T", summary: "S", agree: ["a"], disagree: [] }
@@ -276,3 +287,134 @@ console.log("\nALL REVIEW MINI APP TESTS PASSED");
   );
   console.log("reprocess: OK — model list offered, unknown models refused, run started and card cleared");
 }
+
+/* ===================== ask the model about the video =====================
+ *
+ * The editor writes about videos he hasn't watched, so this is the only route
+ * from "the draft says something odd" back to what was actually said. What
+ * matters in these assertions is grounding: the transcript reaches the model,
+ * the draft goes with it, an unverifiable timestamp never comes back looking
+ * verified, and none of the conversation reaches the published page. */
+{
+  const segments = [
+    { start: "0", dur: "6", text: "Most designers price by the hour and never escape it" },
+    { start: "62", dur: "6", text: "The retainer only works if delivery is boringly consistent" },
+    { start: "124", dur: "6", text: "We charge eleven thousand dollars a month for that" },
+  ];
+
+  let r = await analyzeVideo.run({
+    httpMethod: "POST", headers: {},
+    body: JSON.stringify({
+      videoId: "ask01", videoTitle: "Pricing Teardown", channelName: "Flux Academy",
+      videoUrl: "https://www.youtube.com/watch?v=ask01",
+      transcript: segments.map((s) => s.text).join(" "),
+      segments,
+      playlistName: "Premium Websites", playlistSlug: "premium-websites",
+    }),
+  });
+  assert.equal(r.statusCode, 200, "setup analyze: " + r.body);
+
+  // A question is required — an empty one must not reach the model at all.
+  const before = askCalls.length;
+  r = await reviewApi.run(req({ body: { draftKey: "ask01", action: "ask", question: "   " } }));
+  assert.equal(r.statusCode, 400, "an empty question must be refused");
+  assert.equal(askCalls.length, before, "an empty question must not reach the model");
+
+  // The real thing: the transcript and the draft both have to travel with it.
+  askReply = "He says the number outright at [2:04]: \"we charge eleven thousand dollars a month for that\".";
+  r = await reviewApi.run(req({
+    body: {
+      draftKey: "ask01", action: "ask",
+      question: "What does he actually charge?",
+      edits: { keyTakeaway: "Retainers beat hourly once delivery is predictable." },
+    },
+  }));
+  assert.equal(r.statusCode, 200, "ask: " + r.body);
+  const answered = JSON.parse(r.body);
+  assert.ok(answered.answer.includes("eleven thousand"), "the answer comes back to the editor");
+
+  const sent = askCalls[askCalls.length - 1];
+  const systemPrompt = sent.messages[0].content;
+  assert.ok(!sent.response_format, "the ask call must not be forced into JSON mode");
+  assert.ok(
+    systemPrompt.includes("boringly consistent"),
+    "the transcript must travel with the question — it is the only source an answer may come from"
+  );
+  assert.ok(
+    systemPrompt.includes("[1:02]"),
+    "the transcript is marked with real caption times so a moment can be cited"
+  );
+  assert.ok(
+    systemPrompt.includes("Retainers beat hourly once delivery is predictable."),
+    "the draft as it stands on screen goes with the question, not the last autosave"
+  );
+  assert.equal(sent.messages[sent.messages.length - 1].content, "What does he actually charge?");
+  console.log("ask: OK — transcript, caption markers and the live draft all reach the model");
+
+  // Those edits were context, not an instruction to save. A question is not an
+  // edit, and a partial one arriving here must not quietly empty a section.
+  r = await reviewApi.run(req({ method: "GET", query: { draftKey: "ask01" } }));
+  const untouched = JSON.parse(r.body);
+  assert.equal(untouched.edits.keyTakeaway, "Original AI takeaway.", "asking must not rewrite the draft");
+  assert.ok(untouched.edits.keyPoints.length, "asking with partial edits must not wipe a section");
+  console.log("ask: OK — asking a question leaves the draft exactly as it was");
+
+  /* --- a timestamp is only linkable if the captions actually contain it --- */
+  assert.deepEqual(
+    answered.timestamps.map((t) => t.at),
+    ["2:04"],
+    "a cited marker that exists in the captions resolves"
+  );
+  assert.equal(answered.timestamps[0].url, "https://www.youtube.com/watch?v=ask01&t=124s");
+
+  askReply = "She covers it at [9:99] and again at [41:07].";
+  r = await reviewApi.run(req({ body: { draftKey: "ask01", action: "ask", question: "When?" } }));
+  assert.equal(r.statusCode, 200, "ask: " + r.body);
+  assert.deepEqual(
+    JSON.parse(r.body).timestamps, [],
+    "a timestamp with no matching caption marker must never come back as a resolved link"
+  );
+  console.log("ask: OK — invented timestamps resolve to nothing, real ones resolve to the second");
+
+  /* --- the conversation persists, and carries into the next session --- */
+  r = await reviewApi.run(req({ method: "GET", query: { draftKey: "ask01" } }));
+  const reopened = JSON.parse(r.body);
+  assert.equal(reopened.chat.length, 4, "both exchanges are still there when the editor is reopened");
+  assert.equal(reopened.chat[0].content, "What does he actually charge?");
+  assert.equal(reopened.chat[1].role, "assistant");
+  assert.ok(reopened.hasTimedTranscript, "a video with captions reports that timestamps are available");
+
+  // ...and the history is what makes a follow-up a follow-up.
+  askReply = "Yes.";
+  r = await reviewApi.run(req({ body: { draftKey: "ask01", action: "ask", question: "Is that per month?" } }));
+  assert.equal(r.statusCode, 200);
+  const followUp = askCalls[askCalls.length - 1].messages;
+  assert.ok(
+    followUp.some((m) => m.role === "assistant" && m.content.includes("eleven thousand")),
+    "an earlier answer is replayed to the model, so a follow-up can lean on it"
+  );
+  console.log("ask: OK — the conversation survives reopening and follow-ups carry context");
+
+  /* --- clearing --- */
+  r = await reviewApi.run(req({ body: { draftKey: "ask01", action: "clear-chat" } }));
+  assert.equal(r.statusCode, 200, "clear-chat: " + r.body);
+  r = await reviewApi.run(req({ method: "GET", query: { draftKey: "ask01" } }));
+  assert.deepEqual(JSON.parse(r.body).chat, [], "clearing empties the conversation");
+
+  /* --- the conversation is a tool, not content: it must never publish --- */
+  askReply = "A private note to myself about this video: DO NOT PUBLISH THIS SENTENCE.";
+  await reviewApi.run(req({ body: { draftKey: "ask01", action: "ask", question: "Anything else?" } }));
+  r = await reviewApi.run(req({
+    body: { draftKey: "ask01", action: "publish", edits: { keyTakeaway: "Retainers beat hourly." } },
+  }));
+  assert.equal(r.statusCode, 200, "publish: " + r.body);
+  const page = repoFiles.get(`playlists/premium-websites/videos/${JSON.parse(r.body).videoSlug}.md`);
+  assert.ok(page, "the digest committed");
+  assert.ok(
+    !page.includes("DO NOT PUBLISH THIS SENTENCE") && !page.includes("Anything else?"),
+    "nothing said in the ask panel may reach the published digest"
+  );
+  console.log("ask: OK — conversation clears, and never reaches the published page");
+}
+
+console.log("\nALL ASK-THE-MODEL TESTS PASSED");

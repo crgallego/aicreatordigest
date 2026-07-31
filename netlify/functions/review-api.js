@@ -6,6 +6,8 @@
  *
  *   GET  ?draftKey=…                    load a draft for editing
  *   POST {action:"save",    draftKey, edits}   persist edits, mint a preview token
+ *   POST {action:"ask",     draftKey, question} ask the model about the transcript
+ *   POST {action:"clear-chat", draftKey}       forget the conversation so far
  *   POST {action:"publish", draftKey, edits}   persist edits, then publish
  *   POST {action:"reject",  draftKey}          discard the draft
  *
@@ -22,6 +24,7 @@
 import { getStore } from "@netlify/blobs";
 import {
   applyDraftEdits,
+  askAboutVideo,
   publishVideo,
   parseRequestBody,
   availableModels,
@@ -35,6 +38,12 @@ import { deleteMessage, sendMessage } from "./lib/telegram.js";
 import { toV2 } from "./lib/http-compat.js";
 
 const DRAFTS_STORE = "aicd-drafts";
+
+// The conversation is kept on the draft so it survives closing the Mini App —
+// a question asked on the way to work is still there that evening. It is never
+// published: publishVideo takes meta, shaped, editorNote and run by name, so
+// nothing here can leak into a digest.
+const MAX_CHAT_MESSAGES_KEPT = 40;
 
 /** Strips a stored draft down to just what the editor needs to render. */
 function toEditable(draftKey, draft) {
@@ -67,6 +76,10 @@ function toEditable(draftKey, draft) {
       creatorLinks: shaped.creatorLinks || [],
       featuredPeople: (shaped.featuredPeople || []).map((p) => ({ name: p.name, links: p.links || [] })),
     },
+    chat: draft.chat || [],
+    // Without caption timing there is nothing to cite by time, and the editor
+    // says so rather than leaving the missing links looking like a bug.
+    hasTimedTranscript: (draft.meta.segments || []).length > 0,
   };
 }
 
@@ -147,6 +160,59 @@ export const run = async (event) => {
         previewToken: signPreviewToken(draftKey),
         derivedLinks: toEditable(draftKey, updated).derivedLinks,
       });
+    }
+
+    if (action === "ask") {
+      const question = String(payload.question || "").trim();
+      if (!question) return json(400, { error: "Ask a question first." });
+
+      const model = String(payload.model || "").trim() || draft.model || draft.run?.model || defaultModel();
+      if (!availableModels().includes(model)) {
+        return json(400, { error: `Unknown model: ${model}` });
+      }
+
+      // Edits ride along so the model sees the draft as it is on screen rather
+      // than as it was at the last autosave — he is usually asking precisely
+      // because he is mid-rewrite. They are applied for context only and never
+      // written back: asking a question must not be able to change the draft,
+      // whatever shape the edits arrive in. Persisting them is `save`'s job.
+      const shaped = payload.edits ? applyDraftEdits(draft, payload.edits) : draft.shaped;
+      const editorNote = payload.edits?.editorNote ?? draft.editorNote;
+
+      const history = [...(draft.chat || []), { role: "user", content: question }];
+      const result = await askAboutVideo({
+        meta: draft.meta,
+        shaped,
+        editorNote,
+        messages: history.map(({ role, content }) => ({ role, content })),
+        model,
+      });
+
+      const now = new Date().toISOString();
+      const chat = [
+        ...(draft.chat || []),
+        { role: "user", content: question, at: now },
+        { role: "assistant", content: result.answer, at: now, timestamps: result.timestamps, model: result.model },
+      ].slice(-MAX_CHAT_MESSAGES_KEPT);
+
+      // Re-read: the answer took a model call to arrive, and an autosave may
+      // have landed in the meantime. Only the conversation is ours to write.
+      const latest = (await store.get(draftKey, { type: "json" })) || draft;
+      await store.setJSON(draftKey, { ...latest, chat });
+
+      return json(200, {
+        ok: true,
+        draftKey,
+        answer: result.answer,
+        timestamps: result.timestamps,
+        model: result.model,
+        seconds: Number((result.tookMs / 1000).toFixed(1)),
+      });
+    }
+
+    if (action === "clear-chat") {
+      await store.setJSON(draftKey, { ...draft, chat: [] });
+      return json(200, { ok: true, draftKey });
     }
 
     if (action === "reprocess") {
