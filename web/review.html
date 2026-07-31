@@ -183,6 +183,129 @@ textarea { min-height: 76px; }
   margin: 0 0 10px;
 }
 
+/* ------------------------------------------------------------------ ask panel
+
+   Collapsed by default. The editor is for writing; this is for finding out
+   what you're writing about, and it stays one tap away without ever being in
+   the way of the fields. */
+
+.ask {
+  background: var(--tg-section-bg);
+  border-bottom: 1px solid var(--line);
+}
+.ask-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tg-link);
+  text-align: left;
+  cursor: pointer;
+}
+.ask-toggle .chev {
+  margin-left: auto;
+  font-size: 11px;
+  opacity: 0.7;
+  transition: transform 0.18s ease;
+}
+.ask.open .ask-toggle .chev { transform: rotate(180deg); }
+.ask-body { display: none; padding: 0 16px 14px; }
+.ask.open .ask-body { display: block; }
+
+.ask-help {
+  font-size: 12.5px;
+  color: var(--tg-hint);
+  margin: 0 0 12px;
+}
+
+.msg {
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.msg.you {
+  background: var(--tg-secondary-bg);
+  border-radius: 10px;
+  padding: 9px 11px;
+  font-size: 14px;
+}
+.msg.you::before {
+  content: "You";
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tg-hint);
+  margin-bottom: 3px;
+}
+.msg.model { padding: 0 2px; }
+.msg.model p { margin: 0 0 9px; }
+.msg.model p:last-child { margin-bottom: 0; }
+.msg.model a { color: var(--tg-link); font-weight: 500; text-decoration: none; }
+.msg-meta {
+  font-size: 11px;
+  color: var(--tg-hint);
+  margin: -6px 0 12px 2px;
+}
+.msg.pending { color: var(--tg-hint); font-style: italic; }
+
+.ask-starters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.ask-starters[hidden] { display: none; }
+.starter {
+  background: var(--tg-secondary-bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--tg-text);
+  font-family: inherit;
+  font-size: 12.5px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.starter:active { opacity: 0.7; }
+
+.ask-form { display: flex; gap: 8px; align-items: flex-end; }
+.ask-form textarea { min-height: 42px; }
+.btn-ask {
+  flex: none;
+  background: var(--tg-button);
+  border: 0;
+  border-radius: 8px;
+  color: var(--tg-button-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.btn-ask:disabled { opacity: 0.45; cursor: default; }
+.ask-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.ask-foot .note { font-size: 11.5px; color: var(--tg-hint); margin: 0; }
+.btn-clear {
+  background: none;
+  border: 0;
+  color: var(--tg-hint);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 2px 4px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 /* ------------------------------------------------------------------ derived links */
 
 .derived {
@@ -286,6 +409,25 @@ textarea { min-height: 76px; }
       <h1 id="v-title"></h1>
       <p class="sub" id="v-sub"></p>
       <p class="sub"><a id="v-watch" target="_blank" rel="noopener">watch original ↗</a></p>
+    </div>
+  </div>
+
+  <div class="ask" id="ask-panel">
+    <button class="ask-toggle" id="ask-toggle" aria-expanded="false">
+      Ask about this video<span class="chev">▼</span>
+    </button>
+    <div class="ask-body">
+      <p class="ask-help" id="ask-help"></p>
+      <div id="ask-log"></div>
+      <div class="ask-starters" id="ask-starters"></div>
+      <div class="ask-form">
+        <textarea id="ask-input" rows="2" placeholder="What did they actually say about…?"></textarea>
+        <button class="btn-ask" id="btn-ask">Ask</button>
+      </div>
+      <div class="ask-foot">
+        <p class="note">Answers come from the transcript only.</p>
+        <button class="btn-clear" id="btn-clear-chat" hidden>Clear</button>
+      </div>
     </div>
   </div>
 
@@ -584,6 +726,131 @@ textarea { min-height: 76px; }
       : `<span class="none">No creator links found in the video description.</span>`;
   }
 
+  /* ------------------------------------------------------------ ask panel */
+
+  const STARTERS = [
+    "What context am I missing?",
+    "Does the draft misrepresent anything?",
+    "What's the most interesting thing the draft leaves out?",
+  ];
+
+  let asking = false;
+  let pendingTimer = null;
+
+  /**
+   * An answer as HTML: paragraphs preserved, and any [mm:ss] the server could
+   * match back to the captions turned into a link into the video. One it
+   * couldn't verify stays as plain text — an unchecked timestamp must never
+   * look like a checked one.
+   */
+  function renderAnswerHtml(text, timestamps) {
+    const verified = new Map((timestamps || []).map((t) => [t.at, t]));
+    return String(text || "")
+      .split(/\n{2,}/)
+      .filter((para) => para.trim())
+      .map((para) => {
+        const html = escapeHtml(para)
+          .replace(/\[(\d{1,2}:\d{2}(?::\d{2})?)\]/g, (whole, at) => {
+            const hit = verified.get(at);
+            return hit
+              ? `<a href="${escapeHtml(hit.url)}" target="_blank" rel="noopener">${escapeHtml(at)}</a>`
+              : whole;
+          })
+          .replace(/\n/g, "<br>");
+        return `<p>${html}</p>`;
+      })
+      .join("");
+  }
+
+  function renderChat() {
+    const log = el("ask-log");
+    log.innerHTML = "";
+
+    (state.chat || []).forEach((m) => {
+      const node = document.createElement("div");
+      if (m.role === "user") {
+        node.className = "msg you";
+        node.textContent = m.content;
+      } else if (m.pending) {
+        node.className = "msg model pending";
+        node.textContent = m.content;
+      } else {
+        node.className = "msg model";
+        node.innerHTML = renderAnswerHtml(m.content, m.timestamps);
+      }
+      log.appendChild(node);
+    });
+
+    const has = (state.chat || []).length > 0;
+    el("ask-starters").hidden = has;
+    el("btn-clear-chat").hidden = !has;
+  }
+
+  function scrollChatToEnd() {
+    const last = el("ask-log").lastElementChild;
+    if (last) last.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  async function ask(question) {
+    const q = String(question || "").trim();
+    if (!q || asking) return;
+
+    asking = true;
+    el("btn-ask").disabled = true;
+    el("ask-input").value = "";
+
+    // Shown straight away so the question doesn't vanish into a spinner. The
+    // model reads a whole transcript to answer, which is not a fast thing on a
+    // phone, so the wait counts itself out rather than looking hung.
+    const pending = { role: "assistant", content: "Reading the transcript…", pending: true };
+    (state.chat || (state.chat = [])).push({ role: "user", content: q }, pending);
+    renderChat();
+    scrollChatToEnd();
+
+    const startedAt = Date.now();
+    pendingTimer = setInterval(() => {
+      pending.content = `Reading the transcript… ${Math.round((Date.now() - startedAt) / 1000)}s`;
+      renderChat();
+    }, 1000);
+
+    try {
+      // Save first, then send the edits along with the question: the answer
+      // should be about the draft as it is on screen, not as it was at the
+      // last autosave, and the panel itself never writes to the draft.
+      dirty = true;
+      await save();
+      const data = await api("POST", { action: "ask", question: q, edits: collect() });
+      state.chat.pop();
+      state.chat.push({ role: "assistant", content: data.answer, timestamps: data.timestamps });
+    } catch (err) {
+      // Drop the pending answer and the question with it, so the retry that
+      // follows doesn't stack a second copy of the same question.
+      state.chat.pop();
+      state.chat.pop();
+      el("ask-input").value = q;
+      tg.showAlert(`Couldn't ask: ${err.message}`);
+    } finally {
+      clearInterval(pendingTimer);
+      asking = false;
+      el("btn-ask").disabled = false;
+      renderChat();
+      scrollChatToEnd();
+    }
+  }
+
+  function renderStarters() {
+    const host = el("ask-starters");
+    host.innerHTML = "";
+    STARTERS.forEach((text) => {
+      const btn = document.createElement("button");
+      btn.className = "starter";
+      btn.type = "button";
+      btn.textContent = text;
+      btn.addEventListener("click", () => ask(text));
+      host.appendChild(btn);
+    });
+  }
+
   function renderAll() {
     el("v-thumb").src = state.video.thumbnailUrl;
     el("v-title").textContent = state.video.title;
@@ -599,6 +866,7 @@ textarea { min-height: 76px; }
 
     Object.keys(LISTS).forEach(renderList);
     renderDerived();
+    renderChat();
   }
 
   /** Pulls the non-repeating fields out of the DOM into state. */
@@ -712,6 +980,37 @@ textarea { min-height: 76px; }
       el(id).addEventListener("input", markDirty);
     });
 
+    el("ask-toggle").addEventListener("click", () => {
+      const panel = el("ask-panel");
+      const open = panel.classList.toggle("open");
+      el("ask-toggle").setAttribute("aria-expanded", String(open));
+    });
+
+    renderStarters();
+    el("btn-ask").addEventListener("click", () => ask(el("ask-input").value));
+    el("ask-input").addEventListener("keydown", (e) => {
+      // Enter sends on a hardware keyboard; Shift+Enter still breaks the line.
+      // The on-screen keyboard sends its own newline, which is what the Ask
+      // button is for.
+      if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+        e.preventDefault();
+        ask(el("ask-input").value);
+      }
+    });
+
+    el("btn-clear-chat").addEventListener("click", () => {
+      tg.showConfirm("Clear this conversation? The draft itself isn't touched.", async (ok) => {
+        if (!ok) return;
+        try {
+          await api("POST", { action: "clear-chat" });
+          state.chat = [];
+          renderChat();
+        } catch (err) {
+          tg.showAlert(`Couldn't clear: ${err.message}`);
+        }
+      });
+    });
+
     el("btn-reprocess").addEventListener("click", () => {
       const model = el("f-model").value;
       const same = model === state.currentModel;
@@ -755,7 +1054,19 @@ textarea { min-height: 76px; }
         derivedLinks: data.derivedLinks,
         models: data.models || [],
         currentModel: data.currentModel || "",
+        chat: data.chat || [],
+        hasTimedTranscript: !!data.hasTimedTranscript,
       };
+
+      el("ask-help").textContent = state.hasTimedTranscript
+        ? "Ask anything about what was actually said. Answers come from this video's transcript only, and timestamps link straight into the video."
+        : "Ask anything about what was actually said. Answers come from this video's transcript only. This one has no caption timing, so there are no timestamps to link.";
+      // A conversation carried over from an earlier session is worth showing
+      // rather than hiding behind a collapsed panel he may not think to open.
+      if (state.chat.length) {
+        el("ask-panel").classList.add("open");
+        el("ask-toggle").setAttribute("aria-expanded", "true");
+      }
 
       el("f-model").innerHTML = state.models
         .map(

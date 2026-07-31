@@ -56,7 +56,8 @@
   timeout = 26
 
 [functions."review-api"]
-  # Publishing runs the same multi-commit cascade as publish-video.
+  # Publishing runs the same multi-commit cascade as publish-video, and the ask
+  # panel puts a whole transcript through the model on every question.
   timeout = 180
 
 [functions."preview-markdown"]

@@ -20,7 +20,7 @@ No test framework. These are plain Node scripts using `node:assert`, run by
 | `render` | The front end's frontmatter parser and row renderers, against committed fixtures |
 | `social-links` | Links come only from the video's description, never from the model |
 | `approval-flow` | analyze → notify → publish-as-is, and the reject path |
-| `review-app` | The Mini App: load, edit, preview, publish — including preview/publish byte identity |
+| `review-app` | The Mini App: load, edit, ask, preview, publish — including preview/publish byte identity |
 | `webapp-auth` | Telegram `initData` verification and preview-token signing |
 
 ## The one that matters most
