@@ -2,21 +2,29 @@
 <rss version="2.0">
 <channel>
   <title>AI Creator Digest</title>
-  <link>https://aicreatordigest.com/</link>
+  <link>https://remarkable-figolla-6d707e.netlify.app/</link>
   <description>Chris Gallego's YouTube notes on AI, tech, SaaS and web design — read instead of watched.</description>
   <language>en-us</language>
   <item>
+    <title>How to Build a Company OS in Claude Code | Jiaona Zhang | Product Growth</title>
+    <link>https://remarkable-figolla-6d707e.netlify.app/video/ai-company-os/how-to-build-a-company-os-in-claude-code-jiaona-zhang-product-growth</link>
+    <guid isPermaLink="true">https://remarkable-figolla-6d707e.netlify.app/video/ai-company-os/how-to-build-a-company-os-in-claude-code-jiaona-zhang-product-growth</guid>
+    <pubDate>Sat, 01 Aug 2026 13:37:04 GMT</pubDate>
+    <description>Jiaona Zhang shows Aakash Gupta how Laurel built a Claude company OS, ships with Devin, and hires AI-pilled IC PMs.</description>
+    <author>Aakash Gupta</author>
+  </item>
+  <item>
     <title>FORGET Loop Engineering. Agentic Engineering is about THIS</title>
-    <link>https://aicreatordigest.com/video/ai-company-os/forget-loop-engineering-agentic-engineering-is-about-this</link>
-    <guid isPermaLink="true">https://aicreatordigest.com/video/ai-company-os/forget-loop-engineering-agentic-engineering-is-about-this</guid>
+    <link>https://remarkable-figolla-6d707e.netlify.app/video/ai-company-os/forget-loop-engineering-agentic-engineering-is-about-this</link>
+    <guid isPermaLink="true">https://remarkable-figolla-6d707e.netlify.app/video/ai-company-os/forget-loop-engineering-agentic-engineering-is-about-this</guid>
     <pubDate>Wed, 29 Jul 2026 20:12:14 GMT</pubDate>
     <description>Dan Eisler on why loop engineering misses the point—and how AI developer workflows and software factories actually scale agents.</description>
     <author>Dan Eisler</author>
   </item>
   <item>
     <title>Head of ChatGPT &amp; Codex: agents for normal people are HERE</title>
-    <link>https://aicreatordigest.com/video/codex-strategies/head-of-chatgpt-codex-agents-for-normal-people-are-here</link>
-    <guid isPermaLink="true">https://aicreatordigest.com/video/codex-strategies/head-of-chatgpt-codex-agents-for-normal-people-are-here</guid>
+    <link>https://remarkable-figolla-6d707e.netlify.app/video/codex-strategies/head-of-chatgpt-codex-agents-for-normal-people-are-here</link>
+    <guid isPermaLink="true">https://remarkable-figolla-6d707e.netlify.app/video/codex-strategies/head-of-chatgpt-codex-agents-for-normal-people-are-here</guid>
     <pubDate>Wed, 29 Jul 2026 15:54:04 GMT</pubDate>
     <description>Silicon Valley Girl talks with OpenAI’s Tibo on ChatGPT Codex agents for knowledge workers, auto review, and live workflows.</description>
     <author>Silicon Valley Girl</author>
