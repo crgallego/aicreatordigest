@@ -1,6 +1,6 @@
 {
   "site": "AI Creator Digest",
-  "updatedAt": "2026-07-29T20:12:23.596Z",
+  "updatedAt": "2026-08-01T13:37:26.903Z",
   "playlists": {
     "codex-strategies": {
       "slug": "codex-strategies",
@@ -17,10 +17,10 @@
       "name": "AI Company OS",
       "playlistId": "PLD3vLjumT3Eo",
       "firstSeenAt": "2026-07-29T20:12:23.596Z",
-      "consensusUpdatedAt": "2026-07-29T20:12:23.596Z",
-      "consensusSummary": "One creator, Dan Eisler (IndyDevDan), defines the early shape of this collection: stop treating “loop engineering” as the insight and instead design AI developer workflows that combine engineers, agen",
-      "videoCount": 1,
-      "creatorCount": 1
+      "consensusUpdatedAt": "2026-08-01T13:37:26.902Z",
+      "consensusSummary": "Two creators map how AI work gets systematized beyond individual operators. Dan Eisler reframes agentic engineering as software-factory workflows that combine engineers, agents, and code; Jiaona Zhang",
+      "videoCount": 2,
+      "creatorCount": 2
     }
   },
   "creators": {
@@ -101,6 +101,45 @@
         }
       ],
       "lastPublishedAt": "2026-07-29T20:12:14.992Z"
+    },
+    "aakash-gupta": {
+      "slug": "aakash-gupta",
+      "creatorName": "Aakash Gupta",
+      "channelName": "Aakash Gupta",
+      "channelUrl": "https://www.youtube.com/channel/UCsHBhXybRz2CCfpU0hWp7ow",
+      "bio": "Aakash Gupta hosts a product growth podcast and newsletter focused on AI-native product work, company operating systems, and how PMs actually ship. He interviews operators building at the frontier and packages the systems they use into concrete playbooks. Worth following if you want operator-level detail on AI tooling, PM craft, and org design rather than hype.",
+      "image": "https://yt3.ggpht.com/SlIqlpbYcJwqzOMBJM1OUsSppXcUMALbz1yZTFWa7aDTXsMBD-XRRc041ZlczJUiEPf7-TolTcQ=s800-c-k-c0x00ffffff-no-rj",
+      "firstSeenAt": "2026-08-01T13:37:26.902Z",
+      "videoCount": 1,
+      "topics": [
+        {
+          "label": "AI Company OS",
+          "count": 1
+        },
+        {
+          "label": "AI Tooling",
+          "count": 1
+        },
+        {
+          "label": "Hiring",
+          "count": 1
+        },
+        {
+          "label": "Org Design",
+          "count": 1
+        },
+        {
+          "label": "Product Management",
+          "count": 1
+        }
+      ],
+      "playlists": [
+        {
+          "playlistSlug": "ai-company-os",
+          "playlistName": "AI Company OS"
+        }
+      ],
+      "lastPublishedAt": "2026-08-01T13:37:04.765Z"
     }
   },
   "videos": [
@@ -233,6 +272,66 @@
       },
       "addedAt": "2026-07-29T20:12:14.992Z",
       "updatedAt": "2026-07-29T20:12:14.992Z"
+    },
+    {
+      "slug": "how-to-build-a-company-os-in-claude-code-jiaona-zhang-product-growth",
+      "path": "playlists/ai-company-os/videos/how-to-build-a-company-os-in-claude-code-jiaona-zhang-product-growth.md",
+      "videoId": "qsDX0PMKcaE",
+      "title": "How to Build a Company OS in Claude Code | Jiaona Zhang | Product Growth",
+      "videoUrl": "https://www.youtube.com/watch?v=qsDX0PMKcaE",
+      "videoDuration": "",
+      "playlistSlug": "ai-company-os",
+      "playlistName": "AI Company OS",
+      "creatorSlug": "aakash-gupta",
+      "creatorName": "Aakash Gupta",
+      "creatorImage": "https://yt3.ggpht.com/SlIqlpbYcJwqzOMBJM1OUsSppXcUMALbz1yZTFWa7aDTXsMBD-XRRc041ZlczJUiEPf7-TolTcQ=s800-c-k-c0x00ffffff-no-rj",
+      "embeddable": true,
+      "channelName": "Aakash Gupta",
+      "channelUrl": "https://www.youtube.com/channel/UCsHBhXybRz2CCfpU0hWp7ow",
+      "keyTakeaway": "A company OS works by encoding the 1% AI-pilled operators' skills into shared GitHub skill files and surfacing them just-in-time in Slack so the other 90–99% know what to use when.",
+      "executiveSummary": "Aakash Gupta sits down with Jiaona Zhang (Jay-Z), CPO at Laurel and PM instructor at Stanford, formerly CPO at Linktree and a product leader at Airbnb, Webflow, Dropbox, and WeWork. She screen-shares Laurel's full company operating system: a GitHub repo organized by every function, with skill files for each repeatable activity, loaded into Claude and delivered through daily briefings and Slack. The conversation is a practical build guide for teams stuck between a few highly AI-pilled ICs and an org that does not know what to automate. Zhang walks through how to start from one tedious workflow, graduate to playbooks and agents, run non-engineers shipping front-end and back-end features with Devin, and hire for AI maturity by making candidates screen-share how they actually work.",
+      "summary": "Jiaona Zhang shows Aakash Gupta how Laurel runs a GitHub-based company OS—function folders, skill files, ontologies, and Slack delivery—so AI workflows reach the whole org, not just the 1%. She covers the three-step build path, PMs and CS shipping with Devin, captains and two-track reviews, AI ops staffing, and hiring super-senior IC PMs via screen-share interviews.",
+      "description": "Jiaona Zhang shows Aakash Gupta how Laurel built a Claude company OS, ships with Devin, and hires AI-pilled IC PMs.",
+      "categories": [
+        "AI Company OS",
+        "Product Management",
+        "AI Tooling",
+        "Org Design",
+        "Hiring"
+      ],
+      "keyPointTitles": [
+        "The 1% vs 99% AI gap",
+        "GitHub as the company OS",
+        "Ontology maps work to automate",
+        "Four levels of AI maturity",
+        "PMs ship front-end and back-end",
+        "Captains model replaces rigid roles",
+        "Two tracks for product review",
+        "AI ops as the new biz ops",
+        "Lean senior IC product orgs",
+        "Fundamentals hold, tools changed"
+      ],
+      "readTimeMinutes": 6,
+      "hasEditorNote": true,
+      "featuredPeople": [
+        {
+          "name": "Jiaona Zhang",
+          "role": "guest",
+          "links": []
+        }
+      ],
+      "creatorLinks": [],
+      "run": {
+        "model": "grok-4.5",
+        "seconds": 64.3,
+        "promptTokens": 17601,
+        "completionTokens": 2490,
+        "totalTokens": 21333,
+        "costUsd": null,
+        "ranAt": "2026-07-31T14:28:45.862Z"
+      },
+      "addedAt": "2026-08-01T13:37:04.765Z",
+      "updatedAt": "2026-08-01T13:37:04.765Z"
     }
   ]
 }
