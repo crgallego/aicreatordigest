@@ -1,6 +1,6 @@
 {
   "site": "AI Creator Digest",
-  "updatedAt": "2026-08-01T13:37:26.903Z",
+  "updatedAt": "2026-08-02T13:30:32.282Z",
   "playlists": {
     "codex-strategies": {
       "slug": "codex-strategies",
@@ -21,6 +21,16 @@
       "consensusSummary": "Two creators map how AI work gets systematized beyond individual operators. Dan Eisler reframes agentic engineering as software-factory workflows that combine engineers, agents, and code; Jiaona Zhang",
       "videoCount": 2,
       "creatorCount": 2
+    },
+    "claude-ghl": {
+      "slug": "claude-ghl",
+      "name": "Claude+GHL",
+      "playlistId": "PL-79AAEwfoR3196G183Nm6fUnW7BwsXFW",
+      "firstSeenAt": "2026-08-02T13:30:32.282Z",
+      "consensusUpdatedAt": "2026-08-02T13:30:32.282Z",
+      "consensusSummary": "One creator, ambITious | AI, argues that Claude Code makes a full GoHighLevel-class CRM replaceable with a self-hosted stack you own. The through-line is simple: spin up LeadStack in under an hour, ke",
+      "videoCount": 1,
+      "creatorCount": 1
     }
   },
   "creators": {
@@ -140,6 +150,45 @@
         }
       ],
       "lastPublishedAt": "2026-08-01T13:37:04.765Z"
+    },
+    "ambitious-ai": {
+      "slug": "ambitious-ai",
+      "creatorName": "ambITious | AI",
+      "channelName": "ambITious | AI",
+      "channelUrl": "https://www.youtube.com/channel/UC8QiMa5FzPkE-vozDoqwZIg",
+      "bio": "ambITious | AI builds and demos practical AI-powered replacements for expensive SaaS stacks. The channel focuses on self-hosted CRM, agency tooling, and Claude Code workflows that cut monthly software spend for small businesses and agencies.",
+      "image": "https://yt3.ggpht.com/S7muW9hDBovEx9VxpaRANOiPXSNKDNiEDHQMWle9BtrmuV5o4HCmD7LFhbDfsaO805mDQe2wIlk=s800-c-k-c0x00ffffff-no-rj",
+      "firstSeenAt": "2026-08-02T13:30:32.282Z",
+      "videoCount": 1,
+      "topics": [
+        {
+          "label": "Agency Tools",
+          "count": 1
+        },
+        {
+          "label": "AI Tooling",
+          "count": 1
+        },
+        {
+          "label": "Claude Code",
+          "count": 1
+        },
+        {
+          "label": "CRM",
+          "count": 1
+        },
+        {
+          "label": "Pricing",
+          "count": 1
+        }
+      ],
+      "playlists": [
+        {
+          "playlistSlug": "claude-ghl",
+          "playlistName": "Claude+GHL"
+        }
+      ],
+      "lastPublishedAt": "2026-08-02T13:30:22.460Z"
     }
   },
   "videos": [
@@ -332,6 +381,58 @@
       },
       "addedAt": "2026-08-01T13:37:04.765Z",
       "updatedAt": "2026-08-01T13:37:04.765Z"
+    },
+    {
+      "slug": "claude-code-just-replaced-gohighlevel-497-mth-0-mth-no-subscription",
+      "path": "playlists/claude-ghl/videos/claude-code-just-replaced-gohighlevel-497-mth-0-mth-no-subscription.md",
+      "videoId": "AfC4DN_1kp0",
+      "title": "Claude Code Just Replaced GoHighLevel: $497/Mth → $0/Mth (No Subscription)",
+      "videoUrl": "https://www.youtube.com/watch?v=AfC4DN_1kp0",
+      "videoDuration": "",
+      "playlistSlug": "claude-ghl",
+      "playlistName": "Claude+GHL",
+      "creatorSlug": "ambitious-ai",
+      "creatorName": "ambITious | AI",
+      "creatorImage": "https://yt3.ggpht.com/S7muW9hDBovEx9VxpaRANOiPXSNKDNiEDHQMWle9BtrmuV5o4HCmD7LFhbDfsaO805mDQe2wIlk=s800-c-k-c0x00ffffff-no-rj",
+      "embeddable": true,
+      "channelName": "ambITious | AI",
+      "channelUrl": "https://www.youtube.com/channel/UC8QiMa5FzPkE-vozDoqwZIg",
+      "keyTakeaway": "You can replace a $297–$1,000/month CRM like GoHighLevel with LeadStack, a self-hosted CRM you own, spun up in under 60 minutes with Claude Code for near-zero ongoing cost.",
+      "executiveSummary": "ambITious | AI walks through LeadStack, a self-hosted CRM positioned as a direct alternative to GoHighLevel, Pipedrive, and HubSpot for agencies and small businesses that only use a fraction of what they pay for. The video is a live product demo and setup walkthrough: sign up, pull the repo, and let Claude Code guide configuration via a Claude.md file. It covers the multi-tenant agency model, pipelines, contacts, form-triggered email/SMS automations, and a Get Page–powered website builder, then closes with one-time pricing, free-tier hosting/email/SMS economics, and a planned 40% affiliate program.",
+      "summary": "ambITious | AI demos LeadStack, a self-hosted CRM built to replace GoHighLevel-class subscriptions with a one-time purchase and near-free run costs. Claude Code guides setup; the stack covers unlimited sub accounts, pipelines, form-triggered email/SMS, and Get Page websites in under an hour.",
+      "description": "ambITious | AI shows LeadStack replacing GoHighLevel with a self-hosted CRM via Claude Code for near-zero monthly cost.",
+      "categories": [
+        "AI Tooling",
+        "CRM",
+        "Pricing",
+        "Agency Tools",
+        "Claude Code"
+      ],
+      "keyPointTitles": [
+        "CRM subscriptions are optional now",
+        "LeadStack is a business in a repo",
+        "Under 60 minutes to a running CRM",
+        "Multi-tenant agency and sub accounts",
+        "Pipeline, contacts, and map views",
+        "Form-to-automation lead capture flow",
+        "Website builder via Get Page API",
+        "One-time buy, near-free run costs"
+      ],
+      "readTimeMinutes": 4,
+      "hasEditorNote": true,
+      "featuredPeople": [],
+      "creatorLinks": [],
+      "run": {
+        "model": "grok-4.5",
+        "seconds": 36.6,
+        "promptTokens": 4288,
+        "completionTokens": 1760,
+        "totalTokens": 7288,
+        "costUsd": null,
+        "ranAt": "2026-08-02T13:20:55.439Z"
+      },
+      "addedAt": "2026-08-02T13:30:22.460Z",
+      "updatedAt": "2026-08-02T13:30:22.460Z"
     }
   ]
 }
